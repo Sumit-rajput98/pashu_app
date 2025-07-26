@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pashu_app/view/home/splash_screen.dart';
+import 'package:pashu_app/view_model/AuthVM/get_counter_view_model.dart';
+import 'package:pashu_app/view_model/AuthVM/get_profile_view_model.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_view_model.dart';
+import 'package:pashu_app/view_model/AuthVM/update_profile_view_model.dart';
 import 'package:pashu_app/view_model/AuthVM/verify_otp_view_model.dart';
 import 'package:pashu_app/view_model/pashuVM/add_to_wishlist_view_model.dart';
 import 'package:pashu_app/view_model/pashuVM/all_pashu_view_model.dart';
@@ -34,6 +37,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AllPashuViewModel()),
         ChangeNotifierProvider(create: (_) => AddToWishlistViewModel()),
         ChangeNotifierProvider(create: (_) => WishlistViewModel()),
+        ChangeNotifierProvider(create: (_) => GetProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => GetCounterViewModel()),
+        ChangeNotifierProvider(create: (_) => UpdateProfileViewModel()),
       ],
       child: MaterialApp(
         title: 'Pashu App',

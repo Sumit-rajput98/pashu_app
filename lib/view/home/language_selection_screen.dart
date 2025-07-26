@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pashu_app/view/auth/login_screen.dart';
 
 import '../../core/language_helper.dart';
-
 import 'bottom_nav_bar.dart';
 
 class SelectLanguageScreen extends StatefulWidget {
@@ -13,8 +13,8 @@ class SelectLanguageScreen extends StatefulWidget {
 }
 
 class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
-  String? selectedLanguage;
-  final PageController _pageController = PageController();
+  // ✅ Set English as the default selected language
+  String? selectedLanguage = 'en';
 
   static const languageOptions = [
     {'id': 'en', 'label': 'English'},
@@ -31,9 +31,9 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
       backgroundColor: const Color(0xFF1E4A59),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             decoration: BoxDecoration(
               color: const Color(0xFFE9F0DA),
               borderRadius: BorderRadius.circular(24),
@@ -56,20 +56,13 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
-                // Vertical page view for language selection
+                // Scrollable list of 4 visible items
                 SizedBox(
-                  height: 50,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    scrollDirection: Axis.vertical,
+                  height: 200, // 4 items × 50 height each
+                  child: ListView.builder(
                     itemCount: languageOptions.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        selectedLanguage = languageOptions[index]['id'];
-                      });
-                    },
                     itemBuilder: (context, index) {
                       final lang = languageOptions[index];
                       return GestureDetector(
@@ -78,12 +71,21 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                             selectedLanguage = lang['id'];
                           });
                         },
-                        child: Center(
+                        child: Container(
+                          height: 48,
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            color: selectedLanguage == lang['id']
+                                ? const Color(0xFFB4D5A6)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           child: Text(
                             lang['label']!,
                             style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
                               color: selectedLanguage == lang['id']
                                   ? const Color(0xFF1E4A59)
                                   : Colors.black87,
@@ -110,10 +112,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                   onPressed: selectedLanguage == null
                       ? null
                       : () async {
-                    // Save the selected locale
                     await LanguageHelper.setLocale(selectedLanguage!);
-
-                    // Apply locale dynamically
                     final locale = Locale(selectedLanguage!);
                     if (!mounted) return;
                     Navigator.pushReplacement(
@@ -122,7 +121,7 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                         builder: (context) => Localizations.override(
                           context: context,
                           locale: locale,
-                          child: const CustomBottomNavScreen(),
+                          child: LoginScreen(),
                         ),
                       ),
                     );

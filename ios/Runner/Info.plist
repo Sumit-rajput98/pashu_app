@@ -46,11 +46,39 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
-	<!-- 📍 Location Permissions -->
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires camera access to take photos.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to your photo library to select images.</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app needs permission to save photos to your library.</string>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app requires microphone access to record videos.</string>
+
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to your photo library to save and view downloaded files.</string>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app needs permission to add files to your photo library.</string>
+
+    <key>NSAppleMusicUsageDescription</key>
+    <string>This app requires access to audio files.</string>
+
+	<!-- Location Permissions for Geolocator -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to show nearby animals and services.</string>
+	<string>This app needs access to your location to function properly when the app is in use.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We use your location to provide accurate recommendations.</string>
+	<string>This app needs access to your location at all times for background location updates.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs your location permission for the best experience in both foreground and background.</string>
 
 	<!-- 🌐 Allow HTTP requests (optional, only if you're using non-HTTPS URLs) -->
 	<key>NSAppTransportSecurity</key>

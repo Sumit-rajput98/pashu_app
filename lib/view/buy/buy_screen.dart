@@ -126,7 +126,7 @@ class _BuyPageState extends State<BuyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      appBar: _buildAppBar(context),
+      //appBar: _buildAppBar(context),
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return Column(

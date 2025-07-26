@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/core/app_colors.dart';
+import 'package:pashu_app/view/auth/profile_page.dart';
 import 'package:pashu_app/view/buy/buy_screen.dart';
 import 'package:pashu_app/view/buy/wishlist_screen.dart';
 import 'package:pashu_app/view/home/home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pashu_app/view/sell/sell_page.dart';
+
+import '../../core/shared_pref_helper.dart';
 
 class CustomBottomNavScreen extends StatefulWidget {
   const CustomBottomNavScreen({super.key});
@@ -17,7 +21,7 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
 
   final List<Widget> _pages = [
     BuyPage(),
-    Center(child: Text("Sell Page")),
+    SellPashuScreen(),
     HomeScreen(),
     WishlistPage(),
     Center(child: Text("Invest Page")),
@@ -36,6 +40,55 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(70),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            flexibleSpace: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10,),
+                    Image.asset(
+                      'assets/newlogo.png', // Replace with your logo path
+                      height: 60,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Pashu Parivar',
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF244B5C)
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFF244B5C)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        'हि/E/ತ',
+                        style: TextStyle(color: Color(0xFF244B5C)),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                     IconButton( onPressed: ()  async{
+                       String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(phoneNumber: phoneNumber ?? '')));
+                    }, icon: Icon(Icons.account_circle, size: 30, color: Color(0xFF244B5C),),),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
         body: _pages[_selectedIndex],
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(

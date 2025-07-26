@@ -66,30 +66,33 @@ class _WishlistPageState extends State<WishlistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryDark,
-        elevation: 0,
-        title: Row(
-          children: [
-            const Icon(Icons.favorite, color: Colors.red, size: 28),
-            const SizedBox(width: 10),
-            Text(
-              'Wishlist',
-              style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: AppColors.primaryDark,
+      //   elevation: 0,
+      //   title: Row(
+      //     children: [
+      //       const Icon(Icons.favorite, color: Colors.red, size: 28),
+      //       const SizedBox(width: 10),
+      //       Text(
+      //         'Wishlist',
+      //         style: AppTextStyles.heading.copyWith(
+      //           color: AppColors.lightSage,
+      //           fontSize: 20,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: Consumer<WishlistViewModel>(
         builder: (context, viewModel, child) {
-          return Column(
-            children: [
-              _buildCategoriesGrid(),
-              Expanded(child: _buildAnimalsList(viewModel)),
-            ],
+          return Padding(
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              children: [
+                _buildCategoriesGrid(),
+                Expanded(child: _buildAnimalsList(viewModel)),
+              ],
+            ),
           );
         },
       ),

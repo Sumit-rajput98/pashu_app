@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:pashu_app/core/shared_pref_helper.dart';
+import 'package:pashu_app/view/auth/profile_page.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -149,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
+
       body: SafeArea(
         child:
             !_locationPermissionGranted
@@ -263,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Column(
         children: [
           // Header Section
-          _buildHeader(screenWidth),
+          //_buildHeader(screenWidth),
 
           // First 10,000 Users Section
           _buildFirst10KUsersSection(screenWidth),
@@ -332,16 +335,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
 
           // Notification/Profile Icon
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              Icons.person_outline_rounded,
-              color: AppColors.lightSage,
-              size: 24,
+          GestureDetector(
+            onTap: () async{
+               String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(phoneNumber: phoneNumber ?? ''),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.lightSage.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.person_outline_rounded,
+                color: AppColors.lightSage,
+                size: 24,
+              ),
             ),
           ),
         ],
