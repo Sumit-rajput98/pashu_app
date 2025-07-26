@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
 import 'package:pashu_app/view/auth/register_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!; // Add this line
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final keyboardHeight = mediaQuery.viewInsets.bottom;
@@ -41,14 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      resizeToAvoidBottomInset: false,// Allow resizing for keyboard
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
-            // Background decorations
             _buildBackgroundDecorations(),
-
-            // Main content with keyboard-aware positioning
             Container(
               width: double.infinity,
               constraints: BoxConstraints(
@@ -63,8 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Dynamic top spacing based on keyboard visibility
-                    _buildLoginCard(),
+                    _buildLoginCard(localizations),
                   ],
                 ),
               ),
@@ -83,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginCard() {
+  Widget _buildLoginCard(AppLocalizations localizations) {
     return Hero(
       tag: 'login_card',
       child: Material(
@@ -97,37 +95,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   message: viewModel.errorMessage!,
                   isError: true,
                 );
-
               });
             }
 
             if (viewModel.response?.success == true) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-
-                // Navigate after showing snackbar
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OTPScreen(
-                        phoneNumber: _phoneController.text,
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OTPScreen(
+                      phoneNumber: _phoneController.text,
                     ),
-                  );
-                  viewModel.resetState();
-                  _showCustomTopSnackbar(
-                    context: context,
-                    message: 'OTP sent to +91 ${_phoneController.text}',
-                    isError: false,
-                  );
-// Reset after navigation
-
+                  ),
+                );
+                viewModel.resetState();
+                _showCustomTopSnackbar(
+                  context: context,
+                  message: localizations.otpSentTo.toString().replaceAll('{phoneNumber}', _phoneController.text),
+                  isError: false,
+                );
               });
             }
+
             return Container(
               width: double.infinity,
               constraints: const BoxConstraints(
-                maxWidth: 400, // Responsive max width
+                maxWidth: 400,
               ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -206,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  'Sign In',
+                                  localizations.signIn,
                                   style: AppTextStyles.heading.copyWith(
                                     fontSize: MediaQuery.of(context).size.width > 600 ? 28 : 24,
                                     fontWeight: FontWeight.w600,
@@ -219,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 8),
 
                           Text(
-                            'Enter your phone number to continue',
+                            localizations.enterPhoneNumberToContinue,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.primaryDark.withOpacity(0.7),
                             ),
@@ -228,28 +221,28 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 32),
 
                           // Phone input section
-                          _buildPhoneInputSection(),
+                          _buildPhoneInputSection(localizations),
 
                           const SizedBox(height: 28),
 
                           // Get OTP button
                           PrimaryButton(
-                            text: 'Send OTP',
-                            onPressed:  ()=> viewModel.isLoading ? null :_handleGetOTP(viewModel),
+                            text: localizations.sendOTP,
+                            onPressed: () => viewModel.isLoading ? null : _handleGetOTP(viewModel, localizations),
                             isLoading: viewModel.isLoading,
                           ),
 
                           const SizedBox(height: 28),
 
                           // OR divider
-                          _buildOrDivider(),
+                          _buildOrDivider(localizations),
 
                           const SizedBox(height: 20),
 
                           // Register link
                           Center(
                             child: SecondaryButton(
-                              text: "Don't have an account? Register Now",
+                              text: localizations.dontHaveAccount,
                               onPressed: _handleRegister,
                             ),
                           ),
@@ -261,18 +254,17 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
           },
-
         ),
       ),
     );
   }
 
-  Widget _buildPhoneInputSection() {
+  Widget _buildPhoneInputSection(AppLocalizations localizations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Phone Number',
+          localizations.phoneNumber,
           style: AppTextStyles.bodyMedium.copyWith(
             fontWeight: FontWeight.w600,
             color: AppColors.primaryDark,
@@ -317,7 +309,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               child: CustomTextField(
                 controller: _phoneController,
-                hintText: 'Enter phone number',
+                hintText: localizations.enterPhoneNumber,
                 keyboardType: TextInputType.phone,
                 prefixIcon: Icon(
                   Icons.phone_outlined,
@@ -331,7 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildOrDivider() {
+  Widget _buildOrDivider(AppLocalizations localizations) {
     return Row(
       children: [
         Expanded(
@@ -356,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'OR',
+              localizations.or,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.6),
                 fontWeight: FontWeight.w500,
@@ -382,11 +374,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  bool _validatePhone(BuildContext context, String? value) {
+  bool _validatePhone(BuildContext context, String? value, AppLocalizations localizations) {
     if (value == null || value.isEmpty) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Phone number is required',
+        message: localizations.phoneNumberRequired,
         isError: true,
       );
       return false;
@@ -394,7 +386,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (value.length != 10 || !RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Enter a valid 10-digit Indian phone number',
+        message: localizations.enterValidPhoneNumber,
         isError: true,
       );
       return false;
@@ -402,8 +394,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return true;
   }
 
-  void _handleGetOTP(RequestOtpViewModel viewModel) async {
-    final isValid = _validatePhone(context, _phoneController.text);
+  void _handleGetOTP(RequestOtpViewModel viewModel, AppLocalizations localizations) async {
+    final isValid = _validatePhone(context, _phoneController.text, localizations);
     if (!isValid) return;
 
     HapticFeedback.lightImpact();
@@ -415,7 +407,6 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterScreen()));
   }
 
-  // Custom top snackbar with image-like styling
   void _showCustomTopSnackbar({
     required BuildContext context,
     required String message,
@@ -434,7 +425,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     overlay.insert(overlayEntry);
 
-    // Auto dismiss after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       if (overlayEntry.mounted) {
         overlayEntry.remove();

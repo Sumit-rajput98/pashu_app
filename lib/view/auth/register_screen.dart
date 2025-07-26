@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -35,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!; // Add this line
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
 
@@ -81,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildRegisterCard(),
+                    _buildRegisterCard(localizations),
                   ],
                 ),
               ),
@@ -100,7 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildRegisterCard() {
+  Widget _buildRegisterCard(AppLocalizations localizations) {
     return Hero(
       tag: 'register_card',
       child: Material(
@@ -168,53 +170,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 32),
 
                       // Register Now section with divider
-                      _buildSectionDivider('Register Now'),
+                      _buildSectionDivider(localizations.registerNow),
 
                       const SizedBox(height: 32),
 
                       // Name Input
                       _buildInputField(
                         controller: _nameController,
-                        hintText: 'Enter your name',
+                        hintText: localizations.enterYourName,
                         prefixIcon: Icons.person_outline_rounded,
                         keyboardType: TextInputType.name,
+                        localizations: localizations,
                       ),
 
                       const SizedBox(height: 20),
 
                       // Phone Input
-                      _buildPhoneInputSection(),
+                      _buildPhoneInputSection(localizations),
 
                       const SizedBox(height: 20),
 
                       // Referral Code Input
                       _buildInputField(
                         controller: _referralController,
-                        hintText: 'Enter Referral Code (Optional)',
+                        hintText: localizations.enterReferralCode,
                         prefixIcon: Icons.card_giftcard_outlined,
                         keyboardType: TextInputType.text,
                         isOptional: true,
+                        localizations: localizations,
                       ),
 
                       const SizedBox(height: 28),
 
                       // Get OTP Button
                       PrimaryButton(
-                        text: 'Get OTP',
-                        onPressed: _isLoading ? null : _handleGetOTP,
+                        text: localizations.getOTP,
+                        onPressed: _isLoading ? null : () => _handleGetOTP(localizations),
                         isLoading: _isLoading,
                       ),
 
                       const SizedBox(height: 24),
 
                       // OR divider
-                      _buildOrDivider(),
+                      _buildOrDivider(localizations),
 
                       const SizedBox(height: 16),
 
                       // Sign In Link
                       SecondaryButton(
-                        text: 'Already have an Account? Sign In',
+                        text: localizations.alreadyHaveAccount,
                         onPressed: _handleSignIn,
                       ),
                     ],
@@ -277,6 +281,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required String hintText,
     required IconData prefixIcon,
     required TextInputType keyboardType,
+    required AppLocalizations localizations,
     bool isOptional = false,
   }) {
     return CustomTextField(
@@ -296,7 +301,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
-          'Optional',
+          localizations.optional,
           style: AppTextStyles.bodyMedium.copyWith(
             fontSize: 10,
             color: AppColors.primaryDark.withOpacity(0.6),
@@ -308,7 +313,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildPhoneInputSection() {
+  Widget _buildPhoneInputSection(AppLocalizations localizations) {
     return Row(
       children: [
         // Country code container
@@ -346,7 +351,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Expanded(
           child: CustomTextField(
             controller: _phoneController,
-            hintText: 'Enter phone number',
+            hintText: localizations.enterPhoneNumber,
             keyboardType: TextInputType.phone,
             prefixIcon: Icon(
               Icons.phone_outlined,
@@ -358,7 +363,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildOrDivider() {
+  Widget _buildOrDivider(AppLocalizations localizations) {
     return Row(
       children: [
         Expanded(
@@ -383,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'Or',
+              localizations.or,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.6),
                 fontWeight: FontWeight.w500,
@@ -409,12 +414,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  bool _validateForm() {
+  bool _validateForm(AppLocalizations localizations) {
     // Validate name
     if (_nameController.text.trim().isEmpty) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Name is required',
+        message: localizations.nameIsRequired,
         isError: true,
       );
       return false;
@@ -423,7 +428,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_nameController.text.trim().length < 2) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Name must be at least 2 characters long',
+        message: localizations.nameMinLength,
         isError: true,
       );
       return false;
@@ -433,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_phoneController.text.trim().isEmpty) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Phone number is required',
+        message: localizations.phoneNumberRequired,
         isError: true,
       );
       return false;
@@ -443,7 +448,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         !RegExp(r'^[6-9]\d{9}$').hasMatch(_phoneController.text)) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Enter a valid 10-digit Indian phone number',
+        message: localizations.enterValidPhoneNumber,
         isError: true,
       );
       return false;
@@ -452,8 +457,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return true;
   }
 
-  void _handleGetOTP() async {
-    if (!_validateForm()) return;
+  void _handleGetOTP(AppLocalizations localizations) async {
+    if (!_validateForm(localizations)) return;
 
     setState(() {
       _isLoading = true;
@@ -472,13 +477,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         _showCustomTopSnackbar(
           context: context,
-          message: 'OTP sent to +91 ${_phoneController.text}',
+          message: localizations.otpSentTo.toString().replaceAll('{phoneNumber}', _phoneController.text),
           isError: false,
         );
 
         // Navigate to OTP screen after 1 second
         Future.delayed(const Duration(seconds: 1), () {
-
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -498,7 +502,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         _showCustomTopSnackbar(
           context: context,
-          message: 'Failed to send OTP. Please try again.',
+          message: localizations.failedToSendOTP,
           isError: true,
         );
       }
@@ -535,4 +539,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 }
-

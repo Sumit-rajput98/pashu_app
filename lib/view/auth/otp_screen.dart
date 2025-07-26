@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
 import 'package:pashu_app/view/home/bottom_nav_bar.dart';
-import 'package:provider/provider.dart'; // Add this
+import 'package:provider/provider.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -11,7 +12,6 @@ import '../../core/secandory_button.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 import '../../view_model/AuthVM/verify_otp_view_model.dart';
-// Import your home screen
 
 class OTPScreen extends StatefulWidget {
   final String phoneNumber;
@@ -75,6 +75,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!; // Add this line
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
 
@@ -123,14 +124,15 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                       builder: (context, viewModel, _) {
                         // Handle verification success
                         if (viewModel.isVerified) {
-                           SharedPrefHelper.saveUserDetails(
-                            username: viewModel.response?.result?.first.username ?? 'null',       // Replace with actual variable
-                            phoneNumber: viewModel.response?.result?.first.number ?? '', // Replace with actual variable
+                          SharedPrefHelper.saveUserDetails(
+                            username: viewModel.response?.result?.first.username ?? 'null',
+                            phoneNumber: viewModel.response?.result?.first.number ?? '',
+                            isLoggedIn: true,
                           );
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             _showCustomTopSnackbar(
                               context: context,
-                              message: "Successful Login",
+                              message: localizations.successfulLogin,
                               isError: false,
                             );
                             Navigator.pushReplacement(
@@ -152,8 +154,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                           });
                         }
 
-
-                        return _buildOTPCard(viewModel);
+                        return _buildOTPCard(viewModel, localizations);
                       },
                     ),
                   ],
@@ -174,7 +175,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildOTPCard(VerifyOtpViewModel viewModel) {
+  Widget _buildOTPCard(VerifyOtpViewModel viewModel, AppLocalizations localizations) {
     return Hero(
       tag: 'otp_card',
       child: Material(
@@ -259,7 +260,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Enter OTP',
+                              localizations.enterOTP,
                               style: AppTextStyles.heading.copyWith(
                                 fontSize: MediaQuery.of(context).size.width > 600 ? 22 : 20,
                                 fontWeight: FontWeight.w600,
@@ -272,22 +273,11 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                       const SizedBox(height: 12),
 
                       // Phone number display
-                      RichText(
+                      Text(
+                        localizations.otpSentMessage.toString().replaceAll('{phoneNumber}', widget.phoneNumber),
                         textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.primaryDark.withOpacity(0.7),
-                          ),
-                          children: [
-                            const TextSpan(text: 'We have sent a 6-digit OTP to '),
-                            TextSpan(
-                              text: '+91 ${widget.phoneNumber}',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.primaryDark,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.primaryDark.withOpacity(0.7),
                         ),
                       ),
 
@@ -300,15 +290,15 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
 
                       // Login Button
                       PrimaryButton(
-                        text: 'Login',
-                        onPressed: viewModel.isLoading ? null : () => _handleLogin(viewModel),
+                        text: localizations.login,
+                        onPressed: viewModel.isLoading ? null : () => _handleLogin(viewModel, localizations),
                         isLoading: viewModel.isLoading,
                       ),
 
                       const SizedBox(height: 24),
 
                       // Resend OTP section
-                      _buildResendSection(),
+                      _buildResendSection(localizations),
                     ],
                   ),
                 ),
@@ -388,12 +378,12 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildResendSection() {
+  Widget _buildResendSection(AppLocalizations localizations) {
     return Column(
       children: [
         if (_remainingTime > 0) ...[
           Text(
-            'Didn\'t receive OTP?',
+            localizations.didntReceiveOTP,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primaryDark.withOpacity(0.7),
             ),
@@ -406,7 +396,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'Resend in ${_remainingTime}s',
+              localizations.resendIn.toString().replaceAll('{seconds}', _remainingTime.toString()),
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
@@ -415,8 +405,8 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
           ),
         ] else ...[
           SecondaryButton(
-            text: _isResending ? 'Resending...' : 'Resend OTP',
-            onPressed: _isResending ? null : _handleResendOTP,
+            text: _isResending ? localizations.resending : localizations.resendOTP,
+            onPressed: _isResending ? null : () => _handleResendOTP(localizations),
           ),
         ],
       ],
@@ -427,12 +417,12 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
     return _otpControllers.map((controller) => controller.text).join('');
   }
 
-  bool _validateOTP() {
+  bool _validateOTP(AppLocalizations localizations) {
     final otp = _getOTPValue();
     if (otp.length != 6) {
       _showCustomTopSnackbar(
         context: context,
-        message: 'Please enter complete 6-digit OTP',
+        message: localizations.enterComplete6DigitOTP,
         isError: true,
       );
       return false;
@@ -440,15 +430,15 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
     return true;
   }
 
-  void _handleLogin(VerifyOtpViewModel viewModel) async {
-    if (!_validateOTP()) return;
+  void _handleLogin(VerifyOtpViewModel viewModel, AppLocalizations localizations) async {
+    if (!_validateOTP(localizations)) return;
 
     HapticFeedback.lightImpact();
     final otp = _getOTPValue();
     viewModel.verifyOtp(widget.phoneNumber, otp);
   }
 
-  void _handleResendOTP() async {
+  void _handleResendOTP(AppLocalizations localizations) async {
     setState(() {
       _isResending = true;
       _remainingTime = 60;
@@ -467,7 +457,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
 
         _showCustomTopSnackbar(
           context: context,
-          message: 'OTP resent to +91 ${widget.phoneNumber}',
+          message: localizations.otpResentTo.toString().replaceAll('{phoneNumber}', widget.phoneNumber),
           isError: false,
         );
 
@@ -481,7 +471,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
 
         _showCustomTopSnackbar(
           context: context,
-          message: 'Failed to resend OTP. Please try again.',
+          message: localizations.failedToResendOTP,
           isError: true,
         );
       }
@@ -524,12 +514,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Screen'),
+        title: Text(localizations.homeScreen),
       ),
-      body: const Center(
-        child: Text('Welcome to the Home Screen!'),
+      body: Center(
+        child: Text(localizations.welcomeToHomeScreen),
       ),
     );
   }

@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,28 +45,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       'count': '971',
       'category': 'Farmers',
       'trend': '+12%',
-      'image': 'assets/image3.jpg' // Add buyer images
+      'image': 'assets/image3.jpg', // Add buyer images
     },
     {
       'count': '543',
       'category': 'Dealers',
       'trend': '+8%',
-      'image': 'assets/image5.jpg'
+      'image': 'assets/image5.jpg',
     },
     {
       'count': '234',
       'category': 'Investors',
       'trend': '+15%',
-      'image': 'assets/image6.jpg'
+      'image': 'assets/image6.jpg',
     },
     {
       'count': '167',
       'category': 'Breeders',
       'trend': '+6%',
-      'image': 'assets/image7.webp'
+      'image': 'assets/image7.webp',
     },
   ];
-
 
   @override
   void initState() {
@@ -85,13 +82,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    _blinkAnimation = Tween<double>(
-      begin: 0.3,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _blinkController,
-      curve: Curves.easeInOut,
-    ));
+    _blinkAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(parent: _blinkController, curve: Curves.easeInOut),
+    );
 
     _blinkController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -157,9 +150,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
       body: SafeArea(
-        child: !_locationPermissionGranted
-            ? _buildLocationPermissionScreen()
-            : _buildMainContent(screenWidth),
+        child:
+            !_locationPermissionGranted
+                ? _buildLocationPermissionScreen()
+                : _buildMainContent(screenWidth),
       ),
     );
   }
@@ -235,10 +229,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 24,
-                  ),
+                  Icon(Icons.location_on_outlined, size: 24),
                   const SizedBox(width: 12),
                   Text(
                     'Allow Location Access',
@@ -290,6 +281,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildHeader(double screenWidth) {
+    final localizations = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(20),
       child: Row(
@@ -305,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Pashu Parivar',
+                  localizations.welcome,
                   style: AppTextStyles.heading.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -358,23 +350,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildFirst10KUsersSection(double screenWidth) {
+    final localizations = AppLocalizations.of(context)!;
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.lightSage.withOpacity(0.15),
-            AppColors.lightSage.withOpacity(0.08),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.3),
-          width: 1,
-        ),
+        color: AppColors.primaryDark.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
       ),
       child: Row(
         children: [
@@ -407,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'First 10,000 Users will get ₹25 referral bonus',
+                  '${localizations.firstUsers} ₹25 ${localizations.referralBonusOnly}',
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: AppColors.lightSage,
                     fontWeight: FontWeight.w600,
@@ -422,17 +405,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.lightSage.withOpacity(0.8),
                     ),
-                    children: [
-                      const TextSpan(text: 'Only '),
-                      TextSpan(
-                        text: '9276 slots',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: Colors.red,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const TextSpan(text: ' are left!'),
-                    ],
+                    children: [TextSpan(text: '${localizations.slotsLeft}')],
                   ),
                 ),
               ],
@@ -444,16 +417,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildInvestmentCard(double screenWidth) {
+    final localizations = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppColors.lightSage,
-            AppColors.lightSage.withOpacity(0.9),
-          ],
+          colors: [AppColors.lightSage, AppColors.lightSage.withOpacity(0.9)],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -469,11 +440,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Stack(
           children: [
             // Background Pattern
-            Positioned.fill(
-              child: CustomPaint(
-                painter: PatternPainter(),
-              ),
-            ),
+            Positioned.fill(child: CustomPaint(painter: PatternPainter())),
 
             Padding(
               padding: const EdgeInsets.all(24),
@@ -515,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         const SizedBox(height: 12),
 
                         Text(
-                          'Invest in\nAgri-Livestock',
+                          localizations.investInFarming,
                           style: AppTextStyles.heading.copyWith(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -527,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         const SizedBox(height: 8),
 
                         Text(
-                          'Grow your wealth with nature',
+                          localizations.growWealth,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.primaryDark.withOpacity(0.7),
                             fontSize: 14,
@@ -546,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(
-                            'Start Investing',
+                            localizations.startInvesting,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.lightSage,
                               fontWeight: FontWeight.w600,
@@ -685,10 +652,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Icon(
-                            title.contains('Races') ? Icons.sports_motorsports_rounded :
-                            title.contains('Insurance') ? Icons.security_rounded :
-                            title.contains('Loan') ? Icons.account_balance_rounded :
-                            Icons.pets_rounded,
+                            title.contains('Races')
+                                ? Icons.sports_motorsports_rounded
+                                : title.contains('Insurance')
+                                ? Icons.security_rounded
+                                : title.contains('Loan')
+                                ? Icons.account_balance_rounded
+                                : Icons.pets_rounded,
                             color: primaryColor,
                             size: 50,
                           ),
@@ -806,9 +776,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-        ),
+        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -936,8 +904,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // Animal type
-
-
                       const Spacer(),
 
                       // Buy button
@@ -971,15 +937,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Row(
                 children: List.generate(
                   _newAnimals.length,
-                      (index) => Container(
+                  (index) => Container(
                     width: 6,
                     height: 6,
                     margin: const EdgeInsets.symmetric(horizontal: 2),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _currentAnimalIndex == index
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.4),
+                      color:
+                          _currentAnimalIndex == index
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
                     ),
                   ),
                 ),
@@ -999,9 +966,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-        ),
+        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -1028,7 +993,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 return Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(item['image'] ?? 'assets/default_buyer.jpg'),
+                      image: AssetImage(
+                        item['image'] ?? 'assets/default_buyer.jpg',
+                      ),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(0.3),
@@ -1202,15 +1169,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Row(
                 children: List.generate(
                   _newBuyers.length,
-                      (index) => Container(
+                  (index) => Container(
                     width: 6,
                     height: 6,
                     margin: const EdgeInsets.symmetric(horizontal: 2),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _currentBuyerIndex == index
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.4),
+                      color:
+                          _currentBuyerIndex == index
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
                     ),
                   ),
                 ),
@@ -1221,16 +1189,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
-
 }
 
 // Pattern Painter for Investment Card Background
 class PatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.primaryDark.withOpacity(0.05)
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = AppColors.primaryDark.withOpacity(0.05)
+          ..strokeWidth = 1;
 
     // Draw subtle pattern lines
     for (int i = 0; i < size.width; i += 20) {

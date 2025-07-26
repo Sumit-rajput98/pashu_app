@@ -3,6 +3,7 @@ import 'package:pashu_app/core/app_colors.dart';
 import 'package:pashu_app/view/buy/buy_screen.dart';
 import 'package:pashu_app/view/buy/wishlist_screen.dart';
 import 'package:pashu_app/view/home/home_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomBottomNavScreen extends StatefulWidget {
   const CustomBottomNavScreen({super.key});
@@ -62,7 +63,14 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
       "assets/wishlist-icon.png",
       "assets/money_invest.png",
     ];
-    const labels = ["Buy", "Sell", "Home", "Wishlist", "Invest"];
+    final localizations = AppLocalizations.of(context)!;
+    final labels = [
+      localizations.buyAnimal,
+      localizations.sellAnimal,
+      'Home', // fallback, not in ARB
+      'Wishlist', // fallback, not in ARB
+      localizations.investInFarming,
+    ];
 
     bool isSelected = index == _selectedIndex;
 
@@ -87,7 +95,8 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                   style: TextStyle(
                     fontSize: 12,
                     color: isSelected ? AppColors.primaryDark : Colors.white,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ],
