@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
+import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/add_to_wishlist_view_model.dart';
@@ -923,7 +924,10 @@ class _BuyPageState extends State<BuyPage> {
       "breed": pashu.breed,
     };
 
-    await wishlistVM.addToWishList(body);
+    final username = await SharedPrefHelper.getUsername();
+    final phoneNumber = await SharedPrefHelper.getPhoneNumber();
+
+    await wishlistVM.addToWishList(body,username!,phoneNumber!);
 
     if (wishlistVM.errorMessage == null) {
       TopSnackBar.show(

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/app_colors.dart';
+import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/wishlist_view_model.dart';
@@ -658,9 +659,11 @@ class _WishlistPageState extends State<WishlistPage> {
                               height: 28,
                               child: ElevatedButton(
                                 onPressed: () async {
+                                  final username = await SharedPrefHelper.getUsername();
+                                  final phoneNumber = await SharedPrefHelper.getPhoneNumber();
                                   final success = await viewModel.removeFromWishlist(
-                                    name: pashu.username ?? '',
-                                    phoneNumber: pashu.userphone ?? '',
+                                    name: username!,
+                                    phoneNumber: phoneNumber!,
                                     id: pashu.id ?? 0,
                                   );
                                   if (success) {

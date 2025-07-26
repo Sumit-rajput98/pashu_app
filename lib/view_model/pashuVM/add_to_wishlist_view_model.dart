@@ -26,14 +26,14 @@ class AddToWishlistViewModel with ChangeNotifier {
   }
 
   // Main OTP request method
-  Future<void> addToWishList(dynamic body) async {
+  Future<void> addToWishList(dynamic body,String username, String phoneNumber) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
 
-      final result = await _service.addToWishlist(body);
+      final result = await _service.addToWishlist(body,username,phoneNumber);
 
       _response = result;
       if (result?.status == false) {

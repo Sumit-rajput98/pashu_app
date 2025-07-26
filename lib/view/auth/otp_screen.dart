@@ -8,6 +8,7 @@ import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/primary_button.dart';
 import '../../core/secandory_button.dart';
+import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 import '../../view_model/AuthVM/verify_otp_view_model.dart';
 // Import your home screen
@@ -122,6 +123,10 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                       builder: (context, viewModel, _) {
                         // Handle verification success
                         if (viewModel.isVerified) {
+                           SharedPrefHelper.saveUserDetails(
+                            username: viewModel.response?.result?.first.username ?? 'null',       // Replace with actual variable
+                            phoneNumber: viewModel.response?.result?.first.number ?? '', // Replace with actual variable
+                          );
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             _showCustomTopSnackbar(
                               context: context,
