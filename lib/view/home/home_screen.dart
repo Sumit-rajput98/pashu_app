@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/view/auth/profile_page.dart';
+import 'package:pashu_app/view/home/pashu_insurance_form.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../core/navigation_controller.dart';
+import 'animal_loan_page.dart';
+import 'live_race_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+
   // Location variables
   String _currentLocation = 'Fetching location...';
   Position? _currentPosition;
@@ -517,20 +524,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                         const SizedBox(height: 16),
 
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryDark,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text(
-                            localizations.startInvesting,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.lightSage,
-                              fontWeight: FontWeight.w600,
+                        GestureDetector(
+                          onTap: (){
+                            Provider.of<NavigationController>(context, listen: false).changeTab(4);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryDark,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              localizations.startInvesting,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.lightSage,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -571,7 +583,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           buttonLabel: 'View Live',
           primaryColor: AppColors.lightSage,
           onPressed: () {
-            // Navigate to live races
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const LiveRacePage()));
           },
         ),
 
@@ -596,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           badge: 'NEW',
           primaryColor: const Color(0xFF4CAF50),
           onPressed: () {
-            // Navigate to insurance
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const PashuInsuranceFormPage()));
           },
         ),
 
@@ -611,7 +623,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           badge: 'NEW',
           primaryColor: const Color(0xFF2196F3),
           onPressed: () {
-            // Navigate to loan
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const PashuLoanFormPage()));
           },
         ),
       ],
@@ -769,6 +781,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         style: AppTextStyles.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
+                          color: AppColors.lightSage
                         ),
                       ),
                     ),
@@ -921,20 +934,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       const Spacer(),
 
                       // Buy button
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryDark,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          'Buy Animal',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.lightSage,
-                            fontWeight: FontWeight.w600,
+                      GestureDetector(
+                        onTap: () {
+                          Provider.of<NavigationController>(context, listen: false).changeTab(0);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryDark,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            'Buy Animal',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.lightSage,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -1146,27 +1164,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       const Spacer(),
 
                       // Sell Animal button
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryDark,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
+                      GestureDetector(
+                        onTap: () {
+                          Provider.of<NavigationController>(context, listen: false).changeTab(1);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryDark,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            'Sell Animal',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.lightSage,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ],
-                        ),
-                        child: Text(
-                          'Sell Animal',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.lightSage,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),

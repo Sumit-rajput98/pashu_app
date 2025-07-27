@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pashu_app/view/auth/login_screen.dart';
 import 'package:pashu_app/view/home/splash_screen.dart';
 import 'package:pashu_app/view/profile/edit_profile_page.dart';
+import 'package:pashu_app/view/profile/sold_out_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -11,6 +12,7 @@ import '../../core/shared_pref_helper.dart';
 import '../../model/auth/profile_model.dart';
 import '../../view_model/AuthVM/get_profile_view_model.dart';
 import '../profile/contact_us_page.dart';
+import '../profile/listed_pashu_page.dart';
 import '../profile/referal_page.dart';
 import '../profile/subscription_page.dart';
 import '../profile/terms_and_policy_page.dart';
@@ -296,7 +298,7 @@ class _ProfilePageState extends State<ProfilePage> {
             'Your Listed Pashu',
             Icons.pets_rounded,
             onTap: () {
-              Navigator.pushNamed(context, '/listed-pashu');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ListedPashuPage()));
             },
           ),
           _buildDivider(),
@@ -304,7 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
             'Sold Out Pashu History',
             Icons.history_rounded,
             onTap: () {
-              Navigator.pushNamed(context, '/sold-pashu-history');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SoldOutHistoryPage()));
             },
           ),
           _buildDivider(),

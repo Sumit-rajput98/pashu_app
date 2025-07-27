@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/view/invest/projects_list_page.dart';
+import 'package:provider/provider.dart';
 import 'package:pashu_app/view/invest/widget/my_investment_button.dart';
 
-import 'live_projects_page.dart';
+import '../../view_model/pashuVM/get_invest_view_model.dart';
 
 class InvestPage extends StatefulWidget {
   const InvestPage({super.key});
@@ -17,6 +19,9 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    Future.microtask(() {
+      Provider.of<GetInvestViewModel>(context, listen: false).loadInvestments();
+    });
   }
 
   @override
@@ -26,7 +31,6 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
   }
 
   void _handleMyInvestmentTap() {
-    // Navigate or handle action
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("My Investment button tapped")),
     );
@@ -34,6 +38,8 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<GetInvestViewModel>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -49,31 +55,30 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
                 ],
               ),
             ),
-            Container(
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.start, // ✅ Align tabs from start (no extra margin)
-                labelColor: Color(0xFF1E4A59),
-                unselectedLabelColor: Color(0xFF1E4A59),
-                indicatorColor: const Color(0xFF35C75A),
-                indicatorWeight: 3,
-                padding: EdgeInsets.zero, // ✅ Remove extra padding on sides
-                tabs: const [
-                  Tab(text: 'Upcoming Projects',),
-                  Tab(text: 'Live Projects'),
-                  Tab(text: 'Completed Projects'),
-                ],
-              ),
+            TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              labelColor: const Color(0xFF1E4A59),
+              unselectedLabelColor: const Color(0xFF1E4A59),
+              indicatorColor: const Color(0xFF35C75A),
+              indicatorWeight: 3,
+              padding: EdgeInsets.zero,
+              tabs: const [
+                Tab(text: 'Upcoming Projects'),
+                Tab(text: 'Live Projects'),
+                Tab(text: 'Completed Projects'),
+              ],
             ),
-
             Expanded(
-              child: TabBarView(
+              child: viewModel.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : TabBarView(
                 controller: _tabController,
                 children: [
-                  const Center(child: Text('Upcoming Projects')),
-                  LiveProjectsPage(),
-                  Center(child: Text('Completed Projects')),
+                  ProjectsListPage(projects: viewModel.upcomingProjects),
+                  ProjectsListPage(projects: viewModel.liveProjects),
+                  ProjectsListPage(projects: viewModel.completedProjects),
                 ],
               ),
             ),

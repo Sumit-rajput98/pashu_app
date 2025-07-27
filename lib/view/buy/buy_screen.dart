@@ -13,6 +13,7 @@ import '../../core/top_snacbar.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/add_to_wishlist_view_model.dart';
 import '../../view_model/pashuVM/all_pashu_view_model.dart';
+import 'animal_detail_page.dart';
 
 class BuyPage extends StatefulWidget {
   const BuyPage({super.key});
@@ -694,10 +695,7 @@ class _BuyPageState extends State<BuyPage> {
                             height: 32,
                             child: ElevatedButton(
                               onPressed: () {
-                                _showAnimalDetailModal(
-                                  pashu,
-                                  calculatedDistance,
-                                );
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => AnimalDetailPage(pashu: pashu, distance: calculatedDistance)));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primaryDark,
@@ -950,153 +948,154 @@ class _BuyPageState extends State<BuyPage> {
 
 
   // Optimized Detail Modal
-  void _showAnimalDetailModal(AllPashuModel pashu, double distance) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.85,
-          decoration: BoxDecoration(
-            color: AppColors.lightSage,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          child: Column(
-            children: [
-              // Handle
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                width: 50,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryDark.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        pashu.animalname ?? 'Animal Details',
-                        style: AppTextStyles.heading.copyWith(
-                          color: AppColors.primaryDark,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.close_rounded,
-                        color: AppColors.primaryDark,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Content with proper overflow handling
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Images Section
-                      _buildDetailImages(pashu),
-
-                      const SizedBox(height: 24),
-
-                      // Animal Details with overflow protection
-                      _buildDetailSection('Animal Information', [
-                        _buildDetailRow(
-                          'Type',
-                          pashu.animatCategory ?? 'Unknown',
-                        ),
-                        _buildDetailRow('Breed', pashu.breed ?? 'Unknown'),
-                        _buildDetailRow(
-                          'Age',
-                          '${pashu.age ?? 'Unknown'} years',
-                        ),
-                        _buildDetailRow('Gender', pashu.gender ?? 'Unknown'),
-                      ]),
-
-                      const SizedBox(height: 20),
-
-                      // Price & Negotiation
-                      _buildDetailSection('Pricing', [
-                        _buildDetailRow('Price', '₹${pashu.price ?? '0'}'),
-                        _buildDetailRow(
-                          'Negotiable',
-                          (pashu.negotiable?.toLowerCase() == 'yes' ||
-                                  pashu.negotiable?.toLowerCase() == 'true')
-                              ? 'Yes'
-                              : 'No',
-                        ),
-                      ]),
-
-                      const SizedBox(height: 20),
-
-                      // Owner & Location
-                      _buildDetailSection('Owner & Location', [
-                        _buildDetailRow('Owner', pashu.username ?? 'Unknown'),
-                        _buildDetailRow(
-                          'Distance',
-                          distance < 1
-                              ? '${(distance * 1000).toInt()} meters'
-                              : '${distance.toStringAsFixed(1)} km',
-                        ),
-                      ]),
-
-                      const SizedBox(height: 30),
-
-                      // Buy Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            _handlePurchase(pashu);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryDark,
-                            foregroundColor: AppColors.lightSage,
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          child: Text(
-                            'Confirm Purchase',
-                            style: AppTextStyles.bodyLarge.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _showAnimalDetailModal(AllPashuModel pashu, double distance) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (BuildContext context) {
+  //       return Container(
+  //         height: MediaQuery.of(context).size.height * 0.85,
+  //         decoration: BoxDecoration(
+  //           color: AppColors.lightSage,
+  //           borderRadius: const BorderRadius.only(
+  //             topLeft: Radius.circular(24),
+  //             topRight: Radius.circular(24),
+  //           ),
+  //         ),
+  //         child: Column(
+  //           children: [
+  //             // Handle
+  //             Container(
+  //               margin: const EdgeInsets.symmetric(vertical: 12),
+  //               width: 50,
+  //               height: 4,
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.primaryDark.withOpacity(0.3),
+  //                 borderRadius: BorderRadius.circular(2),
+  //               ),
+  //             ),
+  //
+  //             // Header
+  //             Padding(
+  //               padding: const EdgeInsets.symmetric(horizontal: 20),
+  //               child: Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: Text(
+  //                       pashu.animalname ?? 'Animal Details',
+  //                       style: AppTextStyles.heading.copyWith(
+  //                         color: AppColors.primaryDark,
+  //                         fontSize: 20,
+  //                         fontWeight: FontWeight.w700,
+  //                       ),
+  //                       maxLines: 1,
+  //                       overflow: TextOverflow.ellipsis,
+  //                     ),
+  //                   ),
+  //                   IconButton(
+  //                     onPressed: () => Navigator.pop(context),
+  //                     icon: Icon(
+  //                       Icons.close_rounded,
+  //                       color: AppColors.primaryDark,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //
+  //             // Content with proper overflow handling
+  //             Expanded(
+  //               child: SingleChildScrollView(
+  //                 padding: const EdgeInsets.all(20),
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     // Images Section
+  //                     _buildDetailImages(pashu),
+  //
+  //                     const SizedBox(height: 24),
+  //
+  //                     // Animal Details with overflow protection
+  //                     _buildDetailSection('Animal Information', [
+  //                       _buildDetailRow(
+  //                         'Type',
+  //                         pashu.animatCategory ?? 'Unknown',
+  //                       ),
+  //                       _buildDetailRow('Breed', pashu.breed ?? 'Unknown'),
+  //                       _buildDetailRow(
+  //                         'Age',
+  //                         '${pashu.age ?? 'Unknown'} years',
+  //                       ),
+  //                       _buildDetailRow('Gender', pashu.gender ?? 'Unknown'),
+  //                     ]),
+  //
+  //                     const SizedBox(height: 20),
+  //
+  //                     // Price & Negotiation
+  //                     _buildDetailSection('Pricing', [
+  //                       _buildDetailRow('Price', '₹${pashu.price ?? '0'}'),
+  //                       _buildDetailRow(
+  //                         'Negotiable',
+  //                         (pashu.negotiable?.toLowerCase() == 'yes' ||
+  //                                 pashu.negotiable?.toLowerCase() == 'true')
+  //                             ? 'Yes'
+  //                             : 'No',
+  //                       ),
+  //                     ]),
+  //
+  //                     const SizedBox(height: 20),
+  //
+  //                     // Owner & Location
+  //                     _buildDetailSection('Owner & Location', [
+  //                       _buildDetailRow('Owner', pashu.username ?? 'Unknown'),
+  //                       _buildDetailRow(
+  //                         'Distance',
+  //                         distance < 1
+  //                             ? '${(distance * 1000).toInt()} meters'
+  //                             : '${distance.toStringAsFixed(1)} km',
+  //                       ),
+  //                     ]),
+  //
+  //                     const SizedBox(height: 30),
+  //
+  //                     // Buy Button
+  //                     SizedBox(
+  //                       width: double.infinity,
+  //                       height: 50,
+  //                       child: ElevatedButton(
+  //                         onPressed: () {
+  //                           Navigator.pop(context);
+  //                           _handlePurchase(pashu);
+  //                         },
+  //                         style: ElevatedButton.styleFrom(
+  //                           backgroundColor: AppColors.primaryDark,
+  //                           foregroundColor: AppColors.lightSage,
+  //                           elevation: 4,
+  //                           shape: RoundedRectangleBorder(
+  //                             borderRadius: BorderRadius.circular(16),
+  //                           ),
+  //                         ),
+  //                         child: Text(
+  //                           'Contact Seller()',
+  //                           style: AppTextStyles.bodyLarge.copyWith(
+  //                             fontWeight: FontWeight.w600,
+  //                             fontSize: 16,
+  //                             color: AppColors.lightSage,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildDetailImages(AllPashuModel pashu) {
     final images = <String>[
