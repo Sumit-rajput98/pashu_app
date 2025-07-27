@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/model/pashu/all_pashu.dart';
 import '../../AppManager/api/api_service/pashu_service/get_wishlist_service.dart';
 
@@ -15,11 +16,17 @@ class WishlistViewModel extends ChangeNotifier {
   String? get error => _error;
 
   Future<void> fetchWishlist() async {
+     String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+      String? username = await SharedPrefHelper.getUsername();
+      String code = '${username?.split(" ")[0].toLowerCase()}_${phoneNumber!.substring(5, 10)}';
+      print("Code is $code");
     _isLoading = true;
     _error = null;
     notifyListeners();
     try {
-      _wishlist = await _service.getWishlist();
+      final List<AllPashuModel> allWishList = await _service.getWishlist();
+      _wishlist = allWishList.where((item) => item.referralcode==code).toList();
+        print(_wishlist);
       if (_wishlist.isEmpty) {
         _error = "No wishlist animals found";
       }

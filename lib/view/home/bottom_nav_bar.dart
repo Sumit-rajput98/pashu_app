@@ -5,6 +5,7 @@ import 'package:pashu_app/view/buy/buy_screen.dart';
 import 'package:pashu_app/view/buy/wishlist_screen.dart';
 import 'package:pashu_app/view/home/home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pashu_app/view/invest/invest_page.dart';
 import 'package:pashu_app/view/sell/sell_page.dart';
 
 import '../../core/shared_pref_helper.dart';
@@ -17,15 +18,13 @@ class CustomBottomNavScreen extends StatefulWidget {
 }
 
 class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
-  int _selectedIndex = 2; // Default is Home
+  int _selectedIndex = 2;
+  String phone = '';
+  void phoneSet()async{
+    phone = await SharedPrefHelper.getPhoneNumber() ?? '';
+  }// Default is Home
 
-  final List<Widget> _pages = [
-    BuyPage(),
-    SellPashuScreen(),
-    HomeScreen(),
-    WishlistPage(),
-    Center(child: Text("Invest Page")),
-  ];
+
 
   Future<bool> _onWillPop() async {
     if (_selectedIndex != 2) {
@@ -34,9 +33,21 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
     }
     return true; // exit app
   }
+  @override
+  void initState() {
+    phoneSet();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      BuyPage(),
+      SellPashuScreen(phoneNumber: phone),
+      HomeScreen(),
+      WishlistPage(),
+      InvestPage()
+    ];
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -89,7 +100,7 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
             ),
           ),
         ),
-        body: _pages[_selectedIndex],
+        body: pages[_selectedIndex],
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
             color: Color(0xFFC2CE9A), // custom green shade

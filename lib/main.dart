@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pashu_app/demo.dart';
 import 'package:pashu_app/view/home/splash_screen.dart';
 import 'package:pashu_app/view_model/AuthVM/get_counter_view_model.dart';
 import 'package:pashu_app/view_model/AuthVM/get_profile_view_model.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GetProfileViewModel()),
         ChangeNotifierProvider(create: (_) => GetCounterViewModel()),
         ChangeNotifierProvider(create: (_) => UpdateProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => SellPashuProvider()),
       ],
       child: MaterialApp(
         title: 'Pashu App',

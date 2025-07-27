@@ -1,42 +1,22 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pashu_app/demo.dart';
 import 'custom_button.dart';
 
 class UploadPashuImages extends StatefulWidget {
-  const UploadPashuImages({super.key});
+  final File? imageOne;
+  final File? imageTwo;
+   VoidCallback  pickImageOne;
+  VoidCallback? pickImageTwo;
+   UploadPashuImages({super.key, this.imageOne, this.imageTwo, required this.pickImageOne, this.pickImageTwo});
 
   @override
   State<UploadPashuImages> createState() => _UploadPashuImagesState();
 }
 
 class _UploadPashuImagesState extends State<UploadPashuImages> {
-  File? imageOne;
-  File? imageTwo;
 
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> pickImageOne() async {
-    final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        imageOne = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> pickImageTwo() async {
-    final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        imageTwo = File(pickedFile.path);
-      });
-    }
-  }
 
   Widget buildLabel(String text) {
     return Padding(
@@ -73,16 +53,18 @@ class _UploadPashuImagesState extends State<UploadPashuImages> {
         buildLabel('Upload Your Pashu Image One'),
         CustomButton(
           text: 'SELECT PICTURE ONE',
-          onPressed: pickImageOne,
+          onPressed: widget.pickImageOne,
         ),
-        buildImagePreview(imageOne),
+        buildImagePreview(widget.imageOne),
 
         buildLabel('Upload Your Pashu Image Two'),
         CustomButton(
           text: 'SELECT PICTURE TWO',
-          onPressed: pickImageTwo,
+          onPressed: widget.pickImageTwo!,
         ),
-        buildImagePreview(imageTwo),
+        buildImagePreview(widget.imageTwo),
+
+
       ],
     );
   }
