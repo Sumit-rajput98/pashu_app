@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/view/buy/animal_detail_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../core/app_colors.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
@@ -20,22 +23,6 @@ class _WishlistPageState extends State<WishlistPage> {
   final ScrollController _categoryScrollController = ScrollController();
   final ScrollController _scrollController = ScrollController();
 
-  final List<Map<String, dynamic>> _categories = [
-    {'name': 'All', 'icon': 'assets/all.jpg'},
-    {'name': 'Buffalo', 'icon': 'assets/buffalo.jpg'},
-    {'name': 'Cow', 'icon': 'assets/cow.jpg'},
-    {'name': 'Sheep', 'icon': 'assets/sheep.jpg'},
-    {'name': 'Goat', 'icon': 'assets/goat.jpg'},
-    {'name': 'Camel', 'icon': 'assets/camel.jpg'},
-    {'name': 'Bird', 'icon': 'assets/bird.jpg'},
-    {'name': 'Cock', 'icon': 'assets/cock.jpg'},
-    {'name': 'Dog', 'icon': 'assets/dog.jpg'},
-    {'name': 'Horse', 'icon': 'assets/horse.jpg'},
-    {'name': 'Pigs', 'icon': 'assets/pig.jpg'},
-    {'name': 'Cats', 'icon': 'assets/cat.jpg'},
-    {'name': 'Fishes', 'icon': 'assets/fish.png'},
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -51,6 +38,25 @@ class _WishlistPageState extends State<WishlistPage> {
     super.dispose();
   }
 
+  // Get localized categories
+  List<Map<String, dynamic>> getLocalizedCategories(AppLocalizations l10n) {
+    return [
+      {'name': l10n.all, 'key': 'All', 'icon': 'assets/all.jpg'},
+      {'name': l10n.buffalo, 'key': 'Buffalo', 'icon': 'assets/buffalo.jpg'},
+      {'name': l10n.cow, 'key': 'Cow', 'icon': 'assets/cow.jpg'},
+      {'name': l10n.sheep, 'key': 'Sheep', 'icon': 'assets/sheep.jpg'},
+      {'name': l10n.goat, 'key': 'Goat', 'icon': 'assets/goat.jpg'},
+      {'name': l10n.camel, 'key': 'Camel', 'icon': 'assets/camel.jpg'},
+      {'name': l10n.bird, 'key': 'Bird', 'icon': 'assets/bird.jpg'},
+      {'name': l10n.cock, 'key': 'Cock', 'icon': 'assets/cock.jpg'},
+      {'name': l10n.dog, 'key': 'Dog', 'icon': 'assets/dog.jpg'},
+      {'name': l10n.horse, 'key': 'Horse', 'icon': 'assets/horse.jpg'},
+      {'name': l10n.pigs, 'key': 'Pigs', 'icon': 'assets/pig.jpg'},
+      {'name': l10n.cats, 'key': 'Cats', 'icon': 'assets/cat.jpg'},
+      {'name': l10n.fishes, 'key': 'Fishes', 'icon': 'assets/fish.png'},
+    ];
+  }
+
   List<AllPashuModel> _getFilteredWishlist(List<AllPashuModel> list) {
     if (_selectedCategory == 'All') return list;
     return list
@@ -64,33 +70,18 @@ class _WishlistPageState extends State<WishlistPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      // appBar: AppBar(
-      //   backgroundColor: AppColors.primaryDark,
-      //   elevation: 0,
-      //   title: Row(
-      //     children: [
-      //       const Icon(Icons.favorite, color: Colors.red, size: 28),
-      //       const SizedBox(width: 10),
-      //       Text(
-      //         'Wishlist',
-      //         style: AppTextStyles.heading.copyWith(
-      //           color: AppColors.lightSage,
-      //           fontSize: 20,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: Consumer<WishlistViewModel>(
         builder: (context, viewModel, child) {
           return Padding(
             padding: const EdgeInsets.all(5),
             child: Column(
               children: [
-                _buildCategoriesGrid(),
-                Expanded(child: _buildAnimalsList(viewModel)),
+                _buildCategoriesGrid(l10n),
+                Expanded(child: _buildAnimalsList(viewModel, l10n)),
               ],
             ),
           );
@@ -100,7 +91,9 @@ class _WishlistPageState extends State<WishlistPage> {
   }
 
   // Fixed Categories Grid with proper constraints
-  Widget _buildCategoriesGrid() {
+  Widget _buildCategoriesGrid(AppLocalizations l10n) {
+    final localizedCategories = getLocalizedCategories(l10n);
+
     return Container(
       height: 70, // Reduced height to prevent overflow
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -109,17 +102,17 @@ class _WishlistPageState extends State<WishlistPage> {
         controller: _categoryScrollController,
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: _categories.length,
+        itemCount: localizedCategories.length,
         itemBuilder: (context, index) {
-          final category = _categories[index];
-          final isSelected = _selectedCategory == category['name'];
+          final category = localizedCategories[index];
+          final isSelected = _selectedCategory == category['key'];
           return Container(
             width: 60, // Reduced width to prevent overflow
             margin: const EdgeInsets.symmetric(horizontal: 3), // Reduced margin
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  _selectedCategory = category['name'];
+                  _selectedCategory = category['key'];
                 });
               },
               child: Container(
@@ -197,16 +190,16 @@ class _WishlistPageState extends State<WishlistPage> {
     );
   }
 
-  Widget _buildAnimalsList(WishlistViewModel viewModel) {
+  Widget _buildAnimalsList(WishlistViewModel viewModel, AppLocalizations l10n) {
     if (viewModel.isLoading) {
       return _buildShimmerList();
     }
     if (viewModel.error != null) {
-      return _buildErrorWidget(viewModel);
+      return _buildErrorWidget(viewModel, l10n);
     }
     final filtered = _getFilteredWishlist(viewModel.wishlist);
     if (filtered.isEmpty) {
-      return _buildEmptyWidget();
+      return _buildEmptyWidget(l10n);
     }
     return ListView.builder(
       key: const PageStorageKey('wishlist_animals_list'),
@@ -216,7 +209,7 @@ class _WishlistPageState extends State<WishlistPage> {
       itemCount: filtered.length,
       cacheExtent: 1000, // Added for better performance
       itemBuilder: (context, index) {
-        return _buildAnimalListCard(filtered[index], viewModel);
+        return _buildAnimalListCard(filtered[index], viewModel, l10n);
       },
     );
   }
@@ -278,6 +271,7 @@ class _WishlistPageState extends State<WishlistPage> {
   Widget _buildAnimalListCard(
       AllPashuModel pashu,
       WishlistViewModel viewModel,
+      AppLocalizations l10n,
       ) {
     final images = <String>[
       if (pashu.pictureOne != null && pashu.pictureOne!.isNotEmpty)
@@ -431,7 +425,7 @@ class _WishlistPageState extends State<WishlistPage> {
                         Expanded(
                           flex: 3,
                           child: Text(
-                            pashu.animalname ?? 'Unknown Animal',
+                            pashu.animalname ?? l10n.unknownAnimal,
                             style: AppTextStyles.bodyLarge.copyWith(
                               color: AppColors.lightSage,
                               fontWeight: FontWeight.w600,
@@ -455,7 +449,7 @@ class _WishlistPageState extends State<WishlistPage> {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Text(
-                              pashu.animatCategory ?? 'Other',
+                              pashu.animatCategory ?? l10n.other,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.lightSage,
                                 fontSize: 8,
@@ -484,7 +478,7 @@ class _WishlistPageState extends State<WishlistPage> {
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(
-                              'Breed: ${pashu.breed}',
+                              '${l10n.breed}: ${pashu.breed}',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.lightSage.withOpacity(0.8),
                                 fontSize: 10,
@@ -556,7 +550,7 @@ class _WishlistPageState extends State<WishlistPage> {
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(
-                              'Owner: ${pashu.username}',
+                              '${l10n.owner}: ${pashu.username}',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.lightSage.withOpacity(0.7),
                                 fontSize: 10,
@@ -581,7 +575,7 @@ class _WishlistPageState extends State<WishlistPage> {
                         const SizedBox(width: 3),
                         Expanded(
                           child: Text(
-                            pashu.address ?? 'Location not available',
+                            pashu.address ?? l10n.locationNotAvailable,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.lightSage.withOpacity(0.7),
                               fontSize: 10,
@@ -613,7 +607,7 @@ class _WishlistPageState extends State<WishlistPage> {
                             if (pashu.negotiable?.toLowerCase() == 'yes' ||
                                 pashu.negotiable?.toLowerCase() == 'true')
                               Text(
-                                'Call me',
+                                l10n.callMe,
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: AppColors.lightSage.withOpacity(0.6),
                                   fontSize: 8,
@@ -633,7 +627,10 @@ class _WishlistPageState extends State<WishlistPage> {
                               height: 28,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _showAnimalDetailModal(pashu);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AnimalDetailPage(pashu: pashu, distance: 0)));
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primaryDark,
@@ -645,7 +642,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                   padding: const EdgeInsets.symmetric(horizontal: 8),
                                 ),
                                 child: Text(
-                                  'Buy Now',
+                                  l10n.buyNow,
                                   style: AppTextStyles.bodyMedium.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 10,
@@ -672,14 +669,14 @@ class _WishlistPageState extends State<WishlistPage> {
                                   if (success) {
                                     TopSnackBar.show(
                                       context,
-                                      message: 'Removed from wishlist',
+                                      message: l10n.removedFromWishlist,
                                       backgroundColor: Colors.red,
                                       icon: Icons.delete,
                                     );
                                   } else {
                                     TopSnackBar.show(
                                       context,
-                                      message: 'Failed to remove',
+                                      message: l10n.failedToRemove,
                                       backgroundColor: Colors.red,
                                       icon: Icons.error,
                                     );
@@ -695,7 +692,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                   padding: const EdgeInsets.symmetric(horizontal: 8),
                                 ),
                                 child: Text(
-                                  'Remove',
+                                  l10n.remove,
                                   style: AppTextStyles.bodyMedium.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 10,
@@ -717,95 +714,95 @@ class _WishlistPageState extends State<WishlistPage> {
     );
   }
 
-  void _showAnimalDetailModal(AllPashuModel pashu) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.85,
-          decoration: BoxDecoration(
-            color: AppColors.lightSage,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          child: Column(
-            children: [
-              // Handle
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                width: 50,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryDark.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+  // void _showAnimalDetailModal(AllPashuModel pashu, AppLocalizations l10n) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (BuildContext context) {
+  //       return Container(
+  //         height: MediaQuery.of(context).size.height * 0.85,
+  //         decoration: BoxDecoration(
+  //           color: AppColors.lightSage,
+  //           borderRadius: const BorderRadius.only(
+  //             topLeft: Radius.circular(24),
+  //             topRight: Radius.circular(24),
+  //           ),
+  //         ),
+  //         child: Column(
+  //           children: [
+  //             // Handle
+  //             Container(
+  //               margin: const EdgeInsets.symmetric(vertical: 12),
+  //               width: 50,
+  //               height: 4,
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.primaryDark.withOpacity(0.3),
+  //                 borderRadius: BorderRadius.circular(2),
+  //               ),
+  //             ),
+  //
+  //             // Header
+  //             Padding(
+  //               padding: const EdgeInsets.symmetric(horizontal: 20),
+  //               child: Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: Text(
+  //                       pashu.animalname ?? l10n.animalDetails,
+  //                       style: AppTextStyles.heading.copyWith(
+  //                         color: AppColors.primaryDark,
+  //                         fontSize: 20,
+  //                         fontWeight: FontWeight.w700,
+  //                       ),
+  //                       maxLines: 1,
+  //                       overflow: TextOverflow.ellipsis,
+  //                     ),
+  //                   ),
+  //                   IconButton(
+  //                     onPressed: () => Navigator.pop(context),
+  //                     icon: Icon(
+  //                       Icons.close_rounded,
+  //                       color: AppColors.primaryDark,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //
+  //             // Content placeholder - you can expand this with full details
+  //             Expanded(
+  //               child: Center(
+  //                 child: Column(
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: [
+  //                     Text(
+  //                       l10n.animalDetailsComingSoon,
+  //                       style: AppTextStyles.heading.copyWith(
+  //                         color: AppColors.primaryDark,
+  //                         fontSize: 18,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 10),
+  //                     Text(
+  //                       l10n.fullAnimalDetailsModal,
+  //                       style: AppTextStyles.bodyMedium.copyWith(
+  //                         color: AppColors.primaryDark.withOpacity(0.7),
+  //                       ),
+  //                       textAlign: TextAlign.center,
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        pashu.animalname ?? 'Animal Details',
-                        style: AppTextStyles.heading.copyWith(
-                          color: AppColors.primaryDark,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.close_rounded,
-                        color: AppColors.primaryDark,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Content placeholder - you can expand this with full details
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Animal Details Coming Soon',
-                        style: AppTextStyles.heading.copyWith(
-                          color: AppColors.primaryDark,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Full animal details modal will be implemented here',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.primaryDark.withOpacity(0.7),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildErrorWidget(WishlistViewModel viewModel) {
+  Widget _buildErrorWidget(WishlistViewModel viewModel, AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -817,7 +814,7 @@ class _WishlistPageState extends State<WishlistPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            viewModel.error ?? 'Something went wrong',
+            viewModel.error ?? l10n.somethingWentWrong,
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.lightSage.withOpacity(0.7),
             ),
@@ -832,14 +829,14 @@ class _WishlistPageState extends State<WishlistPage> {
               backgroundColor: AppColors.lightSage,
               foregroundColor: AppColors.primaryDark,
             ),
-            child: const Text('Retry'),
+            child: Text(l10n.retry),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildEmptyWidget() {
+  Widget _buildEmptyWidget(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -851,14 +848,14 @@ class _WishlistPageState extends State<WishlistPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No wishlist animals found',
+            l10n.noWishlistAnimalsFound,
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.lightSage.withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Try adding some animals to your wishlist!',
+            l10n.tryAddingAnimalsToWishlist,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.5),
             ),

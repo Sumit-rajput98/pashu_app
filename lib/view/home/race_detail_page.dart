@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -59,21 +60,22 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
           slivers: [
-            _buildSliverAppBar(),
+            _buildSliverAppBar(l10n),
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  _buildRaceInfo(),
-                  _buildLiveStatus(),
-                  _buildRaceDescription(),
-                  _buildVideoSection(),
-
+                  _buildRaceInfo(l10n),
+                  _buildLiveStatus(l10n),
+                  _buildRaceDescription(l10n),
+                  _buildVideoSection(l10n),
                   const SizedBox(height: 30),
                 ],
               ),
@@ -84,7 +86,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
     );
   }
 
-  Widget _buildSliverAppBar() {
+  Widget _buildSliverAppBar(AppLocalizations l10n) {
     return SliverAppBar(
       expandedHeight: 300,
       floating: false,
@@ -225,7 +227,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'LIVE RACE',
+                      l10n.liveRace,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white,
                         fontSize: 12,
@@ -247,7 +249,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.category.categoryName ?? 'Race Category',
+                    widget.category.categoryName ?? l10n.raceCategory,
                     style: AppTextStyles.heading.copyWith(
                       color: Colors.white,
                       fontSize: 28,
@@ -258,7 +260,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Traditional Racing Experience',
+                    l10n.traditionalRacingExperience,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
@@ -275,7 +277,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
     );
   }
 
-  Widget _buildRaceInfo() {
+  Widget _buildRaceInfo(AppLocalizations l10n) {
     return SlideTransition(
       position: _slideAnimation,
       child: Container(
@@ -315,7 +317,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    'Race Information',
+                    l10n.raceInformation,
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.lightSage,
                       fontSize: 18,
@@ -330,18 +332,18 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
 
             const SizedBox(height: 20),
 
-            _buildInfoRow('Category', widget.category.categoryName ?? 'N/A'),
-            _buildInfoRow('Status', 'Live Now', valueColor: Colors.green),
-            _buildInfoRow('Participants', 'Multiple Entries'),
-            _buildInfoRow('Duration', 'Ongoing'),
-            _buildInfoRow('Prize', 'Trophies & Recognition'),
+            _buildInfoRow(l10n.category, widget.category.categoryName ?? l10n.na, l10n),
+            _buildInfoRow(l10n.status, l10n.liveNow, l10n, valueColor: Colors.green),
+            _buildInfoRow(l10n.participants, l10n.multipleEntries, l10n),
+            _buildInfoRow(l10n.duration, l10n.ongoing, l10n),
+            _buildInfoRow(l10n.prize, l10n.trophiesAndRecognition, l10n),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
+  Widget _buildInfoRow(String label, String value, AppLocalizations l10n, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -375,7 +377,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
     );
   }
 
-  Widget _buildLiveStatus() {
+  Widget _buildLiveStatus(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(20),
@@ -415,7 +417,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Race is Live Now!',
+                  l10n.raceIsLiveNow,
                   style: AppTextStyles.heading.copyWith(
                     color: Colors.green,
                     fontSize: 18,
@@ -426,7 +428,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Watch the exciting competition unfold',
+                  l10n.watchExcitingCompetition,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.lightSage.withOpacity(0.8),
                     fontSize: 14,
@@ -442,7 +444,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
     );
   }
 
-  Widget _buildRaceDescription() {
+  Widget _buildRaceDescription(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
@@ -480,7 +482,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'About This Race',
+                  l10n.aboutThisRace,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 16,
@@ -496,8 +498,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
           const SizedBox(height: 16),
 
           Text(
-            widget.category.categoryDetail ??
-                'Experience the thrill of traditional animal racing in this exciting live event. Watch as skilled participants compete in this time-honored tradition that showcases the bond between humans and animals. This race category represents the rich cultural heritage of animal sports and provides an authentic glimpse into traditional racing practices.',
+            widget.category.categoryDetail ?? l10n.defaultRaceDescription,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.9),
               fontSize: 14,
@@ -511,7 +512,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
     );
   }
 
-  Widget _buildVideoSection() {
+  Widget _buildVideoSection(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(20),
@@ -549,7 +550,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Live Stream',
+                  l10n.liveStream,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -592,7 +593,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Live Stream Coming Soon',
+                  l10n.liveStreamComingSoon,
                   style: AppTextStyles.heading.copyWith(
                     color: Colors.white,
                     fontSize: 18,
@@ -601,7 +602,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'YouTube links will be available when streaming begins',
+                  l10n.youtubeLinksAvailable,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: Colors.white.withOpacity(0.8),
                     fontSize: 14,
@@ -637,7 +638,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Get notified when live streaming starts for this race category',
+                    l10n.getNotifiedWhenStreaming,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.blue,
                       fontSize: 12,
@@ -654,11 +655,9 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
     );
   }
 
-
-
-  Widget _buildUpcomingRaceItem(int index) {
-    final List<String> raceTimes = ['Tomorrow 10:00 AM', 'Next Week', 'Coming Soon'];
-    final List<String> raceNames = ['Regional Championship', 'District Finals', 'State Competition'];
+  Widget _buildUpcomingRaceItem(int index, AppLocalizations l10n) {
+    final List<String> raceTimes = [l10n.tomorrowTenAM, l10n.nextWeek, l10n.comingSoon];
+    final List<String> raceNames = [l10n.regionalChampionship, l10n.districtFinals, l10n.stateCompetition];
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

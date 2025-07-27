@@ -8,7 +8,7 @@ import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../model/pashu/category_model.dart';
 import '../../view_model/pashuVM/get_category_view_model.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LiveRacePage extends StatefulWidget {
   const LiveRacePage({super.key});
@@ -17,7 +17,8 @@ class LiveRacePage extends StatefulWidget {
   State<LiveRacePage> createState() => _LiveRacePageState();
 }
 
-class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMixin {
+class _LiveRacePageState extends State<LiveRacePage>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -31,26 +32,24 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
+    );
 
     _animationController.forward();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GetCategoryViewModel>(context, listen: false).fetchAllCategories();
+      Provider.of<GetCategoryViewModel>(
+        context,
+        listen: false,
+      ).fetchAllCategories();
     });
   }
 
@@ -106,7 +105,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Live Race',
+              AppLocalizations.of(context)!.liveRaceTitle,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -133,7 +132,10 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             ),
           ),
           onPressed: () {
-            Provider.of<GetCategoryViewModel>(context, listen: false).fetchAllCategories();
+            Provider.of<GetCategoryViewModel>(
+              context,
+              listen: false,
+            ).fetchAllCategories();
           },
         ),
         const SizedBox(width: 16),
@@ -213,7 +215,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'LIVE RACE',
+                    AppLocalizations.of(context)!.liveRaceHeader,
                     style: AppTextStyles.heading.copyWith(
                       color: Colors.white,
                       fontSize: 20,
@@ -231,7 +233,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             const SizedBox(height: 12),
 
             Text(
-              'Choose Your Race Category',
+              AppLocalizations.of(context)!.chooseRaceCategory,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: Colors.white.withOpacity(0.9),
                 fontSize: 16,
@@ -245,7 +247,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             const SizedBox(height: 8),
 
             Text(
-              'Experience the thrill of traditional animal racing',
+              AppLocalizations.of(context)!.raceExperienceSubheader,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: Colors.white.withOpacity(0.8),
                 fontSize: 14,
@@ -352,52 +354,62 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: category.categoryImage != null && category.categoryImage!.isNotEmpty
-                              ? CachedNetworkImage(
-                            imageUrl: 'https://pashuparivar.com/uploads/${category.categoryImage}',
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.white.withOpacity(0.3),
-                              highlightColor: Colors.white.withOpacity(0.5),
-                              child: Container(
-                                color: Colors.white.withOpacity(0.3),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.white.withOpacity(0.3),
-                                    Colors.white.withOpacity(0.1),
-                                  ],
-                                ),
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.sports_rounded,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
-                              ),
-                            ),
-                          )
-                              : Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withOpacity(0.3),
-                                  Colors.white.withOpacity(0.1),
-                                ],
-                              ),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.sports_rounded,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                            ),
-                          ),
+                          child:
+                              category.categoryImage != null &&
+                                      category.categoryImage!.isNotEmpty
+                                  ? CachedNetworkImage(
+                                    imageUrl:
+                                        'https://pashuparivar.com/uploads/${category.categoryImage}',
+                                    fit: BoxFit.cover,
+                                    placeholder:
+                                        (context, url) => Shimmer.fromColors(
+                                          baseColor: Colors.white.withOpacity(
+                                            0.3,
+                                          ),
+                                          highlightColor: Colors.white
+                                              .withOpacity(0.5),
+                                          child: Container(
+                                            color: Colors.white.withOpacity(
+                                              0.3,
+                                            ),
+                                          ),
+                                        ),
+                                    errorWidget:
+                                        (context, url, error) => Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withOpacity(0.3),
+                                                Colors.white.withOpacity(0.1),
+                                              ],
+                                            ),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.sports_rounded,
+                                              color: Colors.white,
+                                              size: 40,
+                                            ),
+                                          ),
+                                        ),
+                                  )
+                                  : Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withOpacity(0.3),
+                                          Colors.white.withOpacity(0.1),
+                                        ],
+                                      ),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.sports_rounded,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ),
                         ),
                       ),
 
@@ -411,7 +423,10 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                           children: [
                             // Category Name
                             Text(
-                              category.categoryName ?? 'Race Category',
+                              category.categoryName ??
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.raceCategoryFallback,
                               style: AppTextStyles.heading.copyWith(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -425,7 +440,10 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
 
                             // Category Detail
                             Text(
-                              category.categoryDetail ?? 'Join the exciting race and experience the thrill of traditional animal racing',
+                              category.categoryDetail ??
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.raceCategoryDetailFallback,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: Colors.white.withOpacity(0.9),
                                 fontSize: 14,
@@ -441,7 +459,10 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                             Row(
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.green,
                                     borderRadius: BorderRadius.circular(12),
@@ -459,19 +480,20 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        'LIVE NOW',
-                                        style: AppTextStyles.bodyMedium.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                        ),
+                                        AppLocalizations.of(context)!.liveNow,
+                                        style: AppTextStyles.bodyMedium
+                                            .copyWith(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Tap to Join',
+                                  AppLocalizations.of(context)!.tapToJoin,
                                   style: AppTextStyles.bodyMedium.copyWith(
                                     color: Colors.white.withOpacity(0.8),
                                     fontSize: 12,
@@ -492,7 +514,10 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                   top: 12,
                   right: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(8),
@@ -517,7 +542,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'LIVE',
+                          AppLocalizations.of(context)!.liveBadge,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white,
                             fontSize: 10,
@@ -596,7 +621,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             ),
             const SizedBox(height: 20),
             Text(
-              'Failed to Load Categories',
+              AppLocalizations.of(context)!.failedToLoadCategories,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.lightSage,
                 fontSize: 20,
@@ -604,7 +629,8 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             ),
             const SizedBox(height: 12),
             Text(
-              viewModel.error ?? 'Something went wrong',
+              viewModel.error ??
+                  AppLocalizations.of(context)!.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.lightSage.withOpacity(0.7),
                 fontSize: 14,
@@ -619,11 +645,14 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
                 viewModel.fetchAllCategories();
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(AppLocalizations.of(context)!.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.lightSage,
                 foregroundColor: AppColors.primaryDark,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -649,7 +678,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             ),
             const SizedBox(height: 20),
             Text(
-              'No Live Races Available',
+              AppLocalizations.of(context)!.noLiveRacesAvailable,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.lightSage,
                 fontSize: 20,
@@ -657,7 +686,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
             ),
             const SizedBox(height: 12),
             Text(
-              'Check back later for exciting live racing events',
+              AppLocalizations.of(context)!.checkBackLater,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.lightSage.withOpacity(0.7),
                 fontSize: 14,
@@ -676,9 +705,7 @@ class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMix
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RaceDetailPage(
-          category: category,
-        ),
+        builder: (context) => RaceDetailPage(category: category),
       ),
     );
   }

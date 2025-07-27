@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -27,7 +28,6 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
   // Contact Information
   final String phoneNumber = '9618800164';
   final String email = 'support@pashuparivar.com';
-  final String address = 'Pashu Parivar Headquarters\nBhopal, Madhya Pradesh\nIndia';
 
   @override
   void initState() {
@@ -67,9 +67,11 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(l10n),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(
@@ -77,13 +79,13 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                _buildHeader(),
+                _buildHeader(l10n),
                 const SizedBox(height: 30),
-                _buildContactInfoSection(),
+                _buildContactInfoSection(l10n),
                 const SizedBox(height: 25),
-                _buildContactForm(),
+                _buildContactForm(l10n),
                 const SizedBox(height: 25),
-                _buildSocialMediaSection(),
+                _buildSocialMediaSection(l10n),
                 const SizedBox(height: 30),
               ],
             ),
@@ -93,7 +95,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
       backgroundColor: AppColors.primaryDark,
       elevation: 0,
@@ -117,7 +119,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
           const AppLogo(size: 40),
           const SizedBox(width: 12),
           Text(
-            'Contact Us',
+            l10n.contactUs,
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -129,7 +131,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return SlideTransition(
       position: _slideAnimation,
       child: Container(
@@ -166,7 +168,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
             // Title
             Text(
-              'Get In Touch',
+              l10n.getInTouch,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
@@ -179,7 +181,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
             // Subtitle
             Text(
-              'We\'re here to help! Reach out to us anytime and we\'ll get back to you as soon as possible.',
+              l10n.contactUsDescription,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.lightSage.withOpacity(0.8),
                 fontSize: 16,
@@ -193,7 +195,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildContactInfoSection() {
+  Widget _buildContactInfoSection(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -231,7 +233,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Contact Information',
+                  l10n.contactInformation,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -246,31 +248,34 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
           // Contact Items
           _buildContactItem(
-            'Phone Number',
+            l10n.phoneNumber,
             phoneNumber,
             Icons.phone_rounded,
             Colors.green,
                 () => _makePhoneCall(phoneNumber),
+            l10n,
           ),
 
           const SizedBox(height: 16),
 
           _buildContactItem(
-            'Email Address',
+            l10n.emailAddress,
             email,
             Icons.email_rounded,
             Colors.blue,
                 () => _sendEmail(email),
+            l10n,
           ),
 
           const SizedBox(height: 16),
 
           _buildContactItem(
-            'Office Address',
-            address,
+            l10n.officeAddress,
+            l10n.pashuParivarHeadquarters,
             Icons.location_on_rounded,
             Colors.red,
-                () => _copyToClipboard(address.replaceAll('\n', ', ')),
+                () => _copyToClipboard(l10n.pashuParivarHeadquarters.replaceAll('\n', ', '), l10n),
+            l10n,
             isLast: true,
           ),
         ],
@@ -283,7 +288,8 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
       String value,
       IconData icon,
       Color color,
-      VoidCallback? onTap, {
+      VoidCallback? onTap,
+      AppLocalizations l10n, {
         bool isLast = false,
       }) {
     return Column(
@@ -361,7 +367,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildContactForm() {
+  Widget _buildContactForm(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -401,7 +407,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    'Send us a Message',
+                    l10n.sendUsAMessage,
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.lightSage,
                       fontSize: 18,
@@ -417,15 +423,16 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
             // Name Field
             _buildFormField(
               controller: _nameController,
-              label: 'Full Name',
-              hint: 'Enter your full name',
+              label: l10n.fullName,
+              hint: l10n.enterYourFullName,
               icon: Icons.person_rounded,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Name is required';
+                  return l10n.nameIsRequired;
                 }
                 if (value.trim().length < 2) {
-                  return 'Name must be at least 2 characters';
+                  return l10n.nameMustBeAtLeast2Characters;
                 }
                 return null;
               },
@@ -436,16 +443,17 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
             // Email Field
             _buildFormField(
               controller: _emailController,
-              label: 'Email Address',
-              hint: 'Enter your email address',
+              label: l10n.emailAddress,
+              hint: l10n.enterYourEmailAddress,
               icon: Icons.email_rounded,
               keyboardType: TextInputType.emailAddress,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Email is required';
+                  return l10n.emailIsRequired;
                 }
                 if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                  return 'Please enter a valid email address';
+                  return l10n.pleaseEnterValidEmail;
                 }
                 return null;
               },
@@ -456,16 +464,17 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
             // Message Field
             _buildFormField(
               controller: _messageController,
-              label: 'Message',
-              hint: 'Tell us how we can help you...',
+              label: l10n.message,
+              hint: l10n.tellUsHowWeCanHelp,
               icon: Icons.chat_rounded,
               maxLines: 5,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Message is required';
+                  return l10n.messageIsRequired;
                 }
                 if (value.trim().length < 10) {
-                  return 'Message must be at least 10 characters';
+                  return l10n.messageMustBeAtLeast10Characters;
                 }
                 return null;
               },
@@ -478,7 +487,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               width: double.infinity,
               height: 50,
               child: ElevatedButton.icon(
-                onPressed: _isSubmitting ? null : _submitForm,
+                onPressed: _isSubmitting ? null : () => _submitForm(l10n),
                 icon: _isSubmitting
                     ? SizedBox(
                   width: 20,
@@ -490,7 +499,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 )
                     : const Icon(Icons.send_rounded),
                 label: Text(
-                  _isSubmitting ? 'Sending Message...' : 'Send Message',
+                  _isSubmitting ? l10n.sendingMessage : l10n.sendMessage,
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
@@ -525,7 +534,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'We typically respond within 24 hours during business days.',
+                      l10n.responseTimeNote,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.blue,
                         fontSize: 12,
@@ -546,6 +555,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     required String label,
     required String hint,
     required IconData icon,
+    required AppLocalizations l10n,
     TextInputType? keyboardType,
     int maxLines = 1,
     String? Function(String?)? validator,
@@ -601,7 +611,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildSocialMediaSection() {
+  Widget _buildSocialMediaSection(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -639,7 +649,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Follow Us',
+                  l10n.followUs,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -653,7 +663,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
           const SizedBox(height: 20),
 
           Text(
-            'Stay updated with our latest news and updates',
+            l10n.stayUpdatedWithNews,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.8),
               fontSize: 14,
@@ -663,32 +673,32 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
           const SizedBox(height: 20),
 
-          // Social Media Icons (Placeholder)
+          // Social Media Icons
           Row(
             children: [
               _buildSocialIcon(
-                'Facebook',
+                l10n.facebook,
                 Icons.facebook_rounded,
                 const Color(0xFF4267B2),
                     () => _launchURL('https://facebook.com/pashuparivar'),
               ),
               const SizedBox(width: 16),
               _buildSocialIcon(
-                'Instagram',
+                l10n.instagram,
                 Icons.camera_alt_rounded,
                 const Color(0xFFE4405F),
                     () => _launchURL('https://instagram.com/pashuparivar'),
               ),
               const SizedBox(width: 16),
               _buildSocialIcon(
-                'Twitter',
+                l10n.twitter,
                 Icons.alternate_email_rounded,
                 const Color(0xFF1DA1F2),
                     () => _launchURL('https://twitter.com/pashuparivar'),
               ),
               const SizedBox(width: 16),
               _buildSocialIcon(
-                'YouTube',
+                l10n.youtube,
                 Icons.play_arrow_rounded,
                 const Color(0xFFFF0000),
                     () => _launchURL('https://youtube.com/@pashuparivar'),
@@ -728,7 +738,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     if (await canLaunchUrl(phoneUri)) {
       await launchUrl(phoneUri);
     } else {
-      _copyToClipboard(phoneNumber);
+      _copyToClipboard(phoneNumber, AppLocalizations.of(context)!);
     }
   }
 
@@ -741,7 +751,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     if (await canLaunchUrl(emailUri)) {
       await launchUrl(emailUri);
     } else {
-      _copyToClipboard(email);
+      _copyToClipboard(email, AppLocalizations.of(context)!);
     }
   }
 
@@ -752,7 +762,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     }
   }
 
-  void _copyToClipboard(String text) {
+  void _copyToClipboard(String text, AppLocalizations l10n) {
     Clipboard.setData(ClipboardData(text: text));
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -765,7 +775,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               size: 20,
             ),
             const SizedBox(width: 12),
-            const Text('Copied to clipboard!'),
+            Text(l10n.copiedToClipboard),
           ],
         ),
         backgroundColor: Colors.green,
@@ -778,7 +788,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     );
   }
 
-  void _submitForm() async {
+  void _submitForm(AppLocalizations l10n) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -795,10 +805,10 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     });
 
     // Show success dialog
-    _showSuccessDialog();
+    _showSuccessDialog(l10n);
   }
 
-  void _showSuccessDialog() {
+  void _showSuccessDialog(AppLocalizations l10n) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -827,7 +837,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               const SizedBox(height: 20),
 
               Text(
-                'Message Sent Successfully!',
+                l10n.messageSentSuccessfully,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -839,7 +849,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               const SizedBox(height: 12),
 
               Text(
-                'Thank you for contacting us. We\'ll get back to you within 24 hours.',
+                l10n.thankYouForContacting,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.7),
                 ),
@@ -862,7 +872,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child: Text(l10n.continueA),
                 ),
               ),
             ],

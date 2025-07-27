@@ -4,13 +4,12 @@ import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/top_snacbar.dart';
-
 import '../../model/pashu/all_pashu.dart';
-
 import '../../view_model/pashuVM/unlock_counter_provider.dart';
 
 class AnimalDetailPage extends StatefulWidget {
@@ -78,23 +77,25 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
           slivers: [
-            _buildSliverAppBar(),
+            _buildSliverAppBar(l10n),
             SliverToBoxAdapter(
               child: SlideTransition(
                 position: _slideAnimation,
                 child: Column(
                   children: [
-                    _buildAnimalInfo(),
-                    _buildPricingSection(),
-                    _buildOwnerLocationSection(),
-                    _buildDescriptionSection(),
-                    _buildContactSection(),
+                    _buildAnimalInfo(l10n),
+                    _buildPricingSection(l10n),
+                    _buildOwnerLocationSection(l10n),
+                    _buildDescriptionSection(l10n),
+                    _buildContactSection(l10n),
                     const SizedBox(height: 30),
                   ],
                 ),
@@ -106,7 +107,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Widget _buildSliverAppBar() {
+  Widget _buildSliverAppBar(AppLocalizations l10n) {
     final images = <String>[
       if (widget.pashu.pictureOne != null && widget.pashu.pictureOne!.isNotEmpty)
         'https://pashuparivar.com/uploads/${widget.pashu.pictureOne}',
@@ -151,7 +152,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           onPressed: () {
             TopSnackBar.show(
               context,
-              message: '${widget.pashu.animalname ?? 'Animal'} added to wishlist',
+              message: '${widget.pashu.animalname ?? l10n.animal} ${l10n.addedToWishlist}',
               backgroundColor: Colors.green,
               textColor: Colors.white,
               icon: Icons.favorite,
@@ -265,7 +266,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${images.length} Photos',
+                    '${images.length} ${l10n.photos}',
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white,
                       fontSize: 12,
@@ -284,7 +285,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.pashu.animalname ?? 'Animal Details',
+                    widget.pashu.animalname ?? l10n.animalDetails,
                     style: AppTextStyles.heading.copyWith(
                       color: Colors.white,
                       fontSize: 28,
@@ -295,7 +296,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.pashu.animatCategory ?? 'Category',
+                    widget.pashu.animatCategory ?? l10n.category,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
@@ -312,7 +313,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Widget _buildAnimalInfo() {
+  Widget _buildAnimalInfo(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
@@ -350,7 +351,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Animal Information',
+                  l10n.animalInformation,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -365,16 +366,16 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
 
           const SizedBox(height: 20),
 
-          _buildDetailRow('Type', widget.pashu.animatCategory ?? 'Unknown'),
-          _buildDetailRow('Breed', widget.pashu.breed ?? 'Unknown'),
-          _buildDetailRow('Age', '${widget.pashu.age ?? 'Unknown'} years'),
-          _buildDetailRow('Gender', widget.pashu.gender ?? 'Unknown', isLast: true),
+          _buildDetailRow(l10n.type, widget.pashu.animatCategory ?? l10n.unknown, l10n),
+          _buildDetailRow(l10n.breed, widget.pashu.breed ?? l10n.unknown, l10n),
+          _buildDetailRow(l10n.age, '${widget.pashu.age ?? l10n.unknown} ${l10n.years}', l10n),
+          _buildDetailRow(l10n.gender, widget.pashu.gender ?? l10n.unknown, l10n, isLast: true),
         ],
       ),
     );
   }
 
-  Widget _buildPricingSection() {
+  Widget _buildPricingSection(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(20),
@@ -412,7 +413,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Pricing Information',
+                  l10n.pricingInformation,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -434,7 +435,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Price',
+                      l10n.price,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.lightSage.withOpacity(0.8),
                         fontSize: 14,
@@ -467,8 +468,8 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 ),
                 child: Text(
                   (widget.pashu.negotiable?.toLowerCase() == 'yes')
-                      ? 'Negotiable'
-                      : 'Fixed Price',
+                      ? l10n.negotiable
+                      : l10n.fixedPrice,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: (widget.pashu.negotiable?.toLowerCase() == 'yes')
                         ? Colors.orange
@@ -485,7 +486,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Widget _buildOwnerLocationSection() {
+  Widget _buildOwnerLocationSection(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
@@ -523,7 +524,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Owner & Location',
+                  l10n.ownerAndLocation,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -538,13 +539,14 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
 
           const SizedBox(height: 20),
 
-          _buildDetailRow('Owner', widget.pashu.username ?? 'Unknown'),
-          _buildDetailRow('Location', widget.pashu.address ?? 'Not specified'),
+          _buildDetailRow(l10n.owner, widget.pashu.username ?? l10n.unknown, l10n),
+          _buildDetailRow(l10n.location, widget.pashu.address ?? l10n.notSpecified, l10n),
           _buildDetailRow(
-            'Distance',
+            l10n.distance,
             widget.distance < 1
-                ? '${(widget.distance * 1000).toInt()} meters'
-                : '${widget.distance.toStringAsFixed(1)} km',
+                ? '${(widget.distance * 1000).toInt()} ${l10n.meters}'
+                : '${widget.distance.toStringAsFixed(1)} ${l10n.km}',
+            l10n,
             isLast: true,
           ),
         ],
@@ -552,7 +554,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Widget _buildDescriptionSection() {
+  Widget _buildDescriptionSection(AppLocalizations l10n) {
     if (widget.pashu.discription == null || widget.pashu.discription!.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -594,7 +596,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Description',
+                  l10n.description,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -622,7 +624,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Widget _buildContactSection() {
+  Widget _buildContactSection(AppLocalizations l10n) {
     return Consumer<UnlockContactProvider>(
       builder: (context, unlockProvider, child) {
         return Container(
@@ -662,7 +664,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      'Contact Seller',
+                      l10n.contactSeller,
                       style: AppTextStyles.heading.copyWith(
                         color: AppColors.lightSage,
                         fontSize: 18,
@@ -697,7 +699,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Unlock contact details for ₹2 to connect with the seller',
+                          l10n.unlockContactDetails,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.blue,
                             fontSize: 13,
@@ -714,7 +716,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton.icon(
-                    onPressed: unlockProvider.isLoading ? null : _unlockContact,
+                    onPressed: unlockProvider.isLoading ? null : () => _unlockContact(l10n),
                     icon: unlockProvider.isLoading
                         ? SizedBox(
                       width: 20,
@@ -726,10 +728,11 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     )
                         : const Icon(Icons.lock_open_rounded),
                     label: Text(
-                      unlockProvider.isLoading ? 'Unlocking...' : 'Unlock Contact (₹2)',
+                      unlockProvider.isLoading ? l10n.unlocking : l10n.unlockContact,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
+                        color: AppColors.lightSage,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -745,7 +748,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               ] else ...[
                 // Contact options after unlocking
                 Text(
-                  'Contact Options',
+                  l10n.contactOptions,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.lightSage.withOpacity(0.8),
                     fontSize: 14,
@@ -761,9 +764,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                       child: SizedBox(
                         height: 50,
                         child: ElevatedButton.icon(
-                          onPressed: () => _makePhoneCall(),
+                          onPressed: () => _makePhoneCall(l10n),
                           icon: const Icon(Icons.call_rounded),
-                          label: const Text('Call'),
+                          label: Text(l10n.call),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -782,9 +785,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                       child: SizedBox(
                         height: 50,
                         child: ElevatedButton.icon(
-                          onPressed: () => _openWhatsApp(),
+                          onPressed: () => _openWhatsApp(l10n),
                           icon: const Icon(Icons.chat_rounded),
-                          label: const Text('WhatsApp'),
+                          label: Text(l10n.whatsApp),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF25D366),
                             foregroundColor: Colors.white,
@@ -820,7 +823,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Contact: ${widget.pashu.userphone ?? widget.pashu.usernumber ?? 'Not available'}',
+                          '${l10n.contact}: ${widget.pashu.userphone ?? widget.pashu.usernumber ?? l10n.notAvailable}',
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.green,
                             fontSize: 12,
@@ -839,7 +842,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {bool isLast = false}) {
+  Widget _buildDetailRow(String label, String value, AppLocalizations l10n, {bool isLast = false}) {
     return Column(
       children: [
         Row(
@@ -882,11 +885,11 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
-  Future<void> _unlockContact() async {
+  Future<void> _unlockContact(AppLocalizations l10n) async {
     if (currentUserId == null) {
       TopSnackBar.show(
         context,
-        message: 'User not logged in',
+        message: l10n.userNotLoggedIn,
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,
@@ -895,36 +898,67 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     }
 
     final unlockProvider = Provider.of<UnlockContactProvider>(context, listen: false);
+    await unlockProvider.fetchUserData(); // Load profile data
 
-    await unlockProvider.unlockContact(
-      userId: currentUserId!,
-      contactId: widget.pashu.id?.toString() ?? '',
-    );
-
-    if (unlockProvider.successMessage != null) {
-      setState(() {
-        isContactUnlocked = true;
-      });
-
+    final user = unlockProvider.userData;
+    if (user == null) {
       TopSnackBar.show(
         context,
-        message: unlockProvider.successMessage!,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        icon: Icons.lock_open,
-      );
-    } else if (unlockProvider.errorMessage != null) {
-      TopSnackBar.show(
-        context,
-        message: unlockProvider.errorMessage!,
+        message: l10n.userDataNotFound,
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,
       );
+      return;
     }
+
+    final contactId = widget.pashu.userphone ?? widget.pashu.usernumber ?? '';
+    final walletBalance = user['walletBalance'] ?? 0;
+
+    await unlockProvider.unlockContact(
+      userId: user['id'].toString(), // ✅ Convert to String
+      contactId: contactId,
+      walletBalance: walletBalance,
+      onInsufficientBalance: () {
+        TopSnackBar.show(
+          context,
+          message: l10n.insufficientBalance,
+          backgroundColor: Colors.orange,
+          textColor: Colors.white,
+          icon: Icons.warning,
+        );
+        Navigator.pushNamed(context, '/PaymentScreen');
+      },
+      onAlreadyUnlocked: () {
+        setState(() {
+          isContactUnlocked = true;
+        });
+
+        TopSnackBar.show(
+          context,
+          message: l10n.contactAlreadyUnlocked,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          icon: Icons.info_outline,
+        );
+      },
+      onUnlocked: () {
+        setState(() {
+          isContactUnlocked = true;
+        });
+
+        TopSnackBar.show(
+          context,
+          message: l10n.contactUnlockedSuccessfully,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          icon: Icons.lock_open,
+        );
+      },
+    );
   }
 
-  Future<void> _makePhoneCall() async {
+  Future<void> _makePhoneCall(AppLocalizations l10n) async {
     final phoneNumber = widget.pashu.userphone ?? widget.pashu.usernumber;
     if (phoneNumber != null && phoneNumber.isNotEmpty) {
       final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
@@ -933,7 +967,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
       } else {
         TopSnackBar.show(
           context,
-          message: 'Could not launch phone app',
+          message: l10n.couldNotLaunchPhoneApp,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           icon: Icons.error,
@@ -942,7 +976,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     } else {
       TopSnackBar.show(
         context,
-        message: 'Phone number not available',
+        message: l10n.phoneNumberNotAvailable,
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,
@@ -950,10 +984,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     }
   }
 
-  Future<void> _openWhatsApp() async {
+  Future<void> _openWhatsApp(AppLocalizations l10n) async {
     final phoneNumber = widget.pashu.userphone ?? widget.pashu.usernumber;
     if (phoneNumber != null && phoneNumber.isNotEmpty) {
-      final message = 'Hi, I am interested in your ${widget.pashu.animalname ?? 'animal'} listed on Pashu Parivar.';
+      final message = l10n.whatsAppMessageTemplate(widget.pashu.animalname ?? l10n.animal);
       final whatsappUrl = 'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}';
       final Uri whatsappUri = Uri.parse(whatsappUrl);
 
@@ -962,7 +996,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
       } else {
         TopSnackBar.show(
           context,
-          message: 'Could not open WhatsApp',
+          message: l10n.couldNotOpenWhatsApp,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           icon: Icons.error,
@@ -971,7 +1005,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     } else {
       TopSnackBar.show(
         context,
-        message: 'Phone number not available',
+        message: l10n.phoneNumberNotAvailable,
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,

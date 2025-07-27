@@ -5,6 +5,7 @@ import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 
 import '../../view_model/pashuVM/animal_loan_view_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'loan_success_page.dart';
 
 class PashuLoanFormPage extends StatefulWidget {
@@ -18,13 +19,19 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   // Form Controllers
-  final TextEditingController _applicantNameController = TextEditingController();
-  final TextEditingController _applicantAddressController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
-  final TextEditingController _repaymentPeriodController = TextEditingController();
+  final TextEditingController _applicantNameController =
+      TextEditingController();
+  final TextEditingController _applicantAddressController =
+      TextEditingController();
+  final TextEditingController _contactNumberController =
+      TextEditingController();
+  final TextEditingController _repaymentPeriodController =
+      TextEditingController();
   final TextEditingController _incomeSourceController = TextEditingController();
-  final TextEditingController _purposeOfLoanController = TextEditingController();
-  final TextEditingController _additionalRemarksController = TextEditingController();
+  final TextEditingController _purposeOfLoanController =
+      TextEditingController();
+  final TextEditingController _additionalRemarksController =
+      TextEditingController();
   final TextEditingController _loanAmountController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
@@ -129,7 +136,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Pashu Loan Form',
+              AppLocalizations.of(context)!.loanFormTitle,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -157,9 +164,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.green.withOpacity(0.3),
-        ),
+        border: Border.all(color: Colors.green.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -179,7 +184,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           const SizedBox(height: 16),
 
           Text(
-            'Animal Loan Application',
+            AppLocalizations.of(context)!.loanApplicationHeader,
             style: AppTextStyles.heading.copyWith(
               color: AppColors.lightSage,
               fontSize: 20,
@@ -193,7 +198,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           const SizedBox(height: 8),
 
           Text(
-            'Get financial support for your livestock farming needs',
+            AppLocalizations.of(context)!.loanApplicationSubheader,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.8),
               fontSize: 14,
@@ -221,9 +226,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-        ),
+        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
       ),
       child: Form(
         key: _formKey,
@@ -248,7 +251,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    'Loan Application Details',
+                    AppLocalizations.of(context)!.loanApplicationDetails,
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.lightSage,
                       fontSize: 18,
@@ -264,16 +267,18 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 24),
 
             // Applicant Information Section
-            _buildSectionHeader('Applicant Information'),
+            _buildSectionHeader(
+              AppLocalizations.of(context)!.applicantInformation,
+            ),
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: 'Applicant Name',
+              label: AppLocalizations.of(context)!.applicantName,
               controller: _applicantNameController,
               icon: Icons.person_rounded,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Applicant name is required';
+                  return AppLocalizations.of(context)!.applicantNameRequired;
                 }
                 return null;
               },
@@ -282,13 +287,13 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: 'Applicant Address',
+              label: AppLocalizations.of(context)!.applicantAddress,
               controller: _applicantAddressController,
               icon: Icons.location_on_rounded,
               maxLines: 3,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Applicant address is required';
+                  return AppLocalizations.of(context)!.applicantAddressRequired;
                 }
                 return null;
               },
@@ -297,16 +302,16 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: 'Contact Number',
+              label: AppLocalizations.of(context)!.contactNumber,
               controller: _contactNumberController,
               icon: Icons.phone_rounded,
               keyboardType: TextInputType.phone,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Contact number is required';
+                  return AppLocalizations.of(context)!.contactNumberRequired;
                 }
                 if (value.trim().length < 10) {
-                  return 'Please enter a valid contact number';
+                  return AppLocalizations.of(context)!.contactNumberInvalid;
                 }
                 return null;
               },
@@ -315,16 +320,18 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: 'Email Address',
+              label: AppLocalizations.of(context)!.emailAddress,
               controller: _emailController,
               icon: Icons.email_rounded,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Email address is required';
+                  return AppLocalizations.of(context)!.emailAddressRequired;
                 }
-                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                  return 'Please enter a valid email address';
+                if (!RegExp(
+                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                ).hasMatch(value)) {
+                  return AppLocalizations.of(context)!.emailAddressInvalid;
                 }
                 return null;
               },
@@ -333,21 +340,21 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 24),
 
             // Loan Information Section
-            _buildSectionHeader('Loan Information'),
+            _buildSectionHeader(AppLocalizations.of(context)!.loanInformation),
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: 'Loan Amount (₹)',
+              label: AppLocalizations.of(context)!.loanAmount,
               controller: _loanAmountController,
               icon: Icons.currency_rupee_rounded,
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Loan amount is required';
+                  return AppLocalizations.of(context)!.loanAmountRequired;
                 }
                 final amount = double.tryParse(value);
                 if (amount == null || amount <= 0) {
-                  return 'Please enter a valid loan amount';
+                  return AppLocalizations.of(context)!.loanAmountInvalid;
                 }
                 return null;
               },
@@ -356,7 +363,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: 'Repayment Period',
+              label: AppLocalizations.of(context)!.repaymentPeriod,
               value: _selectedRepaymentPeriod,
               items: _repaymentPeriods,
               onChanged: (value) {
@@ -367,7 +374,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               icon: Icons.schedule_rounded,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Repayment period is required';
+                  return AppLocalizations.of(context)!.repaymentPeriodRequired;
                 }
                 return null;
               },
@@ -376,7 +383,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: 'Income Source',
+              label: AppLocalizations.of(context)!.incomeSource,
               value: _selectedIncomeSource,
               items: _incomeSources,
               onChanged: (value) {
@@ -387,7 +394,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               icon: Icons.work_rounded,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Income source is required';
+                  return AppLocalizations.of(context)!.incomeSourceRequired;
                 }
                 return null;
               },
@@ -396,7 +403,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: 'Purpose of Loan',
+              label: AppLocalizations.of(context)!.purposeOfLoan,
               value: _selectedLoanPurpose,
               items: _loanPurposes,
               onChanged: (value) {
@@ -407,7 +414,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               icon: Icons.backup_outlined,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Purpose of loan is required';
+                  return AppLocalizations.of(context)!.purposeOfLoanRequired;
                 }
                 return null;
               },
@@ -416,17 +423,21 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
             const SizedBox(height: 24),
 
             // Additional Information Section
-            _buildSectionHeader('Additional Information'),
+            _buildSectionHeader(
+              AppLocalizations.of(context)!.additionalInformation,
+            ),
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: 'Additional Remarks',
+              label: AppLocalizations.of(context)!.additionalRemarks,
               controller: _additionalRemarksController,
               icon: Icons.note_add_rounded,
               maxLines: 4,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Additional remarks are required';
+                  return AppLocalizations.of(
+                    context,
+                  )!.additionalRemarksRequired;
                 }
                 return null;
               },
@@ -439,7 +450,8 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: viewModel.isLoading ? null : () => _submitForm(viewModel),
+                onPressed:
+                    viewModel.isLoading ? null : () => _submitForm(viewModel),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryDark,
                   foregroundColor: Colors.white,
@@ -448,37 +460,38 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: viewModel.isLoading
-                    ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Submitting Form...',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: AppColors.lightSage,
-                      ),
-                    ),
-                  ],
-                )
-                    : Text(
-                  'Submit Form',
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.lightSage,
-                  ),
-                ),
+                child:
+                    viewModel.isLoading
+                        ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              AppLocalizations.of(context)!.submittingForm,
+                              style: AppTextStyles.bodyLarge.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: AppColors.lightSage,
+                              ),
+                            ),
+                          ],
+                        )
+                        : Text(
+                          AppLocalizations.of(context)!.submitForm,
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: AppColors.lightSage,
+                          ),
+                        ),
               ),
             ),
 
@@ -490,9 +503,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.blue.withOpacity(0.2),
-                ),
+                border: Border.all(color: Colors.blue.withOpacity(0.2)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -505,7 +516,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'By submitting this form, you agree to our loan terms and conditions. Our team will review your application and contact you within 3-5 business days with loan approval status.',
+                      AppLocalizations.of(context)!.loanTermsNote,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.blue,
                         fontSize: 11,
@@ -530,9 +541,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
       decoration: BoxDecoration(
         color: AppColors.lightSage.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-        ),
+        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
       ),
       child: Text(
         title,
@@ -567,10 +576,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               fontWeight: FontWeight.w500,
             ),
             children: const [
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Colors.red),
-              ),
+              TextSpan(text: ' *', style: TextStyle(color: Colors.red)),
             ],
           ),
           maxLines: 1,
@@ -581,9 +587,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           decoration: BoxDecoration(
             color: AppColors.lightSage.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.lightSage.withOpacity(0.2),
-            ),
+            border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
           ),
           child: TextFormField(
             controller: controller,
@@ -632,10 +636,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
               fontWeight: FontWeight.w500,
             ),
             children: const [
-              TextSpan(
-                text: ' *',
-                style: TextStyle(color: Colors.red),
-              ),
+              TextSpan(text: ' *', style: TextStyle(color: Colors.red)),
             ],
           ),
           maxLines: 1,
@@ -646,24 +647,27 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           decoration: BoxDecoration(
             color: AppColors.lightSage.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.lightSage.withOpacity(0.2),
-            ),
+            border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
           ),
           child: DropdownButtonFormField<String>(
             value: value,
-            items: items.map((item) => DropdownMenuItem<String>(
-              value: item,
-              child: Text(
-                item,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.lightSage,
-                  fontSize: 16,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )).toList(),
+            items:
+                items
+                    .map(
+                      (item) => DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColors.lightSage,
+                            fontSize: 16,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
+                    .toList(),
             onChanged: onChanged,
             decoration: InputDecoration(
               prefixIcon: Icon(
@@ -692,7 +696,10 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
   void _submitForm(AnimalLoanViewModel viewModel) {
     // Validate form
     if (!_formKey.currentState!.validate()) {
-      _showTopSnackBar('All fields are required', Colors.red);
+      _showTopSnackBar(
+        AppLocalizations.of(context)!.allFieldsRequired,
+        Colors.red,
+      );
       return;
     }
 
@@ -719,9 +726,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
         // Navigate to success screen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => const LoanSuccessScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const LoanSuccessScreen()),
         );
       } else if (viewModel.errorMessage != null) {
         _showTopSnackBar(viewModel.errorMessage!, Colors.red);
@@ -746,9 +751,7 @@ class _PashuLoanFormPageState extends State<PashuLoanFormPage> {
           right: 20,
           left: 20,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 3),
       ),
     );

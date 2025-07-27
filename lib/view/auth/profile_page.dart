@@ -5,6 +5,7 @@ import 'package:pashu_app/view/profile/edit_profile_page.dart';
 import 'package:pashu_app/view/profile/sold_out_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -16,8 +17,9 @@ import '../profile/listed_pashu_page.dart';
 import '../profile/referal_page.dart';
 import '../profile/subscription_page.dart';
 import '../profile/terms_and_policy_page.dart';
+import '../profile/transaction_page.dart';
+import '../profile/verify_pashu_screen.dart';
 import '../profile/withdraw_page.dart';
-
 
 class ProfilePage extends StatefulWidget {
   final String phoneNumber;
@@ -129,6 +131,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfileHeader(Result user) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
@@ -179,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.username ?? 'Ankit Khare',
+                  user.username ?? l10n.unknown,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 20,
@@ -192,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 4),
 
                 Text(
-                  user.number ?? '6393906928',
+                  user.number ?? '_',
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.primaryDark.withOpacity(0.8),
                     fontSize: 14,
@@ -207,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                'Wallet Balance',
+                l10n.walletBalance,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.7),
                   fontSize: 12,
@@ -223,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${user.walletBalance ?? 50} ₹',
+                    '${user.walletBalance ?? 0} ₹',
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.primaryDark,
                       fontSize: 18,
@@ -240,6 +244,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildMenuSection(Result user) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -252,26 +258,30 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: [
           _buildMenuItem(
-            'Add Amount & Get Plans',
+            l10n.addAmountAndGetPlans,
             Icons.add_card_rounded,
+            l10n,
             hasNewBadge: true,
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionPage()));
+            onTap: () async {
+              String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SubscriptionPage(phoneNumber: phoneNumber!,)));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Get Verified Your Pashu',
+            l10n.getVerifiedYourPashu,
             Icons.verified_user_rounded,
+            l10n,
             hasNewBadge: true,
             onTap: () {
-              Navigator.pushNamed(context, '/verify-pashu');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const VerifiedPashuScreen()));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Withdraw Balance',
+            l10n.withdrawBalance,
             Icons.account_balance_rounded,
+            l10n,
             hasNewBadge: true,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => WithdrawPage(phoneNumber: user.number!, userId: user.id!.toString(),)));
@@ -279,64 +289,72 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           _buildDivider(),
           _buildMenuItem(
-            'My Transaction',
+            l10n.myTransaction,
             Icons.receipt_long_rounded,
+            l10n,
             onTap: () {
-              Navigator.pushNamed(context, '/my-transactions');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionPage()));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Edit Profile',
+            l10n.editProfile,
             Icons.edit_rounded,
+            l10n,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage(userProfile: user, phoneNumber: user.number!)));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Your Listed Pashu',
+            l10n.yourListedPashu,
             Icons.pets_rounded,
+            l10n,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ListedPashuPage()));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Sold Out Pashu History',
+            l10n.soldOutPashuHistory,
             Icons.history_rounded,
+            l10n,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => SoldOutHistoryPage()));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Referral Code',
+            l10n.referralCode,
             Icons.share_rounded,
+            l10n,
             onTap: () {
               Navigator.push(context,  MaterialPageRoute(builder: (context) => ReferralPage(referralCode: user.referralcode ?? '', username: user.username!)));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Terms & Privacy',
+            l10n.termsAndPrivacy,
             Icons.privacy_tip_rounded,
+            l10n,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const TermsPrivacyPage()));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Contact Us',
+            l10n.contactUs,
             Icons.contact_support_rounded,
+            l10n,
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactUsPage()));
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            'Logout',
+            l10n.logout,
             Icons.logout_rounded,
+            l10n,
             isLogout: true,
             onTap: () {
               _showLogoutDialog();
@@ -349,7 +367,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildMenuItem(
       String title,
-      IconData icon, {
+      IconData icon,
+      AppLocalizations l10n, {
         bool hasNewBadge = false,
         bool isLogout = false,
         required VoidCallback onTap,
@@ -389,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    'NEW',
+                    l10n.newBadge,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white,
                       fontSize: 10,
@@ -421,6 +440,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _showLogoutDialog() {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -438,7 +459,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(width: 12),
               Text(
-                'Logout',
+                l10n.logout,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -447,7 +468,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           content: Text(
-            'Are you sure you want to logout from your account?',
+            l10n.areYouSureLogout,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primaryDark.withOpacity(0.8),
             ),
@@ -456,7 +477,7 @@ class _ProfilePageState extends State<ProfilePage> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10n.cancel,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.6),
                 ),
@@ -476,7 +497,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Logout'),
+              child: Text(l10n.logout),
             ),
           ],
         );
@@ -485,6 +506,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildErrorWidget(GetProfileViewModel viewModel) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(40),
       child: Center(
@@ -498,7 +521,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Failed to Load Profile',
+              l10n.failedToLoadProfile,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.lightSage,
                 fontSize: 20,
@@ -506,7 +529,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 12),
             Text(
-              viewModel.error ?? 'Something went wrong',
+              viewModel.error ?? l10n.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.lightSage.withOpacity(0.7),
                 fontSize: 14,
@@ -519,7 +542,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 viewModel.getProfile(widget.phoneNumber);
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.lightSage,
                 foregroundColor: AppColors.primaryDark,
@@ -536,6 +559,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildEmptyWidget() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(40),
       child: Center(
@@ -549,7 +574,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'No Profile Found',
+              l10n.noProfileFound,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.lightSage,
                 fontSize: 20,
@@ -557,7 +582,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Profile information is not available',
+              l10n.profileInformationNotAvailable,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.lightSage.withOpacity(0.7),
                 fontSize: 14,

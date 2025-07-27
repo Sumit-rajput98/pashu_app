@@ -274,7 +274,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
 
                       // Phone number display
                       Text(
-                        localizations.otpSentMessage.toString().replaceAll('{phoneNumber}', widget.phoneNumber),
+                        localizations.otpSentMessage(widget.phoneNumber),
                         textAlign: TextAlign.center,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.primaryDark.withOpacity(0.7),
@@ -396,7 +396,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              localizations.resendIn.toString().replaceAll('{seconds}', _remainingTime.toString()),
+              localizations.resendIn(_remainingTime.toString()),
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
@@ -457,7 +457,9 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
 
         _showCustomTopSnackbar(
           context: context,
-          message: localizations.otpResentTo.toString().replaceAll('{phoneNumber}', widget.phoneNumber),
+          message: localizations.otpResentTo(
+            widget.phoneNumber,
+          ),
           isError: false,
         );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -25,21 +26,13 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
+    );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
     _animationController.forward();
   }
@@ -64,7 +57,7 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Insurance Application',
+                AppLocalizations.of(context)!.insuranceApplication,
                 style: AppTextStyles.heading.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -93,10 +86,7 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
                     height: 120,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [
-                          Colors.green.withOpacity(0.8),
-                          Colors.green,
-                        ],
+                        colors: [Colors.green.withOpacity(0.8), Colors.green],
                       ),
                       shape: BoxShape.circle,
                       boxShadow: [
@@ -119,7 +109,7 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
 
                 // Success Title
                 Text(
-                  'Response Received!',
+                  AppLocalizations.of(context)!.responseReceived,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 28,
@@ -134,7 +124,7 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
 
                 // Success Message
                 Text(
-                  'Thank you for submitting your pashu insurance application. Our team will get back to you soon with further details.',
+                  AppLocalizations.of(context)!.insuranceThankYouMessage,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.lightSage.withOpacity(0.8),
                     fontSize: 16,
@@ -160,9 +150,7 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.blue.withOpacity(0.3),
-                    ),
+                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
                   ),
                   child: Column(
                     children: [
@@ -242,7 +230,9 @@ class _InsuranceSuccessScreenState extends State<InsuranceSuccessScreen>
                       child: ElevatedButton.icon(
                         onPressed: () {
                           // Navigate to home or main screen
-                          Navigator.of(context).popUntil((route) => route.isFirst);
+                          Navigator.of(
+                            context,
+                          ).popUntil((route) => route.isFirst);
                         },
                         icon: const Icon(Icons.home_rounded),
                         label: const Text('Back to Home'),

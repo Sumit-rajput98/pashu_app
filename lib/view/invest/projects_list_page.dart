@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../model/invest/invest_model.dart';
-
 import 'invest_project_item.dart';
 
 class ProjectsListPage extends StatelessWidget {
@@ -11,8 +11,10 @@ class ProjectsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (projects.isEmpty) {
-      return const Center(child: Text("No projects available."));
+      return Center(child: Text(l10n.noProjectsAvailable));
     }
 
     return SingleChildScrollView(

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LiveProjectsPage extends StatelessWidget {
   const LiveProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -32,55 +35,59 @@ class LiveProjectsPage extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-        
+
                 // Details
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'MVP for aquaculture investment',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E4A59),),
+                      Text(
+                        l10n.mvpForAquacultureInvestment,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E4A59),
+                        ),
                       ),
                       const SizedBox(height: 10),
-        
+
                       Row(
-                        children: const [
-                          Icon(Icons.timelapse, size: 20),
-                          SizedBox(width: 6),
-                          Text("Type: Long Term"),
+                        children: [
+                          const Icon(Icons.timelapse, size: 20),
+                          const SizedBox(width: 6),
+                          Text("${l10n.type}: ${l10n.longTerm}"),
                         ],
                       ),
                       const SizedBox(height: 6),
-        
+
                       Row(
-                        children: const [
-                          Icon(Icons.money, size: 20),
-                          SizedBox(width: 6),
-                          Text("Amount: ₹1"),
+                        children: [
+                          const Icon(Icons.money, size: 20),
+                          const SizedBox(width: 6),
+                          Text("${l10n.amount}: ₹1"),
                         ],
                       ),
                       const SizedBox(height: 6),
-        
+
                       Row(
                         children: [
                           const Icon(Icons.calendar_month, size: 20),
                           const SizedBox(width: 6),
-                          Text("Start Date: 1st August 2025"),
+                          Text("${l10n.startDate}: ${l10n.firstAugust2025}"),
                         ],
                       ),
                       const SizedBox(height: 6),
-        
+
                       Row(
-                        children: const [
-                          Icon(Icons.hourglass_bottom, size: 20),
-                          SizedBox(width: 6),
-                          Text("Duration: 6 to 8 months"),
+                        children: [
+                          const Icon(Icons.hourglass_bottom, size: 20),
+                          const SizedBox(width: 6),
+                          Text("${l10n.duration}: ${l10n.sixToEightMonths}"),
                         ],
                       ),
                       const SizedBox(height: 12),
-        
+
                       // Horizontal Vessel Progress
                       const SizedBox(height: 6),
                       ClipRRect(
@@ -89,11 +96,11 @@ class LiveProjectsPage extends StatelessWidget {
                           value: 0.15, // 15%
                           minHeight: 12,
                           backgroundColor: Colors.grey.shade300,
-                          color: Color(0xFF35C75A),
+                          color: const Color(0xFF35C75A),
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text("23 / 200 Lots Booked"),
+                      Text("23 / 200 ${l10n.lotsBooked}"),
                     ],
                   ),
                 ),

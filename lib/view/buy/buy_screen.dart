@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math' as math;
 
 import '../../core/app_colors.dart';
@@ -33,23 +34,6 @@ class _BuyPageState extends State<BuyPage> {
   final double userLatitude = 23.0263759;
   final double userLongitude = 77.0171924;
 
-  // Category data with icons
-  final List<Map<String, dynamic>> _categories = [
-    {'name': 'All', 'icon': 'assets/all.jpg'},
-    {'name': 'Buffalo', 'icon': 'assets/buffalo.jpg'},
-    {'name': 'Cow', 'icon': 'assets/cow.jpg'},
-    {'name': 'Sheep', 'icon': 'assets/sheep.jpg'},
-    {'name': 'Goat', 'icon': 'assets/goat.jpg'},
-    {'name': 'Camel', 'icon': 'assets/camel.jpg'},
-    {'name': 'Bird', 'icon': 'assets/bird.jpg'},
-    {'name': 'Cock', 'icon': 'assets/cock.jpg'},
-    {'name': 'Dog', 'icon': 'assets/dog.jpg'},
-    {'name': 'Horse', 'icon': 'assets/horse.jpg'},
-    {'name': 'Pigs', 'icon': 'assets/pig.jpg'},
-    {'name': 'Cats', 'icon': 'assets/cat.jpg'},
-    {'name': 'Fishes', 'icon': 'assets/fish.png'},
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -66,6 +50,25 @@ class _BuyPageState extends State<BuyPage> {
     super.dispose();
   }
 
+  // Get localized categories
+  List<Map<String, dynamic>> getLocalizedCategories(AppLocalizations l10n) {
+    return [
+      {'name': l10n.all, 'key': 'All', 'icon': 'assets/all.jpg'},
+      {'name': l10n.buffalo, 'key': 'Buffalo', 'icon': 'assets/buffalo.jpg'},
+      {'name': l10n.cow, 'key': 'Cow', 'icon': 'assets/cow.jpg'},
+      {'name': l10n.sheep, 'key': 'Sheep', 'icon': 'assets/sheep.jpg'},
+      {'name': l10n.goat, 'key': 'Goat', 'icon': 'assets/goat.jpg'},
+      {'name': l10n.camel, 'key': 'Camel', 'icon': 'assets/camel.jpg'},
+      {'name': l10n.bird, 'key': 'Bird', 'icon': 'assets/bird.jpg'},
+      {'name': l10n.cock, 'key': 'Cock', 'icon': 'assets/cock.jpg'},
+      {'name': l10n.dog, 'key': 'Dog', 'icon': 'assets/dog.jpg'},
+      {'name': l10n.horse, 'key': 'Horse', 'icon': 'assets/horse.jpg'},
+      {'name': l10n.pigs, 'key': 'Pigs', 'icon': 'assets/pig.jpg'},
+      {'name': l10n.cats, 'key': 'Cats', 'icon': 'assets/cat.jpg'},
+      {'name': l10n.fishes, 'key': 'Fishes', 'icon': 'assets/fish.png'},
+    ];
+  }
+
   // Optimized distance calculation using Haversine formula
   double _calculateDistance(double? animalLat, double? animalLng) {
     if (animalLat == null || animalLng == null) {
@@ -80,10 +83,10 @@ class _BuyPageState extends State<BuyPage> {
 
     double a =
         math.sin(dPhi / 2) * math.sin(dPhi / 2) +
-        math.cos(phi1) *
-            math.cos(phi2) *
-            math.sin(dLambda / 2) *
-            math.sin(dLambda / 2);
+            math.cos(phi1) *
+                math.cos(phi2) *
+                math.sin(dLambda / 2) *
+                math.sin(dLambda / 2);
     double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
     return R * c;
@@ -97,9 +100,9 @@ class _BuyPageState extends State<BuyPage> {
           filtered
               .where(
                 (pashu) =>
-                    pashu.animatCategory?.toLowerCase() ==
-                    _selectedCategory.toLowerCase(),
-              )
+            pashu.animatCategory?.toLowerCase() ==
+                _selectedCategory.toLowerCase(),
+          )
               .toList();
     }
 
@@ -108,15 +111,15 @@ class _BuyPageState extends State<BuyPage> {
           filtered
               .where(
                 (pashu) =>
-                    pashu.animalname?.toLowerCase().contains(
+            pashu.animalname?.toLowerCase().contains(
+              _searchQuery.toLowerCase(),
+            ) ??
+                false ||
+                    pashu.breed!.toLowerCase().contains(
                       _searchQuery.toLowerCase(),
                     ) ??
-                    false ||
-                        pashu.breed!.toLowerCase().contains(
-                          _searchQuery.toLowerCase(),
-                        ) ??
-                    false,
-              )
+                false,
+          )
               .toList();
     }
 
@@ -125,16 +128,17 @@ class _BuyPageState extends State<BuyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      //appBar: _buildAppBar(context),
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return Column(
             children: [
-              _buildSearchBar(),
-              _buildCategoriesGrid(),
-              Expanded(child: _buildAnimalsList(viewModel)),
+              _buildSearchBar(l10n),
+              _buildCategoriesGrid(l10n),
+              Expanded(child: _buildAnimalsList(viewModel, l10n)),
             ],
           );
         },
@@ -142,75 +146,7 @@ class _BuyPageState extends State<BuyPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.primaryDark,
-      elevation: 0,
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: Row(
-        children: [
-          const AppLogo(size: 40),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Buy Animals',
-                style: AppTextStyles.heading.copyWith(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.lightSage,
-                ),
-              ),
-              Text(
-                'Find your perfect livestock',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage.withOpacity(0.7),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.filter_list_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          onPressed: () {
-            // Show filter options
-          },
-        ),
-        const SizedBox(width: 16),
-      ],
-    );
-  }
-
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -227,7 +163,7 @@ class _BuyPageState extends State<BuyPage> {
         },
         style: AppTextStyles.bodyMedium.copyWith(color: AppColors.lightSage),
         decoration: InputDecoration(
-          hintText: 'Search animals, breeds...',
+          hintText: l10n.searchAnimalsBreeds,
           hintStyle: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.lightSage.withOpacity(0.6),
           ),
@@ -236,20 +172,20 @@ class _BuyPageState extends State<BuyPage> {
             color: AppColors.lightSage.withOpacity(0.6),
           ),
           suffixIcon:
-              _searchQuery.isNotEmpty
-                  ? IconButton(
-                    icon: Icon(
-                      Icons.clear_rounded,
-                      color: AppColors.lightSage.withOpacity(0.6),
-                    ),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        _searchQuery = '';
-                      });
-                    },
-                  )
-                  : null,
+          _searchQuery.isNotEmpty
+              ? IconButton(
+            icon: Icon(
+              Icons.clear_rounded,
+              color: AppColors.lightSage.withOpacity(0.6),
+            ),
+            onPressed: () {
+              _searchController.clear();
+              setState(() {
+                _searchQuery = '';
+              });
+            },
+          )
+              : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
@@ -261,7 +197,9 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   // Scrollable Categories Grid
-  Widget _buildCategoriesGrid() {
+  Widget _buildCategoriesGrid(AppLocalizations l10n) {
+    final localizedCategories = getLocalizedCategories(l10n);
+
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -270,10 +208,10 @@ class _BuyPageState extends State<BuyPage> {
         controller: _categoryScrollController,
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: _categories.length,
+        itemCount: localizedCategories.length,
         itemBuilder: (context, index) {
-          final category = _categories[index];
-          final isSelected = _selectedCategory == category['name'];
+          final category = localizedCategories[index];
+          final isSelected = _selectedCategory == category['key'];
 
           return Container(
             width: 70,
@@ -281,31 +219,31 @@ class _BuyPageState extends State<BuyPage> {
             child: GestureDetector(
               onTap: () {
                 setState(() {
-                  _selectedCategory = category['name'];
+                  _selectedCategory = category['key'];
                 });
               },
               child: Container(
                 decoration: BoxDecoration(
                   color:
-                      isSelected ? Colors.white : Colors.white.withOpacity(0.1),
+                  isSelected ? Colors.white : Colors.white.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color:
-                        isSelected
-                            ? AppColors.lightSage
-                            : AppColors.lightSage.withOpacity(0.3),
+                    isSelected
+                        ? AppColors.lightSage
+                        : AppColors.lightSage.withOpacity(0.3),
                     width: 1.5,
                   ),
                   boxShadow:
-                      isSelected
-                          ? [
-                            BoxShadow(
-                              color: AppColors.lightSage.withOpacity(0.3),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ]
-                          : null,
+                  isSelected
+                      ? [
+                    BoxShadow(
+                      color: AppColors.lightSage.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                      : null,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -323,9 +261,9 @@ class _BuyPageState extends State<BuyPage> {
                             return Icon(
                               Icons.pets_rounded,
                               color:
-                                  isSelected
-                                      ? AppColors.primaryDark
-                                      : AppColors.lightSage,
+                              isSelected
+                                  ? AppColors.primaryDark
+                                  : AppColors.lightSage,
                               size: 18, // Smaller fallback icon
                             );
                           },
@@ -339,11 +277,11 @@ class _BuyPageState extends State<BuyPage> {
                       category['name'],
                       style: AppTextStyles.bodyMedium.copyWith(
                         color:
-                            isSelected
-                                ? AppColors.primaryDark
-                                : AppColors.lightSage.withOpacity(0.8),
+                        isSelected
+                            ? AppColors.primaryDark
+                            : AppColors.lightSage.withOpacity(0.8),
                         fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w500,
+                        isSelected ? FontWeight.w600 : FontWeight.w500,
                         fontSize: 9, // Smaller font
                       ),
                       textAlign: TextAlign.center,
@@ -361,19 +299,19 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   // Optimized Animals List with performance improvements
-  Widget _buildAnimalsList(AllPashuViewModel viewModel) {
+  Widget _buildAnimalsList(AllPashuViewModel viewModel, AppLocalizations l10n) {
     if (viewModel.isLoading) {
       return _buildShimmerList();
     }
 
     if (viewModel.error != null) {
-      return _buildErrorWidget(viewModel);
+      return _buildErrorWidget(viewModel, l10n);
     }
 
     final filteredPashu = _getFilteredPashu(viewModel.pashuList);
 
     if (filteredPashu.isEmpty) {
-      return _buildEmptyWidget();
+      return _buildEmptyWidget(l10n);
     }
 
     return ListView.builder(
@@ -384,7 +322,7 @@ class _BuyPageState extends State<BuyPage> {
       itemCount: filteredPashu.length,
       cacheExtent: 1000, // Increased cache for better performance
       itemBuilder: (context, index) {
-        return _buildAnimalListCard(filteredPashu[index], index);
+        return _buildAnimalListCard(filteredPashu[index], index, l10n);
       },
     );
   }
@@ -426,7 +364,7 @@ class _BuyPageState extends State<BuyPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(
                   5,
-                  (index) => Padding(
+                      (index) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Container(
                       width: double.infinity,
@@ -447,7 +385,7 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   // Enhanced Animal Card with overflow prevention and performance optimization
-  Widget _buildAnimalListCard(AllPashuModel pashu, int index) {
+  Widget _buildAnimalListCard(AllPashuModel pashu, int index, AppLocalizations l10n) {
     double calculatedDistance = 602.0;
 
     try {
@@ -485,7 +423,7 @@ class _BuyPageState extends State<BuyPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Optimized Sliding Image Container
-                _buildSlidingImageContainer(pashu),
+                _buildSlidingImageContainer(pashu, l10n),
 
                 const SizedBox(width: 16),
 
@@ -500,7 +438,7 @@ class _BuyPageState extends State<BuyPage> {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              pashu.animalname ?? 'Unknown Animal',
+                              pashu.animalname ?? l10n.unknownAnimal,
                               style: AppTextStyles.bodyLarge.copyWith(
                                 color: AppColors.lightSage,
                                 fontWeight: FontWeight.w600,
@@ -523,7 +461,7 @@ class _BuyPageState extends State<BuyPage> {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                pashu.animatCategory ?? 'Other',
+                                pashu.animatCategory ?? l10n.other,
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: AppColors.lightSage,
                                   fontSize: 9,
@@ -552,7 +490,7 @@ class _BuyPageState extends State<BuyPage> {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                'Breed: ${pashu.breed}',
+                                '${l10n.breed}: ${pashu.breed}',
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: AppColors.lightSage.withOpacity(0.8),
                                   fontSize: 11,
@@ -625,7 +563,7 @@ class _BuyPageState extends State<BuyPage> {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                'Owner: ${pashu.username}',
+                                '${l10n.owner}: ${pashu.username}',
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: AppColors.lightSage.withOpacity(0.7),
                                   fontSize: 11,
@@ -679,7 +617,7 @@ class _BuyPageState extends State<BuyPage> {
                               if (pashu.negotiable?.toLowerCase() == 'yes' ||
                                   pashu.negotiable?.toLowerCase() == 'true')
                                 Text(
-                                  'Call me',
+                                  l10n.callMe,
                                   style: AppTextStyles.bodyMedium.copyWith(
                                     color: AppColors.lightSage.withOpacity(0.6),
                                     fontSize: 9,
@@ -709,7 +647,7 @@ class _BuyPageState extends State<BuyPage> {
                                 ),
                               ),
                               child: Text(
-                                'Buy Now',
+                                l10n.buyNow,
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 12,
@@ -731,7 +669,7 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   // Optimized Sliding Image Container with CachedNetworkImage
-  Widget _buildSlidingImageContainer(AllPashuModel pashu) {
+  Widget _buildSlidingImageContainer(AllPashuModel pashu, AppLocalizations l10n) {
     final images = <String>[
       if (pashu.pictureOne != null && pashu.pictureOne!.isNotEmpty)
         'https://pashuparivar.com/uploads/${pashu.pictureOne ?? ''}',
@@ -768,14 +706,14 @@ class _BuyPageState extends State<BuyPage> {
                     fit: BoxFit.cover,
                     placeholder:
                         (context, url) => Shimmer.fromColors(
-                          baseColor: AppColors.primaryDark.withOpacity(0.1),
-                          highlightColor: AppColors.primaryDark.withOpacity(
-                            0.2,
-                          ),
-                          child: Container(
-                            color: AppColors.primaryDark.withOpacity(0.1),
-                          ),
-                        ),
+                      baseColor: AppColors.primaryDark.withOpacity(0.1),
+                      highlightColor: AppColors.primaryDark.withOpacity(
+                        0.2,
+                      ),
+                      child: Container(
+                        color: AppColors.primaryDark.withOpacity(0.1),
+                      ),
+                    ),
                     errorWidget: (context, url, error) {
                       return Container(
                         decoration: BoxDecoration(
@@ -823,7 +761,7 @@ class _BuyPageState extends State<BuyPage> {
               right: 6,
               child: GestureDetector(
                 onTap: () {
-                  _addToWishlist(pashu);
+                  _addToWishlist(pashu, l10n);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(3),
@@ -856,7 +794,7 @@ class _BuyPageState extends State<BuyPage> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    'Negotiable',
+                    l10n.negotiable,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white,
                       fontSize: 7,
@@ -896,7 +834,7 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   // Wishlist functionality with top snackbar
-  void _addToWishlist(AllPashuModel pashu) async {
+  void _addToWishlist(AllPashuModel pashu, AppLocalizations l10n) async {
     final wishlistVM = Provider.of<AddToWishlistViewModel>(context, listen: false);
 
     final body = {
@@ -930,7 +868,7 @@ class _BuyPageState extends State<BuyPage> {
     if (wishlistVM.errorMessage == null) {
       TopSnackBar.show(
         context,
-        message: '${pashu.animalname ?? 'Animal'} added to wishlist',
+        message: '${pashu.animalname ?? l10n.animal} ${l10n.addedToWishlist}',
         backgroundColor: Colors.green,
         textColor: Colors.white,
         icon: Icons.favorite,
@@ -938,164 +876,13 @@ class _BuyPageState extends State<BuyPage> {
     } else {
       TopSnackBar.show(
         context,
-        message: 'Failed to add to wishlist: ${wishlistVM.errorMessage}',
+        message: '${l10n.failedToAddToWishlist}: ${wishlistVM.errorMessage}',
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,
       );
     }
   }
-
-
-  // Optimized Detail Modal
-  // void _showAnimalDetailModal(AllPashuModel pashu, double distance) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.transparent,
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //         height: MediaQuery.of(context).size.height * 0.85,
-  //         decoration: BoxDecoration(
-  //           color: AppColors.lightSage,
-  //           borderRadius: const BorderRadius.only(
-  //             topLeft: Radius.circular(24),
-  //             topRight: Radius.circular(24),
-  //           ),
-  //         ),
-  //         child: Column(
-  //           children: [
-  //             // Handle
-  //             Container(
-  //               margin: const EdgeInsets.symmetric(vertical: 12),
-  //               width: 50,
-  //               height: 4,
-  //               decoration: BoxDecoration(
-  //                 color: AppColors.primaryDark.withOpacity(0.3),
-  //                 borderRadius: BorderRadius.circular(2),
-  //               ),
-  //             ),
-  //
-  //             // Header
-  //             Padding(
-  //               padding: const EdgeInsets.symmetric(horizontal: 20),
-  //               child: Row(
-  //                 children: [
-  //                   Expanded(
-  //                     child: Text(
-  //                       pashu.animalname ?? 'Animal Details',
-  //                       style: AppTextStyles.heading.copyWith(
-  //                         color: AppColors.primaryDark,
-  //                         fontSize: 20,
-  //                         fontWeight: FontWeight.w700,
-  //                       ),
-  //                       maxLines: 1,
-  //                       overflow: TextOverflow.ellipsis,
-  //                     ),
-  //                   ),
-  //                   IconButton(
-  //                     onPressed: () => Navigator.pop(context),
-  //                     icon: Icon(
-  //                       Icons.close_rounded,
-  //                       color: AppColors.primaryDark,
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //
-  //             // Content with proper overflow handling
-  //             Expanded(
-  //               child: SingleChildScrollView(
-  //                 padding: const EdgeInsets.all(20),
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     // Images Section
-  //                     _buildDetailImages(pashu),
-  //
-  //                     const SizedBox(height: 24),
-  //
-  //                     // Animal Details with overflow protection
-  //                     _buildDetailSection('Animal Information', [
-  //                       _buildDetailRow(
-  //                         'Type',
-  //                         pashu.animatCategory ?? 'Unknown',
-  //                       ),
-  //                       _buildDetailRow('Breed', pashu.breed ?? 'Unknown'),
-  //                       _buildDetailRow(
-  //                         'Age',
-  //                         '${pashu.age ?? 'Unknown'} years',
-  //                       ),
-  //                       _buildDetailRow('Gender', pashu.gender ?? 'Unknown'),
-  //                     ]),
-  //
-  //                     const SizedBox(height: 20),
-  //
-  //                     // Price & Negotiation
-  //                     _buildDetailSection('Pricing', [
-  //                       _buildDetailRow('Price', '₹${pashu.price ?? '0'}'),
-  //                       _buildDetailRow(
-  //                         'Negotiable',
-  //                         (pashu.negotiable?.toLowerCase() == 'yes' ||
-  //                                 pashu.negotiable?.toLowerCase() == 'true')
-  //                             ? 'Yes'
-  //                             : 'No',
-  //                       ),
-  //                     ]),
-  //
-  //                     const SizedBox(height: 20),
-  //
-  //                     // Owner & Location
-  //                     _buildDetailSection('Owner & Location', [
-  //                       _buildDetailRow('Owner', pashu.username ?? 'Unknown'),
-  //                       _buildDetailRow(
-  //                         'Distance',
-  //                         distance < 1
-  //                             ? '${(distance * 1000).toInt()} meters'
-  //                             : '${distance.toStringAsFixed(1)} km',
-  //                       ),
-  //                     ]),
-  //
-  //                     const SizedBox(height: 30),
-  //
-  //                     // Buy Button
-  //                     SizedBox(
-  //                       width: double.infinity,
-  //                       height: 50,
-  //                       child: ElevatedButton(
-  //                         onPressed: () {
-  //                           Navigator.pop(context);
-  //                           _handlePurchase(pashu);
-  //                         },
-  //                         style: ElevatedButton.styleFrom(
-  //                           backgroundColor: AppColors.primaryDark,
-  //                           foregroundColor: AppColors.lightSage,
-  //                           elevation: 4,
-  //                           shape: RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(16),
-  //                           ),
-  //                         ),
-  //                         child: Text(
-  //                           'Contact Seller()',
-  //                           style: AppTextStyles.bodyLarge.copyWith(
-  //                             fontWeight: FontWeight.w600,
-  //                             fontSize: 16,
-  //                             color: AppColors.lightSage,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _buildDetailImages(AllPashuModel pashu) {
     final images = <String>[
@@ -1120,39 +907,25 @@ class _BuyPageState extends State<BuyPage> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child:
-            images.isNotEmpty
-                ? PageView.builder(
-                  itemCount: images.length,
-                  itemBuilder: (context, index) {
-                    return CachedNetworkImage(
-                      imageUrl: images[index],
-                      fit: BoxFit.cover,
-                      placeholder:
-                          (context, url) => Shimmer.fromColors(
-                            baseColor: AppColors.primaryDark.withOpacity(0.1),
-                            highlightColor: AppColors.primaryDark.withOpacity(
-                              0.2,
-                            ),
-                            child: Container(
-                              color: AppColors.primaryDark.withOpacity(0.1),
-                            ),
-                          ),
-                      errorWidget: (context, url, error) {
-                        return Container(
-                          color: AppColors.primaryDark.withOpacity(0.1),
-                          child: Center(
-                            child: Icon(
-                              Icons.pets_rounded,
-                              color: AppColors.primaryDark,
-                              size: 60,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                )
-                : Container(
+        images.isNotEmpty
+            ? PageView.builder(
+          itemCount: images.length,
+          itemBuilder: (context, index) {
+            return CachedNetworkImage(
+              imageUrl: images[index],
+              fit: BoxFit.cover,
+              placeholder:
+                  (context, url) => Shimmer.fromColors(
+                baseColor: AppColors.primaryDark.withOpacity(0.1),
+                highlightColor: AppColors.primaryDark.withOpacity(
+                  0.2,
+                ),
+                child: Container(
+                  color: AppColors.primaryDark.withOpacity(0.1),
+                ),
+              ),
+              errorWidget: (context, url, error) {
+                return Container(
                   color: AppColors.primaryDark.withOpacity(0.1),
                   child: Center(
                     child: Icon(
@@ -1161,7 +934,21 @@ class _BuyPageState extends State<BuyPage> {
                       size: 60,
                     ),
                   ),
-                ),
+                );
+              },
+            );
+          },
+        )
+            : Container(
+          color: AppColors.primaryDark.withOpacity(0.1),
+          child: Center(
+            child: Icon(
+              Icons.pets_rounded,
+              color: AppColors.primaryDark,
+              size: 60,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -1218,7 +1005,7 @@ class _BuyPageState extends State<BuyPage> {
     );
   }
 
-  Widget _buildErrorWidget(AllPashuViewModel viewModel) {
+  Widget _buildErrorWidget(AllPashuViewModel viewModel, AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1230,7 +1017,7 @@ class _BuyPageState extends State<BuyPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            viewModel.error ?? 'Something went wrong',
+            viewModel.error ?? l10n.somethingWentWrong,
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.lightSage.withOpacity(0.7),
             ),
@@ -1245,14 +1032,14 @@ class _BuyPageState extends State<BuyPage> {
               backgroundColor: AppColors.lightSage,
               foregroundColor: AppColors.primaryDark,
             ),
-            child: const Text('Retry'),
+            child: Text(l10n.retry),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildEmptyWidget() {
+  Widget _buildEmptyWidget(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1264,7 +1051,7 @@ class _BuyPageState extends State<BuyPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No animals found',
+            l10n.noAnimalsFound,
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.lightSage.withOpacity(0.7),
             ),
@@ -1272,8 +1059,8 @@ class _BuyPageState extends State<BuyPage> {
           const SizedBox(height: 8),
           Text(
             _selectedCategory != 'All'
-                ? 'Try selecting a different category'
-                : 'Check back later for new listings',
+                ? l10n.trySelectingDifferentCategory
+                : l10n.checkBackLaterForNewListings,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.5),
             ),
@@ -1284,10 +1071,10 @@ class _BuyPageState extends State<BuyPage> {
     );
   }
 
-  void _handlePurchase(AllPashuModel pashu) {
+  void _handlePurchase(AllPashuModel pashu, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Purchase request sent for ${pashu.animalname}'),
+        content: Text('${l10n.purchaseRequestSent} ${pashu.animalname}'),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

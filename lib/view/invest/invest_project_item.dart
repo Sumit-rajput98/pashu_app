@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../model/invest/invest_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../model/invest/invest_model.dart';
 import 'invest_details_page.dart';
 
 class InvestProjectItem extends StatelessWidget {
@@ -10,6 +11,7 @@ class InvestProjectItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bookedRatio = (project.totalSlots - project.availableSlots) / project.totalSlots;
 
     return Padding(
@@ -51,7 +53,11 @@ class InvestProjectItem extends StatelessWidget {
                   children: [
                     Text(
                       project.title,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1E4A59)),
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E4A59)
+                      ),
                     ),
                     const SizedBox(height: 10),
 
@@ -59,16 +65,16 @@ class InvestProjectItem extends StatelessWidget {
                       children: [
                         const Icon(Icons.timelapse, size: 20),
                         const SizedBox(width: 6),
-                        Text("Type: ${project.investmentType}"),
+                        Text("${l10n.type}: ${project.investmentType}"),
                       ],
                     ),
                     const SizedBox(height: 6),
 
                     Row(
-                      children: const [
-                        Icon(Icons.money, size: 20),
-                        SizedBox(width: 6),
-                        Text("Amount: ₹1"),
+                      children: [
+                        const Icon(Icons.money, size: 20),
+                        const SizedBox(width: 6),
+                        Text("${l10n.amount}: ₹1"),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -77,7 +83,7 @@ class InvestProjectItem extends StatelessWidget {
                       children: [
                         const Icon(Icons.calendar_month, size: 20),
                         const SizedBox(width: 6),
-                        Text("Start Date: ${project.projectStartDate.substring(0, 10)}"),
+                        Text("${l10n.startDate}: ${project.projectStartDate.substring(0, 10)}"),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -86,7 +92,7 @@ class InvestProjectItem extends StatelessWidget {
                       children: [
                         const Icon(Icons.hourglass_bottom, size: 20),
                         const SizedBox(width: 6),
-                        Text("Duration: ${project.duration}"),
+                        Text("${l10n.duration}: ${project.duration}"),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -101,7 +107,7 @@ class InvestProjectItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text("${project.totalSlots - project.availableSlots} / ${project.totalSlots} Lots Booked"),
+                    Text("${project.totalSlots - project.availableSlots} / ${project.totalSlots} ${l10n.lotsBooked}"),
                   ],
                 ),
               ),

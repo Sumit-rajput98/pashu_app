@@ -52,4 +52,10 @@ class SharedPrefHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_keyLanguageCode);
   }
+  static Future<void> saveLocation(double latitude, double longitude) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('latitude', latitude);
+    await prefs.setDouble('longitude', longitude);
+  }
+
 }

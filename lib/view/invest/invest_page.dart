@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pashu_app/view/invest/projects_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pashu_app/view/invest/widget/my_investment_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../view_model/pashuVM/get_invest_view_model.dart';
+import 'my_investment_page.dart';
 
 class InvestPage extends StatefulWidget {
   const InvestPage({super.key});
@@ -31,13 +33,12 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
   }
 
   void _handleMyInvestmentTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("My Investment button tapped")),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> MyInvestmentPage()));
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final viewModel = Provider.of<GetInvestViewModel>(context);
 
     return Scaffold(
@@ -50,7 +51,14 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Investment Project', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E4A59), fontSize: 18)),
+                  Text(
+                      l10n.investmentProject,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E4A59),
+                          fontSize: 18
+                      )
+                  ),
                   MyInvestmentButton(onPressed: _handleMyInvestmentTap),
                 ],
               ),
@@ -64,10 +72,10 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
               indicatorColor: const Color(0xFF35C75A),
               indicatorWeight: 3,
               padding: EdgeInsets.zero,
-              tabs: const [
-                Tab(text: 'Upcoming Projects'),
-                Tab(text: 'Live Projects'),
-                Tab(text: 'Completed Projects'),
+              tabs: [
+                Tab(text: l10n.upcomingProjects),
+                Tab(text: l10n.liveProjects),
+                Tab(text: l10n.completedProjects),
               ],
             ),
             Expanded(

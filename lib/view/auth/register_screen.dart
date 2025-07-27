@@ -477,7 +477,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         _showCustomTopSnackbar(
           context: context,
-          message: localizations.otpSentTo.toString().replaceAll('{phoneNumber}', _phoneController.text),
+          message: localizations.otpSentTo(_phoneController.text),
           isError: false,
         );
 

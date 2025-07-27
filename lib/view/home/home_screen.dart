@@ -22,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-
   // Location variables
   String _currentLocation = 'Fetching location...';
   Position? _currentPosition;
@@ -193,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Title
           Text(
-            'Allow Location Access',
+            AppLocalizations.of(context)!.allowLocationAccess,
             style: AppTextStyles.heading.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w700,
@@ -206,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Description
           Text(
-            'We need your location to show nearby livestock, events, and personalized content based on your area.',
+            AppLocalizations.of(context)!.locationDescription,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.8),
               fontSize: 16,
@@ -242,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Icon(Icons.location_on_outlined, size: 24),
                   const SizedBox(width: 12),
                   Text(
-                    'Allow Location Access',
+                    AppLocalizations.of(context)!.allowLocationAccess,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -256,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Privacy Note
           Text(
-            'Your location data is secure and only used to enhance your experience.',
+            AppLocalizations.of(context)!.locationPrivacyNote,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.6),
               fontSize: 12,
@@ -343,12 +342,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Notification/Profile Icon
           GestureDetector(
-            onTap: () async{
-               String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+            onTap: () async {
+              String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfilePage(phoneNumber: phoneNumber ?? ''),
+                  builder:
+                      (context) => ProfilePage(phoneNumber: phoneNumber ?? ''),
                 ),
               );
             },
@@ -525,8 +525,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         const SizedBox(height: 16),
 
                         GestureDetector(
-                          onTap: (){
-                            Provider.of<NavigationController>(context, listen: false).changeTab(4);
+                          onTap: () {
+                            Provider.of<NavigationController>(
+                              context,
+                              listen: false,
+                            ).changeTab(4);
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -579,11 +582,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // Live Races Card
         _buildServiceCard(
           image: 'assets/cowrace.jpg',
-          title: 'Live Races',
-          buttonLabel: 'View Live',
+          title: AppLocalizations.of(context)!.liveRaces,
+          buttonLabel: AppLocalizations.of(context)!.viewLive,
           primaryColor: AppColors.lightSage,
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const LiveRacePage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LiveRacePage()),
+            );
           },
         ),
 
@@ -602,13 +608,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // Animal Insurance Card
         _buildServiceCard(
           image: 'assets/Inlo2.png',
-          title: 'Animal Insurance',
-          subtitle: 'PASHU PARIVAR',
-          buttonLabel: 'Apply Now',
-          badge: 'NEW',
+          title: AppLocalizations.of(context)!.animalInsurance,
+          subtitle: AppLocalizations.of(context)!.appTitle,
+          buttonLabel: AppLocalizations.of(context)!.applyNow,
+          badge: AppLocalizations.of(context)!.newBadge,
           primaryColor: const Color(0xFF4CAF50),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const PashuInsuranceFormPage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PashuInsuranceFormPage(),
+              ),
+            );
           },
         ),
 
@@ -617,13 +628,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // Animal Loan Card
         _buildServiceCard(
           image: 'assets/loan.png',
-          title: 'Pashu Loan',
-          subtitle: 'PASHU PARIVAR',
-          buttonLabel: 'Apply Now',
-          badge: 'NEW',
+          title: AppLocalizations.of(context)!.pashuLoan,
+          subtitle: AppLocalizations.of(context)!.appTitle,
+          buttonLabel: AppLocalizations.of(context)!.applyNow,
+          badge: AppLocalizations.of(context)!.newBadge,
           primaryColor: const Color(0xFF2196F3),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const PashuLoanFormPage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PashuLoanFormPage(),
+              ),
+            );
           },
         ),
       ],
@@ -781,7 +797,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         style: AppTextStyles.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
-                          color: AppColors.lightSage
+                          color: AppColors.lightSage,
                         ),
                       ),
                     ),
@@ -915,7 +931,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                         // Label
                         Text(
-                          'New Animal',
+                          AppLocalizations.of(context)!.newAnimal,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -936,7 +952,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       // Buy button
                       GestureDetector(
                         onTap: () {
-                          Provider.of<NavigationController>(context, listen: false).changeTab(0);
+                          Provider.of<NavigationController>(
+                            context,
+                            listen: false,
+                          ).changeTab(0);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -948,7 +967,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(
-                            'Buy Animal',
+                            AppLocalizations.of(context)!.buyAnimal,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.lightSage,
                               fontWeight: FontWeight.w600,
@@ -1112,7 +1131,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                         // Label
                         Text(
-                          'New Buyers',
+                          AppLocalizations.of(context)!.newBuyers,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -1166,7 +1185,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       // Sell Animal button
                       GestureDetector(
                         onTap: () {
-                          Provider.of<NavigationController>(context, listen: false).changeTab(1);
+                          Provider.of<NavigationController>(
+                            context,
+                            listen: false,
+                          ).changeTab(1);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -1185,7 +1207,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                           child: Text(
-                            'Sell Animal',
+                            AppLocalizations.of(context)!.sellAnimal,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.lightSage,
                               fontWeight: FontWeight.w600,

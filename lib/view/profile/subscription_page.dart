@@ -1,11 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:pashu_app/core/shared_pref_helper.dart';
+import 'package:pashu_app/model/auth/profile_model.dart';
+import 'package:provider/provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../core/app_colors.dart';
 import '../../../core/app_logo.dart';
+import '../../view_model/AuthVM/get_profile_view_model.dart';
 
 class SubscriptionPage extends StatefulWidget {
-  const SubscriptionPage({super.key});
+  final String phoneNumber;
+  const SubscriptionPage({super.key, required this.phoneNumber});
 
   @override
   State<SubscriptionPage> createState() => _SubscriptionPageState();
@@ -17,55 +28,19 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
   final TextEditingController _amountController = TextEditingController();
   String _addMoneyAmount = '0';
 
-  // Subscription plans data - Fixed pricing without monthly/annual toggle
-  final List<Map<String, dynamic>> _subscriptionPlans = [
-    {
-      'name': 'Diamond Plan',
-      'icon': Icons.diamond_rounded,
-      'color': const Color(0xFF6C63FF),
-      'features': [
-        'Unlimited Pashu Profile Contact',
-        'Unlimited Free Pashu Listings',
-        'Priority Customer Support',
-        'Advanced Analytics',
-        'Premium Badge'
-      ],
-      'price': 365,
-      'period': 'Year',
-      'popular': false, // Removed popular badge
-    },
-    {
-      'name': 'Gold Plan',
-      'icon': Icons.star_rounded,
-      'color': const Color(0xFFFFB800),
-      'features': [
-        'Unlimited Pashu Profile Contact',
-        '10 Free Pashu Listings',
-        'Standard Customer Support',
-        'Basic Analytics'
-      ],
-      'price': 140,
-      'period': '3 Months',
-      'popular': false,
-    },
-    {
-      'name': 'Silver Plan',
-      'icon': Icons.grade_rounded,
-      'color': const Color(0xFF64748B),
-      'features': [
-        'Unlimited Pashu Profile Contact',
-        '2 Free Pashu Listings',
-        'Email Support'
-      ],
-      'price': 49,
-      'period': 'Month',
-      'popular': false,
-    },
-  ];
+  late Razorpay _razorpay;
+  late Result userData;
 
   @override
   void initState() {
     super.initState();
+    Provider.of<GetProfileViewModel>(context, listen: false)
+        .getProfile(widget.phoneNumber);
+    userData = Provider.of<GetProfileViewModel>(context, listen: false).profile!.result!.first;
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -89,24 +64,75 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
   @override
   void dispose() {
+    _razorpay.clear();
     _animationController.dispose();
     _amountController.dispose();
     super.dispose();
   }
 
+  // Get localized subscription plans
+  List<Map<String, dynamic>> getSubscriptionPlans(AppLocalizations l10n) {
+    return [
+      {
+        'name': l10n.diamondPlan,
+        'icon': Icons.diamond_rounded,
+        'color': const Color(0xFF6C63FF),
+        'features': [
+          l10n.unlimitedPashuProfileContact,
+          l10n.unlimitedFreePashuListings,
+          l10n.priorityCustomerSupport,
+          l10n.advancedAnalytics,
+          l10n.premiumBadge
+        ],
+        'price': 365,
+        'period': l10n.year,
+        'popular': false,
+      },
+      {
+        'name': l10n.goldPlan,
+        'icon': Icons.star_rounded,
+        'color': const Color(0xFFFFB800),
+        'features': [
+          l10n.unlimitedPashuProfileContact,
+          l10n.freePashuListings10,
+          l10n.standardCustomerSupport,
+          l10n.basicAnalytics
+        ],
+        'price': 140,
+        'period': l10n.months3,
+        'popular': false,
+      },
+      {
+        'name': l10n.silverPlan,
+        'icon': Icons.grade_rounded,
+        'color': const Color(0xFF64748B),
+        'features': [
+          l10n.unlimitedPashuProfileContact,
+          l10n.freePashuListings2,
+          l10n.emailSupport
+        ],
+        'price': 49,
+        'period': l10n.month,
+        'popular': false,
+      },
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.primaryDark,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(l10n),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildHeader(),
-              _buildSubscriptionPlans(), // Removed pricing toggle
-              _buildAddMoneySection(),
+              _buildHeader(l10n),
+              _buildSubscriptionPlans(l10n),
+              _buildAddMoneySection(l10n),
               const SizedBox(height: 30),
             ],
           ),
@@ -115,7 +141,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
       backgroundColor: AppColors.primaryDark,
       elevation: 0,
@@ -139,7 +165,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           const AppLogo(size: 40),
           const SizedBox(width: 12),
           Text(
-            'Subscription Plans',
+            l10n.subscriptionPlans,
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -163,7 +189,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             ),
           ),
           onPressed: () {
-            _showHelpDialog();
+            _showHelpDialog(l10n);
           },
         ),
         const SizedBox(width: 16),
@@ -171,7 +197,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -206,7 +232,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
           // Title
           Text(
-            'Choose Your Plan',
+            l10n.chooseYourPlan,
             style: AppTextStyles.heading.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w800,
@@ -219,7 +245,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
           // Subtitle
           Text(
-            'Unlock premium features and grow your livestock business with our subscription plans',
+            l10n.unlockPremiumFeatures,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.8),
               fontSize: 16,
@@ -232,16 +258,18 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  Widget _buildSubscriptionPlans() {
+  Widget _buildSubscriptionPlans(AppLocalizations l10n) {
+    final subscriptionPlans = getSubscriptionPlans(l10n);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
-        children: _subscriptionPlans.map((plan) => _buildPlanCard(plan)).toList(),
+        children: subscriptionPlans.map((plan) => _buildPlanCard(plan, l10n)).toList(),
       ),
     );
   }
 
-  Widget _buildPlanCard(Map<String, dynamic> plan) {
+  Widget _buildPlanCard(Map<String, dynamic> plan, AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -364,7 +392,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  _handleSubscription(plan);
+                  _handleSubscription(plan, l10n);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: plan['color'], // Use plan color for better visibility
@@ -376,7 +404,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                   ),
                 ),
                 child: Text(
-                  'Choose Plan', // Consistent button text
+                  l10n.choosePlan,
                   style: AppTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.w700, // Bolder text for better visibility
                     fontSize: 16,
@@ -391,7 +419,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  Widget _buildAddMoneySection() {
+  Widget _buildAddMoneySection(AppLocalizations l10n) {
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(24),
@@ -429,7 +457,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Add Money to Your Wallet',
+                  l10n.addMoneyToYourWallet,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.lightSage,
                     fontSize: 18,
@@ -443,7 +471,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           const SizedBox(height: 16),
 
           Text(
-            'Add funds to your wallet and pay for subscriptions seamlessly. Your wallet can be used across all our services.',
+            l10n.addFundsToWallet,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.lightSage.withOpacity(0.8),
               fontSize: 14,
@@ -469,7 +497,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                 fontSize: 16,
               ),
               decoration: InputDecoration(
-                hintText: 'Enter Amount e.g. 500',
+                hintText: l10n.enterAmountEg500,
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.lightSage.withOpacity(0.6),
                 ),
@@ -495,10 +523,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             height: 50,
             child: ElevatedButton.icon(
               onPressed: () {
-                _handleAddMoney();
+                _handleAddMoney(l10n);
               },
               icon: const Icon(Icons.add_rounded),
-              label: Text('Add ₹$_addMoneyAmount'), // Dynamic amount display
+              label: Text(l10n.addAmount(_addMoneyAmount)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
@@ -532,7 +560,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Tip: Your wallet can be used to see the contact details instantly.',
+                    l10n.tipWalletContact,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.blue,
                       fontSize: 12,
@@ -547,7 +575,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  void _handleSubscription(Map<String, dynamic> plan) {
+  void _handleSubscription(Map<String, dynamic> plan, AppLocalizations l10n) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -596,7 +624,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                     const SizedBox(height: 16),
 
                     Text(
-                      'Subscribe to ${plan['name']}',
+                      l10n.subscribeToPlan( plan['name']),
                       style: AppTextStyles.heading.copyWith(
                         color: AppColors.primaryDark,
                         fontSize: 20,
@@ -608,7 +636,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                     const SizedBox(height: 8),
 
                     Text(
-                      'You will be charged ₹${plan['price']} for this ${plan['period'].toLowerCase()} subscription.',
+                      l10n.chargedForSubscription(plan['price'].toString(),plan['period'].toLowerCase()),
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.primaryDark.withOpacity(0.7),
                       ),
@@ -632,7 +660,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                         onPressed: () {
                           Navigator.pop(context);
                           // Handle payment
-                          _showPaymentSuccessDialog(plan);
+                          _showPaymentSuccessDialog(plan, l10n);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: plan['color'],
@@ -642,9 +670,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: const Text(
-                          'Confirm Subscription',
-                          style: TextStyle(
+                        child: Text(
+                          l10n.confirmSubscription,
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),
@@ -657,7 +685,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        'Cancel',
+                        l10n.cancel,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.primaryDark.withOpacity(0.6),
                         ),
@@ -673,35 +701,124 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  void _handleAddMoney() {
-    if (_addMoneyAmount == '0' || _addMoneyAmount.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please enter a valid amount'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
+  void _handleAddMoney(AppLocalizations l10n) async {
+    final amt = double.tryParse(_amountController.text);
+    if (amt == null || amt <= 0) {
+      Fluttertoast.showToast(
+        msg: l10n.pleaseEnterValidAmount,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        gravity: ToastGravity.TOP,
       );
       return;
     }
 
-    // Handle add money functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Adding ₹$_addMoneyAmount to wallet'),
+    try {
+      final res = await http.post(
+        Uri.parse('https://pashuparivar.com/api/payment/create-order'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'amount': amt}),
+      );
+      String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+
+      final jsonRes = json.decode(res.body);
+      final orderId = jsonRes['orderId'];
+
+      var options = {
+        'key': 'rzp_live_gm2iOnFy9nUmUx',
+        'amount': (amt * 100).toInt(), // amount in paise
+        'name': 'Pashu Parivar',
+        'description': 'Add Wallet Balance in Pashu Parivar',
+        'order_id': orderId,
+        'prefill': {
+          'name': userData.username,
+          'contact': userData.number,
+          'email': userData.emailid ?? '',
+        },
+        'theme': {'color': '#A5BE7E'},
+        'image': 'https://pashuparivar.com/uploads/newlogo.png',
+      };
+
+      _razorpay.open(options);
+    } catch (e) {
+      print("Error: $e");
+      Fluttertoast.showToast(
+        msg: l10n.couldNotInitiatePayment,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        gravity: ToastGravity.TOP,
+      );
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    final l10n = AppLocalizations.of(context)!;
+    final amt = double.tryParse(_amountController.text) ?? 0;
+    final res = await http.post(
+      Uri.parse('https://pashuparivar.com/api/payment/verify-payment'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'userId': userData.id,
+        'amount': amt,
+        'razorpay_order_id': response.orderId,
+        'razorpay_payment_id': response.paymentId,
+        'razorpay_signature': response.signature,
+      }),
+    );
+
+    final jsonRes = json.decode(res.body);
+
+    if (jsonRes['success']) {
+      Fluttertoast.showToast(
+        msg: l10n.paymentCompletedSuccessfully,
         backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
+        textColor: Colors.white,
+        gravity: ToastGravity.TOP,
+      );
+      Navigator.pop(context); // or navigate to Home
+    } else {
+      Fluttertoast.showToast(
+        msg: l10n.paymentVerificationFailed,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        gravity: ToastGravity.TOP,
+      );
+    }
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    final l10n = AppLocalizations.of(context)!;
+    String errorMsg = l10n.somethingWentWrongPayment;
+    try {
+      final parsed = json.decode(response.message ?? "");
+      final reason = parsed['error']['reason'];
+      final description = parsed['error']['description'];
+      if (reason == 'payment_cancelled') {
+        errorMsg = l10n.paymentCancelled;
+      } else if (description != null) {
+        errorMsg = description;
+      }
+    } catch (e) {}
+
+    Fluttertoast.showToast(
+      msg: "${l10n.paymentFailed}: $errorMsg",
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      gravity: ToastGravity.TOP,
     );
   }
 
-  void _showPaymentSuccessDialog(Map<String, dynamic> plan) {
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    final l10n = AppLocalizations.of(context)!;
+    Fluttertoast.showToast(
+      msg: "${l10n.externalWalletSelected}: ${response.walletName}",
+      backgroundColor: Colors.orange,
+      textColor: Colors.white,
+      gravity: ToastGravity.TOP,
+    );
+  }
+
+  void _showPaymentSuccessDialog(Map<String, dynamic> plan, AppLocalizations l10n) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -730,7 +847,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               const SizedBox(height: 20),
 
               Text(
-                'Subscription Successful!',
+                l10n.subscriptionSuccessful,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 20,
@@ -742,7 +859,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               const SizedBox(height: 12),
 
               Text(
-                'You have successfully subscribed to ${plan['name']}. Enjoy all premium features!',
+                l10n.subscriptionSuccessMessage(plan['name']),
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.7),
                 ),
@@ -765,7 +882,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child: Text(l10n.continueA),
                 ),
               ),
             ],
@@ -775,7 +892,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     );
   }
 
-  void _showHelpDialog() {
+  void _showHelpDialog(AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -793,7 +910,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               ),
               const SizedBox(width: 12),
               Text(
-                'Subscription Help',
+                l10n.subscriptionHelp,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -806,12 +923,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '• Diamond Plan: ₹365/Year\n'
-                    '• Gold Plan: ₹140/3 Months\n'
-                    '• Silver Plan: ₹49/Month\n'
-                    '• Cancel anytime from your profile\n'
-                    '• All features unlock immediately\n'
-                    '• 24/7 customer support included',
+                l10n.helpContent,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.8),
                   height: 1.5,
@@ -823,7 +935,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Got it',
+                l10n.gotIt,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: Colors.blue,
                   fontWeight: FontWeight.w600,

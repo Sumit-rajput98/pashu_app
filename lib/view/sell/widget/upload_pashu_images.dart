@@ -3,30 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pashu_app/demo.dart';
 import 'custom_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadPashuImages extends StatefulWidget {
   final File? imageOne;
   final File? imageTwo;
-   VoidCallback  pickImageOne;
-  VoidCallback? pickImageTwo;
-   UploadPashuImages({super.key, this.imageOne, this.imageTwo, required this.pickImageOne, this.pickImageTwo});
+  final VoidCallback pickImageOne;
+  final VoidCallback? pickImageTwo;
+  const UploadPashuImages({
+    super.key,
+    this.imageOne,
+    this.imageTwo,
+    required this.pickImageOne,
+    this.pickImageTwo,
+  });
 
   @override
   State<UploadPashuImages> createState() => _UploadPashuImagesState();
 }
 
 class _UploadPashuImagesState extends State<UploadPashuImages> {
-
-
   Widget buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(top: 12, bottom: 4),
       child: Text(
         text,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -36,35 +38,29 @@ class _UploadPashuImagesState extends State<UploadPashuImages> {
 
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 12),
-      child: Image.file(
-        imageFile,
-        height: 100,
-        width: 100,
-        fit: BoxFit.cover,
-      ),
+      child: Image.file(imageFile, height: 100, width: 100, fit: BoxFit.cover),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        buildLabel('Upload Your Pashu Image One'),
+        buildLabel(localizations.uploadPashuImageOne),
         CustomButton(
-          text: 'SELECT PICTURE ONE',
+          text: localizations.selectPictureOne,
           onPressed: widget.pickImageOne,
         ),
         buildImagePreview(widget.imageOne),
 
-        buildLabel('Upload Your Pashu Image Two'),
+        buildLabel(localizations.uploadPashuImageTwo),
         CustomButton(
-          text: 'SELECT PICTURE TWO',
+          text: localizations.selectPictureTwo,
           onPressed: widget.pickImageTwo!,
         ),
         buildImagePreview(widget.imageTwo),
-
-
       ],
     );
   }

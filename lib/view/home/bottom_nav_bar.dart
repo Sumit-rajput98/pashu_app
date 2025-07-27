@@ -9,6 +9,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pashu_app/view/invest/invest_page.dart';
 import 'package:pashu_app/view/sell/sell_page.dart';
 
+import '../../core/language_helper.dart';
+import '../../core/locale_helper.dart';
 import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
 // Add your NavigationController import
@@ -22,7 +24,118 @@ class CustomBottomNavScreen extends StatefulWidget {
 
 class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
   String phone = '';
+  void _showLanguageDialog(BuildContext context) async {
+    String? selectedLanguage = await LanguageHelper.getLocale() ?? 'en';
 
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: const Color(0xFFE9F0DA),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.selectLanguage,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        itemCount: LanguageHelper.languageOptions.length,
+                        itemBuilder: (context, index) {
+                          final lang = LanguageHelper.languageOptions[index];
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedLanguage = lang['id'];
+                              });
+                            },
+                            child: Container(
+                              height: 48,
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.symmetric(vertical: 4),
+                              decoration: BoxDecoration(
+                                color:
+                                    selectedLanguage == lang['id']
+                                        ? const Color(0xFFB4D5A6)
+                                        : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                lang['label']!,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color:
+                                      selectedLanguage == lang['id']
+                                          ? const Color(0xFF1E4A59)
+                                          : Colors.black87,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            selectedLanguage != null
+                                ? const Color(0xFF1E4A59)
+                                : Colors.grey[400],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed:
+                          selectedLanguage == null
+                              ? null
+                              : () async {
+                                if (!context.mounted) return;
+                                Provider.of<LocaleProvider>(
+                                  context,
+                                  listen: false,
+                                ).setLocale(selectedLanguage!);
+                                Navigator.of(context).pop();
+                              },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 10,
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.ok,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 
   void initializeUserData() async {
     phone = await SharedPrefHelper.getPhoneNumber() ?? '';
@@ -39,7 +152,6 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
   @override
   Widget build(BuildContext context) {
     // Only build pages if we have the required data
-
 
     return Consumer<NavigationController>(
       builder: (context, navController, child) {
@@ -76,42 +188,51 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
-                        Image.asset(
-                          'assets/newlogo.png',
-                          height: 60,
-                        ),
+                        Image.asset('assets/newlogo.png', height: 60),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Pashu Parivar',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.appTitle,
+                          style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF244B5C),
                           ),
                         ),
                         const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFF244B5C)),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Text(
-                            'हि/E/ತ',
-                            style: TextStyle(color: Color(0xFF244B5C)),
+                        GestureDetector(
+                          onTap: () {
+                            _showLanguageDialog(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xFF244B5C),
+                              ),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.languageShort,
+                              style: const TextStyle(color: Color(0xFF244B5C)),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
                           onPressed: () async {
-                            String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+                            String? phoneNumber =
+                                await SharedPrefHelper.getPhoneNumber();
                             if (mounted) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProfilePage(
-                                    phoneNumber: phoneNumber ?? '',
-                                  ),
+                                  builder:
+                                      (context) => ProfilePage(
+                                        phoneNumber: phoneNumber ?? '',
+                                      ),
                                 ),
                               );
                             }
@@ -129,20 +250,30 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
               ),
             ),
             body: pages[navController.selectedIndex],
-            bottomNavigationBar: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFC2CE9A),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+            extendBody: true,
+            bottomNavigationBar: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFC2CE9A),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 10), // Increased padding for better look
+                child: SafeArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      5,
+                          (index) => _buildNavItem(index, navController),
+                    ),
+                  ),
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(5, (index) => _buildNavItem(index, navController)),
-              ),
             ),
+
+
           ),
         );
       },
@@ -162,8 +293,8 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
     final labels = [
       localizations.buyAnimal,
       localizations.sellAnimal,
-      'Home',
-      'Wishlist',
+      localizations.homeScreen,
+      localizations.wishlist,
       localizations.investInFarming,
     ];
 
@@ -190,7 +321,8 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                   style: TextStyle(
                     fontSize: 12,
                     color: isSelected ? AppColors.primaryDark : Colors.white,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

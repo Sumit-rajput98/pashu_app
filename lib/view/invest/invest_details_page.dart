@@ -9,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../model/invest/invest_model.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InvestDetailsPage extends StatefulWidget {
   final InvestModel project;
@@ -40,7 +40,6 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
     super.dispose();
   }
 
-
   void incrementLots() {
     if (selectedLots < widget.project.availableSlots) {
       setState(() {
@@ -63,7 +62,9 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
 
     try {
       final verifyRes = await http.post(
-        Uri.parse('https://pashuparivar.com/api/payment/verify-investment-payment'),
+        Uri.parse(
+          'https://pashuparivar.com/api/payment/verify-investment-payment',
+        ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "userId": 1, // replace with actual userId
@@ -89,13 +90,19 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
           }),
         );
 
-        Fluttertoast.showToast(msg: "Payment completed successfully!");
+        Fluttertoast.showToast(
+          msg: AppLocalizations.of(context)!.paymentCompletedSuccessfully,
+        );
         // Navigate or update state as needed
       } else {
-        Fluttertoast.showToast(msg: "Payment verification failed");
+        Fluttertoast.showToast(
+          msg: AppLocalizations.of(context)!.paymentVerificationFailed,
+        );
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: "Error verifying payment");
+      Fluttertoast.showToast(
+        msg: AppLocalizations.of(context)!.errorVerifyingPayment,
+      );
     }
   }
 
@@ -123,9 +130,9 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
         'prefill': {
           'name': 'Demo User', // Replace with actual
           'contact': '9999999999',
-          'email': 'demo@pashuparivar.com'
+          'email': 'demo@pashuparivar.com',
         },
-        'theme': {'color': '#A5BE7E'}
+        'theme': {'color': '#A5BE7E'},
       };
 
       _razorpay.open(options);
@@ -134,15 +141,15 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
     }
   }
 
-
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(msg: "Payment failed: ${response.message}");
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
-    Fluttertoast.showToast(msg: "External Wallet Selected: ${response.walletName}");
+    Fluttertoast.showToast(
+      msg: "External Wallet Selected: ${response.walletName}",
+    );
   }
-
 
   Future<void> openPdfInBrowser(String url) async {
     final uri = Uri.parse(url);
@@ -176,7 +183,6 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Project Image
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -216,7 +222,10 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
                     children: [
                       Icon(Icons.picture_as_pdf),
                       SizedBox(width: 8),
-                      Text("Project Report", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        "Project Report",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -228,11 +237,12 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        final pdfUrl = "https://pashuparivar.com/uploads/${project.projectReport}";
+                        final pdfUrl =
+                            "https://pashuparivar.com/uploads/${project.projectReport}";
                         openPdfInBrowser(pdfUrl);
                       },
 
-                        icon: const Icon(Icons.download),
+                      icon: const Icon(Icons.download),
                       label: const Text("Download Report"),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange.shade700,

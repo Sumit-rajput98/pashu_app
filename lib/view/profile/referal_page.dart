@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pashu_app/view/profile/referal_code_container.dart';
+
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 
@@ -278,55 +279,7 @@ Download now: $referralUrl
           const SizedBox(height: 20),
 
           // Referral Code Display
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppColors.primaryDark.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: AppColors.primaryDark.withOpacity(0.2),
-                width: 2,
-              ),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  widget.referralCode,
-                  style: AppTextStyles.heading.copyWith(
-                    color: AppColors.primaryDark,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 2.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 16),
-
-                // Copy Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      _copyToClipboard(widget.referralCode);
-                    },
-                    icon: const Icon(Icons.copy_rounded, size: 18),
-                    label: const Text('Copy Code'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryDark,
-                      foregroundColor: Colors.white,
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ReferralCodeContainer(),
         ],
       ),
     );
@@ -751,7 +704,7 @@ Download now: $referralUrl
   void _shareReferralLink() async {
     final sharePlus = SharePlus.instance;
     await sharePlus.share(
-      ShareParams(title: "",text: shareMessage)
+        ShareParams(title: "",text: shareMessage)
     );
   }
 
@@ -760,7 +713,7 @@ Download now: $referralUrl
 
     if (await canLaunchUrl(whatsappUrl)) {
       await launchUrl(whatsappUrl);
-    } 
+    }
   }
 
 
