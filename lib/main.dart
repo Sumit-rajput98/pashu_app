@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
+import 'package:pashu_app/view_model/AuthVM/verify_register_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -52,6 +54,8 @@ class AppInitializer extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GetInvestViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationController()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()..loadSavedLocale()),
+        ChangeNotifierProvider(create: (_) => VerifyRegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => RequestOtpViewRegisterModel()),
       ],
       child: const MyApp(),
     );

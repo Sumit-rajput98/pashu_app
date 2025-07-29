@@ -2,8 +2,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
+import 'package:pashu_app/view/auth/login_screen.dart';
 import 'package:pashu_app/view/home/bottom_nav_bar.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
+import 'package:pashu_app/view_model/AuthVM/request_otp_view_model.dart';
+import 'package:pashu_app/view_model/AuthVM/verify_register_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/app_colors.dart';
@@ -12,24 +15,23 @@ import '../../core/primary_button.dart';
 import '../../core/secandory_button.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
-import '../../view_model/AuthVM/request_otp_view_model.dart';
 import '../../view_model/AuthVM/verify_otp_view_model.dart';
 
-class OTPScreen extends StatefulWidget {
+class OtpScreenRegister extends StatefulWidget {
   final String phoneNumber;
-  final bool isRegistration;
+  final String name;
+  final String? refCode;
 
-  const OTPScreen({
+  const OtpScreenRegister({
     super.key,
-    required this.phoneNumber,
-    this.isRegistration = false,
+    required this.phoneNumber, required this.name, this.refCode,
   });
 
   @override
-  State<OTPScreen> createState() => _OTPScreenState();
+  State<OtpScreenRegister> createState() => _OtpScreenRegisterState();
 }
 
-class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
+class _OtpScreenRegisterState extends State<OtpScreenRegister> with TickerProviderStateMixin {
   final List<TextEditingController> _otpControllers =
   List.generate(6, (index) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
@@ -122,24 +124,20 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Wrap OTP card with Consumer
-                    Consumer<VerifyOtpViewModel>(
+                    Consumer<VerifyRegisterViewModel>(
                       builder: (context, viewModel, _) {
-                        // Handle verification success
+
                         if (viewModel.isVerified) {
-                          SharedPrefHelper.saveUserDetails(
-                            username: viewModel.response?.result?.first.username ?? 'null',
-                            phoneNumber: viewModel.response?.result?.first.number ?? '',
-                            isLoggedIn: true,
-                          );
+
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             _showCustomTopSnackbar(
                               context: context,
-                              message: localizations.successfulLogin,
+                              message: "Registered Successfully",
                               isError: false,
                             );
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => const CustomBottomNavScreen()),
+                              MaterialPageRoute(builder: (context) =>  LoginScreen()),(r)=>false
                             );
                             viewModel.resetVerification();
                           });
@@ -148,14 +146,12 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                         // Handle verification failure
                         if (viewModel.errorMessage != null) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-
                             _showCustomTopSnackbar(
                               context: context,
-                              message:viewModel.errorMessage!,
+                              message: viewModel.response?.message ?? viewModel.errorMessage ?? 'Verification Failed, Try Again',
                               isError: true,
                             );
                             viewModel.clearError();
-
                           });
                         }
 
@@ -180,7 +176,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildOTPCard(VerifyOtpViewModel viewModel, AppLocalizations localizations) {
+  Widget _buildOTPCard(VerifyRegisterViewModel viewModel, AppLocalizations localizations) {
     return Hero(
       tag: 'otp_card',
       child: Material(
@@ -435,12 +431,12 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
     return true;
   }
 
-  void _handleLogin(VerifyOtpViewModel viewModel, AppLocalizations localizations) async {
+  void _handleLogin(VerifyRegisterViewModel viewModel, AppLocalizations localizations) async {
     if (!_validateOTP(localizations)) return;
 
     HapticFeedback.lightImpact();
     final otp = _getOTPValue();
-    viewModel.verifyOtp(widget.phoneNumber, otp);
+    viewModel.verifyOtp(widget.phoneNumber, otp, widget.name, widget.refCode);
   }
 
   void _handleResendOTP(AppLocalizations localizations) async {
@@ -483,6 +479,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
       }
     }
   }
+
 
   void _showCustomTopSnackbar({
     required BuildContext context,

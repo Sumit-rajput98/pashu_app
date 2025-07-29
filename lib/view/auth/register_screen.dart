@@ -3,6 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
+import 'package:pashu_app/view/auth/otp_screen_register.dart';
+import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
+import 'package:pashu_app/view_model/AuthVM/request_otp_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -24,7 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _referralController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+  bool _hasNavigated = false;
 
   @override
   void dispose() {
@@ -107,126 +111,164 @@ class _RegisterScreenState extends State<RegisterScreen> {
       tag: 'register_card',
       child: Material(
         color: Colors.transparent,
-        child: Container(
-          width: double.infinity,
-          constraints: const BoxConstraints(
-            maxWidth: 400,
-          ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.lightSage,
-                AppColors.lightSage.withOpacity(0.95),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 30,
-                offset: const Offset(0, 15),
-                spreadRadius: 5,
+        child: Consumer<RequestOtpViewRegisterModel>(
+          builder: (context, viewModel,_) {
+
+
+            // Check both success and consumed status
+            if (viewModel.errorMessage != null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _showCustomTopSnackbar(
+                  context: context,
+                  message: viewModel.response?.message ?? viewModel.errorMessage ??'Verification Failed',
+                  isError: true,
+                );
+              });
+            }
+
+            if (viewModel.response?.success == true) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>OtpScreenRegister(phoneNumber: _phoneController.text, name: _nameController.text,refCode: _referralController.text,),
+                  ),
+                );
+                viewModel.resetState();
+                _showCustomTopSnackbar(
+                  context: context,
+                  message: localizations.otpSentTo(_phoneController.text),
+                  isError: false,
+                );
+              });
+            }
+
+
+
+
+            return Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(
+                maxWidth: 400,
               ),
-              BoxShadow(
-                color: AppColors.lightSage.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(28),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Padding(
-                padding: EdgeInsets.all(
-                  MediaQuery.of(context).size.width > 600 ? 40.0 : 32.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.lightSage,
+                    AppColors.lightSage.withOpacity(0.95),
+                  ],
                 ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Logo section
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.lightSage.withOpacity(0.3),
-                              blurRadius: 30,
-                              spreadRadius: 10,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 30,
+                    offset: const Offset(0, 15),
+                    spreadRadius: 5,
+                  ),
+                  BoxShadow(
+                    color: AppColors.lightSage.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Padding(
+                    padding: EdgeInsets.all(
+                      MediaQuery.of(context).size.width > 600 ? 40.0 : 32.0,
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Logo section
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.lightSage.withOpacity(0.3),
+                                  blurRadius: 30,
+                                  spreadRadius: 10,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: AppLogo(
-                          size: MediaQuery.of(context).size.width > 600 ? 120 : 100,
-                        ),
+                            child: AppLogo(
+                              size: MediaQuery.of(context).size.width > 600 ? 120 : 100,
+                            ),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Register Now section with divider
+                          _buildSectionDivider(localizations.registerNow),
+
+                          const SizedBox(height: 32),
+
+                          // Name Input
+                          _buildInputField(
+                            controller: _nameController,
+                            hintText: localizations.enterYourName,
+                            prefixIcon: Icons.person_outline_rounded,
+                            keyboardType: TextInputType.name,
+                            localizations: localizations,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Phone Input
+                          _buildPhoneInputSection(localizations),
+
+                          const SizedBox(height: 20),
+
+                          // Referral Code Input
+                          _buildInputField(
+                            controller: _referralController,
+                            hintText: localizations.enterReferralCode,
+                            prefixIcon: Icons.card_giftcard_outlined,
+                            keyboardType: TextInputType.text,
+                            isOptional: true,
+                            localizations: localizations,
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Get OTP Button
+                          PrimaryButton(
+                            text: localizations.sendOTP,
+                            onPressed: () => viewModel.isLoading ? null : _handleGetOTP(localizations,viewModel),
+                            isLoading: viewModel.isLoading,
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // OR divider
+                          _buildOrDivider(localizations),
+
+                          const SizedBox(height: 16),
+
+                          // Sign In Link
+                          SecondaryButton(
+                            text: localizations.alreadyHaveAccount,
+                            onPressed: _handleSignIn,
+                          ),
+                        ],
                       ),
-
-                      const SizedBox(height: 32),
-
-                      // Register Now section with divider
-                      _buildSectionDivider(localizations.registerNow),
-
-                      const SizedBox(height: 32),
-
-                      // Name Input
-                      _buildInputField(
-                        controller: _nameController,
-                        hintText: localizations.enterYourName,
-                        prefixIcon: Icons.person_outline_rounded,
-                        keyboardType: TextInputType.name,
-                        localizations: localizations,
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Phone Input
-                      _buildPhoneInputSection(localizations),
-
-                      const SizedBox(height: 20),
-
-                      // Referral Code Input
-                      _buildInputField(
-                        controller: _referralController,
-                        hintText: localizations.enterReferralCode,
-                        prefixIcon: Icons.card_giftcard_outlined,
-                        keyboardType: TextInputType.text,
-                        isOptional: true,
-                        localizations: localizations,
-                      ),
-
-                      const SizedBox(height: 28),
-
-                      // Get OTP Button
-                      PrimaryButton(
-                        text: localizations.getOTP,
-                        onPressed: _isLoading ? null : () => _handleGetOTP(localizations),
-                        isLoading: _isLoading,
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // OR divider
-                      _buildOrDivider(localizations),
-
-                      const SizedBox(height: 16),
-
-                      // Sign In Link
-                      SecondaryButton(
-                        text: localizations.alreadyHaveAccount,
-                        onPressed: _handleSignIn,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
+
         ),
       ),
     );
@@ -457,59 +499,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return true;
   }
 
-  void _handleGetOTP(AppLocalizations localizations) async {
+  void _handleGetOTP(AppLocalizations localizations, RequestOtpViewRegisterModel viewModel) async {
     if (!_validateForm(localizations)) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
     HapticFeedback.lightImpact();
-
-    try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-
-        _showCustomTopSnackbar(
-          context: context,
-          message: localizations.otpSentTo(_phoneController.text),
-          isError: false,
-        );
-
-        // Navigate to OTP screen after 1 second
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OTPScreen(
-                phoneNumber: _phoneController.text,
-                isRegistration: true, // Add this parameter to OTP screen
-              ),
-            ),
-          );
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-
-        _showCustomTopSnackbar(
-          context: context,
-          message: localizations.failedToSendOTP,
-          isError: true,
-        );
-      }
-    }
-  }
-
-  void _handleSignIn() {
+    viewModel.resetState(); // Reset state before new request
+    await viewModel.requestOtp(_phoneController.text);
+  } void _handleSignIn() {
     HapticFeedback.selectionClick();
     Navigator.pop(context); // Go back to login screen
   }

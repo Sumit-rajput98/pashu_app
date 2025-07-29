@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 _showCustomTopSnackbar(
                   context: context,
-                  message: viewModel.errorMessage!,
+                  message: viewModel.response?.message ?? viewModel.errorMessage!,
                   isError: true,
                 );
               });
