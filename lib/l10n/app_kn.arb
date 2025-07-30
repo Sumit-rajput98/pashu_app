@@ -23,7 +23,7 @@
   "comingSoon": "ಶೀಘ್ರದಲ್ಲಿ ಬರುತ್ತದೆ...",
   "firstUsers": "ಮೊದಲ 10,000 ಬಳಕೆದಾರರಿಗೆ ಸಿಗುತ್ತದೆ",
   "referralBonusOnly": "ರೆಫರಲ್ ಬೋನಸ್ – ಕೇವಲ",
-  "slotsLeft": "ಸ್ಲಾಟ್‌ಗಳು ಉಳಿದಿವೆ!",
+  "slotsLeft": "{slot} ಸ್ಲಾಟ್‌ಗಳು ಉಳಿದಿವೆ!",
   "applyNow": "ಈಗಲೇ ಅರ್ಜಿ ಹಾಕಿ",
   "pashuLoan": "ಪಶು ಸಾಲ",
   "pashuInsurance": "ಪಶು ವಿಮೆ",
@@ -1014,7 +1014,8 @@
   "emailIsRequired": "ಇಮೇಲ್ ಅಗತ್ಯವಿದೆ",
   "pleaseEnterValidEmail": "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
   "messageIsRequired": "ಸಂದೇಶ ಅಗತ್ಯವಿದೆ",
-  "messageMustBeAtLeast10Characters": "ಸಂದೇಶ ಕನಿಷ್ಠ 10 ಅಕ್ಷರಗಳಾಗಿರಬೇಕು"
+  "messageMustBeAtLeast10Characters": "ಸಂದೇಶ ಕನಿಷ್ಠ 10 ಅಕ್ಷರಗಳಾಗಿರಬೇಕು",
+  "invest": "ಕೃಷಿ-ಪಶುಸಂಗೋಪನೆಯಲ್ಲಿ ಹೂಡಿಕೆ ಮಾಡಿ"
 
 
 }

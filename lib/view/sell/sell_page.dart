@@ -552,7 +552,7 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 80),
                     ],
                   ),
                 )

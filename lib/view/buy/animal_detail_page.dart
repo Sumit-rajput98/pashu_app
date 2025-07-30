@@ -80,7 +80,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
@@ -119,17 +119,26 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
       expandedHeight: 300,
       floating: false,
       pinned: true,
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
+      foregroundColor: AppColors.primaryDark,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.white.withOpacity(0.9),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -140,12 +149,20 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.white.withOpacity(0.9),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.favorite_border_rounded,
-              color: Colors.white,
+              color: Colors.red,
               size: 20,
             ),
           ),
@@ -163,12 +180,20 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.white.withOpacity(0.9),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.share_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -191,10 +216,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     imageUrl: images[index],
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: AppColors.primaryDark.withOpacity(0.3),
-                      highlightColor: AppColors.primaryDark.withOpacity(0.5),
+                      baseColor: AppColors.lightSage.withOpacity(0.1),
+                      highlightColor: AppColors.lightSage.withOpacity(0.2),
                       child: Container(
-                        color: AppColors.primaryDark.withOpacity(0.3),
+                        color: AppColors.lightSage.withOpacity(0.1),
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
@@ -203,15 +228,15 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.primaryDark.withOpacity(0.8),
-                            AppColors.primaryDark,
+                            AppColors.lightSage.withOpacity(0.2),
+                            AppColors.lightSage.withOpacity(0.1),
                           ],
                         ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Icon(
                           Icons.pets_rounded,
-                          color: Colors.white,
+                          color: AppColors.primaryDark,
                           size: 80,
                         ),
                       ),
@@ -226,21 +251,21 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.primaryDark.withOpacity(0.8),
-                      AppColors.primaryDark,
+                      AppColors.lightSage.withOpacity(0.2),
+                      AppColors.lightSage.withOpacity(0.1),
                     ],
                   ),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.pets_rounded,
-                    color: Colors.white,
+                    color: AppColors.primaryDark,
                     size: 80,
                   ),
                 ),
               ),
 
-            // Gradient Overlay
+            // Gradient Overlay for better text visibility
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -248,7 +273,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withOpacity(0.6),
                   ],
                 ),
               ),
@@ -262,13 +287,21 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.white.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
                     '${images.length} ${l10n.photos}',
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: Colors.white,
+                      color: AppColors.primaryDark,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -290,6 +323,13 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                       color: Colors.white,
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -300,6 +340,13 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -322,14 +369,22 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.15),
-            AppColors.lightSage.withOpacity(0.08),
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,12 +394,20 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.pets_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 24,
                 ),
               ),
@@ -353,7 +416,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 child: Text(
                   l10n.animalInformation,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -384,14 +447,22 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.green.withOpacity(0.15),
-            Colors.green.withOpacity(0.08),
+            Colors.green.withOpacity(0.1),
+            Colors.green.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.green.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,8 +472,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
+                  color: Colors.green.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.green.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.currency_rupee_rounded,
@@ -415,7 +487,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 child: Text(
                   l10n.pricingInformation,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -437,7 +509,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     Text(
                       l10n.price,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.lightSage.withOpacity(0.8),
+                        color: AppColors.primaryDark.withOpacity(0.7),
                         fontSize: 14,
                       ),
                     ),
@@ -457,8 +529,8 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: (widget.pashu.negotiable?.toLowerCase() == 'yes')
-                      ? Colors.orange.withOpacity(0.2)
-                      : Colors.red.withOpacity(0.2),
+                      ? Colors.orange.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: (widget.pashu.negotiable?.toLowerCase() == 'yes')
@@ -495,14 +567,22 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.blue.withOpacity(0.15),
-            Colors.blue.withOpacity(0.08),
+            Colors.blue.withOpacity(0.1),
+            Colors.blue.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.blue.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,8 +592,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.location_on_rounded,
@@ -526,7 +607,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 child: Text(
                   l10n.ownerAndLocation,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -567,14 +648,22 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.purple.withOpacity(0.15),
-            Colors.purple.withOpacity(0.08),
+            Colors.purple.withOpacity(0.1),
+            Colors.purple.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.purple.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -584,8 +673,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.2),
+                  color: Colors.purple.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.purple.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.description_rounded,
@@ -598,7 +688,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 child: Text(
                   l10n.description,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -614,7 +704,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           Text(
             widget.pashu.discription!,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.9),
+              color: AppColors.primaryDark.withOpacity(0.8),
               fontSize: 14,
               height: 1.6,
             ),
@@ -635,14 +725,22 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.orange.withOpacity(0.15),
-                Colors.orange.withOpacity(0.08),
+                Colors.orange.withOpacity(0.1),
+                Colors.orange.withOpacity(0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.orange.withOpacity(0.3),
+              color: AppColors.primaryDark,
+              width: 2,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryDark.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -652,8 +750,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.2),
+                      color: Colors.orange.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.orange.withOpacity(0.3)),
                     ),
                     child: const Icon(
                       Icons.contact_phone_rounded,
@@ -666,7 +765,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     child: Text(
                       l10n.contactSeller,
                       style: AppTextStyles.heading.copyWith(
-                        color: AppColors.lightSage,
+                        color: AppColors.primaryDark,
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
@@ -686,7 +785,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     color: Colors.blue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.blue.withOpacity(0.2),
+                      color: Colors.blue.withOpacity(0.3),
                     ),
                   ),
                   child: Row(
@@ -732,7 +831,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: AppColors.lightSage,
+                        color: Colors.white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -750,7 +849,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                 Text(
                   l10n.contactOptions,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.lightSage.withOpacity(0.8),
+                    color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -810,7 +909,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     color: Colors.green.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.green.withOpacity(0.2),
+                      color: Colors.green.withOpacity(0.3),
                     ),
                   ),
                   child: Row(
@@ -853,7 +952,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               child: Text(
                 label,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage.withOpacity(0.8),
+                  color: AppColors.primaryDark.withOpacity(0.7),
                   fontSize: 14,
                 ),
               ),
@@ -863,7 +962,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
               child: Text(
                 value,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -877,7 +976,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
           const SizedBox(height: 12),
           Container(
             height: 1,
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: AppColors.primaryDark.withOpacity(0.1),
           ),
           const SizedBox(height: 12),
         ],

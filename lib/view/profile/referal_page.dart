@@ -77,7 +77,7 @@ Download now: $referralUrl
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -106,18 +106,19 @@ Download now: $referralUrl
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -132,7 +133,7 @@ Download now: $referralUrl
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
           ),
         ],
@@ -142,12 +143,13 @@ Download now: $referralUrl
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.help_outline_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -173,14 +175,15 @@ Download now: $referralUrl
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.orange.withOpacity(0.8),
-                    Colors.orange,
+                    Colors.orange.withOpacity(0.15),
+                    Colors.orange.withOpacity(0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
+                border: Border.all(color: Colors.orange, width: 3),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.4),
+                    color: Colors.orange.withOpacity(0.2),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -189,7 +192,7 @@ Download now: $referralUrl
               child: const Icon(
                 Icons.share_rounded,
                 size: 40,
-                color: Colors.white,
+                color: Colors.orange,
               ),
             ),
           ),
@@ -202,7 +205,7 @@ Download now: $referralUrl
             style: AppTextStyles.heading.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w800,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
             textAlign: TextAlign.center,
           ),
@@ -213,7 +216,7 @@ Download now: $referralUrl
           Text(
             'Share your referral code with friends and family to earn exclusive rewards when they join Pashu Parivar',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 16,
               height: 1.5,
             ),
@@ -232,14 +235,15 @@ Download now: $referralUrl
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.9),
-            AppColors.lightSage,
+            AppColors.lightSage.withOpacity(0.15),
+            AppColors.lightSage.withOpacity(0.08),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.lightSage.withOpacity(0.3),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -253,8 +257,16 @@ Download now: $referralUrl
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryDark.withOpacity(0.1),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.card_giftcard_rounded,
@@ -293,14 +305,22 @@ Download now: $referralUrl
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.15),
-            AppColors.lightSage.withOpacity(0.08),
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,8 +331,9 @@ Download now: $referralUrl
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.share_outlined,
@@ -325,7 +346,7 @@ Download now: $referralUrl
                 child: Text(
                   'Share with Friends',
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -390,6 +411,13 @@ Download now: $referralUrl
             border: Border.all(
               color: color.withOpacity(0.3),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -398,6 +426,7 @@ Download now: $referralUrl
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: color.withOpacity(0.3)),
                 ),
                 child: Icon(
                   icon,
@@ -410,7 +439,7 @@ Download now: $referralUrl
                 child: Text(
                   title,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
@@ -431,14 +460,22 @@ Download now: $referralUrl
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.green.withOpacity(0.15),
-            Colors.green.withOpacity(0.08),
+            Colors.green.withOpacity(0.1),
+            Colors.green.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.green.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,8 +486,9 @@ Download now: $referralUrl
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
+                  color: Colors.green.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.green.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.stars_rounded,
@@ -463,7 +501,7 @@ Download now: $referralUrl
                 child: Text(
                   'Referral Benefits',
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -510,8 +548,9 @@ Download now: $referralUrl
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.2),
+                color: Colors.green.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.green.withOpacity(0.3)),
               ),
               child: Icon(
                 icon,
@@ -527,7 +566,7 @@ Download now: $referralUrl
                   Text(
                     title,
                     style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.lightSage,
+                      color: AppColors.primaryDark,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -535,7 +574,7 @@ Download now: $referralUrl
                   Text(
                     description,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.lightSage.withOpacity(0.8),
+                      color: AppColors.primaryDark.withOpacity(0.7),
                       fontSize: 14,
                       height: 1.4,
                     ),
@@ -550,7 +589,7 @@ Download now: $referralUrl
           Container(
             height: 1,
             margin: const EdgeInsets.only(left: 52),
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: AppColors.primaryDark.withOpacity(0.1),
           ),
           const SizedBox(height: 16),
         ],
@@ -566,14 +605,22 @@ Download now: $referralUrl
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.purple.withOpacity(0.15),
-            Colors.purple.withOpacity(0.08),
+            Colors.purple.withOpacity(0.1),
+            Colors.purple.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.purple.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -584,8 +631,9 @@ Download now: $referralUrl
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.2),
+                  color: Colors.purple.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.purple.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.help_center_rounded,
@@ -598,7 +646,7 @@ Download now: $referralUrl
                 child: Text(
                   'How It Works',
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -645,6 +693,13 @@ Download now: $referralUrl
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.3),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           child: Center(
             child: Text(
@@ -667,7 +722,7 @@ Download now: $referralUrl
               Text(
                 title,
                 style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -675,7 +730,7 @@ Download now: $referralUrl
               Text(
                 description,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage.withOpacity(0.8),
+                  color: AppColors.primaryDark.withOpacity(0.7),
                   fontSize: 14,
                   height: 1.4,
                 ),
@@ -687,7 +742,7 @@ Download now: $referralUrl
                   height: 30,
                   margin: const EdgeInsets.only(left: 19),
                   decoration: BoxDecoration(
-                    color: AppColors.lightSage.withOpacity(0.2),
+                    color: AppColors.primaryDark.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(1),
                   ),
                 ),
@@ -715,7 +770,6 @@ Download now: $referralUrl
       await launchUrl(whatsappUrl);
     }
   }
-
 
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text));
@@ -750,16 +804,25 @@ Download now: $referralUrl
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           title: Row(
             children: [
-              const Icon(
-                Icons.help_outline_rounded,
-                color: Colors.blue,
-                size: 24,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                ),
+                child: const Icon(
+                  Icons.help_outline_rounded,
+                  color: Colors.blue,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -791,6 +854,9 @@ Download now: $referralUrl
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
               child: Text(
                 'Got it',
                 style: AppTextStyles.bodyMedium.copyWith(

@@ -70,7 +70,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(l10n),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -97,18 +97,19 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
   PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -123,7 +124,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
           ),
         ],
@@ -144,14 +145,15 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blue.withOpacity(0.8),
-                    Colors.blue,
+                    Colors.blue.withOpacity(0.15),
+                    Colors.blue.withOpacity(0.1),
                   ],
                 ),
                 shape: BoxShape.circle,
+                border: Border.all(color: Colors.blue, width: 3),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withOpacity(0.3),
+                    color: Colors.blue.withOpacity(0.2),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -160,7 +162,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               child: const Icon(
                 Icons.contact_support_rounded,
                 size: 40,
-                color: Colors.white,
+                color: Colors.blue,
               ),
             ),
 
@@ -172,7 +174,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               style: AppTextStyles.heading.copyWith(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -183,7 +185,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
             Text(
               l10n.contactUsDescription,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.8),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 16,
                 height: 1.5,
               ),
@@ -203,14 +205,22 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.15),
-            AppColors.lightSage.withOpacity(0.08),
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,12 +231,20 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.info_outline_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 24,
                 ),
               ),
@@ -235,7 +253,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 child: Text(
                   l10n.contactInformation,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -307,6 +325,13 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 border: Border.all(
                   color: color.withOpacity(0.3),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
@@ -315,6 +340,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                     decoration: BoxDecoration(
                       color: color.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: color.withOpacity(0.3)),
                     ),
                     child: Icon(
                       icon,
@@ -332,7 +358,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                         Text(
                           title,
                           style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.lightSage.withOpacity(0.7),
+                            color: AppColors.primaryDark.withOpacity(0.6),
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -341,7 +367,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                         Text(
                           value,
                           style: AppTextStyles.bodyLarge.copyWith(
-                            color: AppColors.lightSage,
+                            color: AppColors.primaryDark,
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
@@ -381,8 +407,16 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Form(
         key: _formKey,
@@ -395,8 +429,9 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.2),
+                    color: Colors.orange.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.orange.withOpacity(0.3)),
                   ),
                   child: const Icon(
                     Icons.message_rounded,
@@ -409,7 +444,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                   child: Text(
                     l10n.sendUsAMessage,
                     style: AppTextStyles.heading.copyWith(
-                      color: AppColors.lightSage,
+                      color: AppColors.primaryDark,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -566,7 +601,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.lightSage.withOpacity(0.8),
+            color: AppColors.primaryDark.withOpacity(0.7),
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -574,28 +609,35 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.3),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryDark.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: TextFormField(
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
             style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
               fontSize: 16,
             ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.6),
+                color: AppColors.primaryDark.withOpacity(0.5),
               ),
               prefixIcon: Icon(
                 icon,
-                color: AppColors.lightSage.withOpacity(0.6),
+                color: AppColors.primaryDark.withOpacity(0.6),
                 size: 20,
               ),
               border: InputBorder.none,
@@ -619,14 +661,22 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.purple.withOpacity(0.15),
-            Colors.purple.withOpacity(0.08),
+            Colors.purple.withOpacity(0.1),
+            Colors.purple.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.purple.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -637,8 +687,9 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.2),
+                  color: Colors.purple.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.purple.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.public_rounded,
@@ -651,7 +702,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 child: Text(
                   l10n.followUs,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -665,7 +716,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
           Text(
             l10n.stayUpdatedWithNews,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               height: 1.5,
             ),
@@ -722,6 +773,13 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
           border: Border.all(
             color: color.withOpacity(0.3),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.2),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Icon(
           icon,
@@ -814,9 +872,10 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -824,8 +883,9 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
+                  color: Colors.green.withOpacity(0.1),
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.green.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.check_circle_rounded,

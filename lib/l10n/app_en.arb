@@ -23,7 +23,7 @@
   "comingSoon": "Coming Soon...",
   "firstUsers": "First 10,000 Users will get",
   "referralBonusOnly": "referral bonus – Only",
-  "slotsLeft": "slots are left!",
+  "slotsLeft": "{slot} slots are left!",
   "applyNow": "Apply Now",
   "pashuLoan": "PASHU LOAN",
   "pashuInsurance": "PASHU INSURANCE",
@@ -534,7 +534,8 @@
   "emailIsRequired": "Email is required",
   "pleaseEnterValidEmail": "Please enter a valid email address",
   "messageIsRequired": "Message is required",
-  "messageMustBeAtLeast10Characters": "Message must be at least 10 characters"
+  "messageMustBeAtLeast10Characters": "Message must be at least 10 characters",
+  "invest": "Invest in Agri-Livestock"
 
 
 

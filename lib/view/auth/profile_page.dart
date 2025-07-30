@@ -24,10 +24,7 @@ import '../profile/withdraw_page.dart';
 class ProfilePage extends StatefulWidget {
   final String phoneNumber;
 
-  const ProfilePage({
-    super.key,
-    required this.phoneNumber,
-  });
+  const ProfilePage({super.key, required this.phoneNumber});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -38,22 +35,24 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GetProfileViewModel>(context, listen: false)
-          .getProfile(widget.phoneNumber);
+      Provider.of<GetProfileViewModel>(
+        context,
+        listen: false,
+      ).getProfile(widget.phoneNumber);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white, // Light grayish-white background
       body: SafeArea(
         child: Consumer<GetProfileViewModel>(
           builder: (context, viewModel, child) {
             return RefreshIndicator(
               onRefresh: () => viewModel.getProfile(widget.phoneNumber),
-              color: AppColors.lightSage,
-              backgroundColor: AppColors.primaryDark,
+              color: AppColors.primaryDark,
+              backgroundColor: Colors.white,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: _buildContent(viewModel),
@@ -74,7 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
       return _buildErrorWidget(viewModel);
     }
 
-    if (viewModel.profile?.result == null || viewModel.profile!.result!.isEmpty) {
+    if (viewModel.profile?.result == null ||
+        viewModel.profile!.result!.isEmpty) {
       return _buildEmptyWidget();
     }
 
@@ -96,22 +96,32 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
 
             const SizedBox(height: 20),
 
             // Menu Items Shimmer
-            ...List.generate(8, (index) => Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Container(
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(0),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
+              ),
+              child: Column(
+                children: List.generate(
+                  8,
+                  (index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 1),
+                    child: Container(
+                      height: 60,
+                      decoration: const BoxDecoration(color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
         ),
       ),
@@ -137,18 +147,12 @@ class _ProfilePageState extends State<ProfilePage> {
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.lightSage.withOpacity(0.9),
-            AppColors.lightSage,
-          ],
-        ),
+       color:  Color(0xFFC2CE9A),
         borderRadius: BorderRadius.circular(20),
+       // border: Border.all(color: AppColors.primaryDark, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.lightSage.withOpacity(0.3),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -162,11 +166,15 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 70,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primaryDark.withOpacity(0.1),
-              border: Border.all(
-                color: AppColors.primaryDark.withOpacity(0.2),
-                width: 2,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.lightSage.withOpacity(0.2),
+                  AppColors.lightSage.withOpacity(0.1),
+                ],
               ),
+              border: Border.all(color: AppColors.primaryDark, width: 2),
             ),
             child: Icon(
               Icons.person_rounded,
@@ -198,7 +206,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   user.number ?? '_',
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.primaryDark.withOpacity(0.8),
+                    color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 14,
                   ),
                 ),
@@ -213,28 +221,49 @@ class _ProfilePageState extends State<ProfilePage> {
               Text(
                 l10n.walletBalance,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.primaryDark.withOpacity(0.7),
+                  color: AppColors.primaryDark.withOpacity(0.6),
                   fontSize: 12,
                 ),
               ),
               const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(
-                    Icons.account_balance_wallet_rounded,
-                    color: AppColors.primaryDark,
-                    size: 16,
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.1),
+                      AppColors.primaryDark.withOpacity(0.05),
+                    ],
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${user.walletBalance ?? 0} ₹',
-                    style: AppTextStyles.heading.copyWith(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primaryDark.withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.account_balance_wallet_rounded,
                       color: AppColors.primaryDark,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                      size: 16,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    Text(
+                      '${user.walletBalance ?? 0} ₹',
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.primaryDark,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -249,11 +278,16 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: AppColors.lightSage.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-        ),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -264,7 +298,13 @@ class _ProfilePageState extends State<ProfilePage> {
             hasNewBadge: true,
             onTap: () async {
               String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SubscriptionPage(phoneNumber: phoneNumber!,)));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => SubscriptionPage(phoneNumber: phoneNumber!),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -274,7 +314,12 @@ class _ProfilePageState extends State<ProfilePage> {
             l10n,
             hasNewBadge: true,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const VerifiedPashuScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const VerifiedPashuScreen(),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -284,7 +329,16 @@ class _ProfilePageState extends State<ProfilePage> {
             l10n,
             hasNewBadge: true,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => WithdrawPage(phoneNumber: user.number!, userId: user.id!.toString(),)));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => WithdrawPage(
+                        phoneNumber: user.number!,
+                        userId: user.id!.toString(),
+                      ),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -293,7 +347,12 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.receipt_long_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TransactionPage(),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -302,7 +361,16 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.edit_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage(userProfile: user, phoneNumber: user.number!)));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => EditProfilePage(
+                        userProfile: user,
+                        phoneNumber: user.number!,
+                      ),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -311,7 +379,10 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.pets_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ListedPashuPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ListedPashuPage()),
+              );
             },
           ),
           _buildDivider(),
@@ -320,7 +391,10 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.history_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SoldOutHistoryPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SoldOutHistoryPage()),
+              );
             },
           ),
           _buildDivider(),
@@ -329,7 +403,16 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.share_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context,  MaterialPageRoute(builder: (context) => ReferralPage(referralCode: user.referralcode ?? '', username: user.username!)));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ReferralPage(
+                        referralCode: user.referralcode ?? '',
+                        username: user.username!,
+                      ),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -338,7 +421,12 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.privacy_tip_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const TermsPrivacyPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TermsPrivacyPage(),
+                ),
+              );
             },
           ),
           _buildDivider(),
@@ -347,7 +435,10 @@ class _ProfilePageState extends State<ProfilePage> {
             Icons.contact_support_rounded,
             l10n,
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactUsPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ContactUsPage()),
+              );
             },
           ),
           _buildDivider(),
@@ -366,25 +457,52 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildMenuItem(
-      String title,
-      IconData icon,
-      AppLocalizations l10n, {
-        bool hasNewBadge = false,
-        bool isLogout = false,
-        required VoidCallback onTap,
-      }) {
+    String title,
+    IconData icon,
+    AppLocalizations l10n, {
+    bool hasNewBadge = false,
+    bool isLogout = false,
+    required VoidCallback onTap,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
             children: [
-              Icon(
-                icon,
-                color: isLogout ? Colors.red : AppColors.lightSage,
-                size: 22,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors:
+                        isLogout
+                            ? [
+                              Colors.red.withOpacity(0.1),
+                              Colors.red.withOpacity(0.05),
+                            ]
+                            : [
+                              AppColors.primaryDark.withOpacity(0.1),
+                              AppColors.primaryDark.withOpacity(0.05),
+                            ],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color:
+                        isLogout
+                            ? Colors.red.withOpacity(0.3)
+                            : AppColors.primaryDark.withOpacity(0.3),
+                  ),
+                ),
+                child: Icon(
+                  icon,
+                  color: isLogout ? Colors.red : AppColors.primaryDark,
+                  size: 20,
+                ),
               ),
 
               const SizedBox(width: 16),
@@ -393,19 +511,31 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Text(
                   title,
                   style: AppTextStyles.bodyLarge.copyWith(
-                    color: isLogout ? Colors.red : AppColors.lightSage,
+                    color: isLogout ? Colors.red : AppColors.primaryDark,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
 
               if (hasNewBadge) ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.3),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
                     l10n.newBadge,
@@ -421,7 +551,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: isLogout ? Colors.red.withOpacity(0.6) : AppColors.lightSage.withOpacity(0.6),
+                color:
+                    isLogout
+                        ? Colors.red.withOpacity(0.6)
+                        : AppColors.primaryDark.withOpacity(0.6),
                 size: 16,
               ),
             ],
@@ -435,7 +568,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       height: 1,
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      color: AppColors.lightSage.withOpacity(0.1),
+      color: AppColors.primaryDark.withOpacity(0.1),
     );
   }
 
@@ -446,16 +579,25 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           title: Row(
             children: [
-              Icon(
-                Icons.logout_rounded,
-                color: Colors.red,
-                size: 24,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: const Icon(
+                  Icons.logout_rounded,
+                  color: Colors.red,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -476,6 +618,9 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primaryDark.withOpacity(0.6),
+              ),
               child: Text(
                 l10n.cancel,
                 style: AppTextStyles.bodyMedium.copyWith(
@@ -484,18 +629,21 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () async{
+              onPressed: () async {
                 Navigator.pop(context);
                 await SharedPrefHelper.clearUserDetails();
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => SplashScreen()),
-                      (route) => false,
+                  (route) => false,
                 );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: Text(l10n.logout),
             ),
@@ -516,14 +664,14 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Icon(
               Icons.error_outline_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               l10n.failedToLoadProfile,
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -531,7 +679,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               viewModel.error ?? l10n.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -544,9 +692,12 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: const Icon(Icons.refresh_rounded),
               label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -569,14 +720,14 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Icon(
               Icons.person_off_outlined,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               l10n.noProfileFound,
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -584,7 +735,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               l10n.profileInformationNotAvailable,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,

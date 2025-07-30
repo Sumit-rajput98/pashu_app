@@ -53,14 +53,14 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return RefreshIndicator(
             onRefresh: () => viewModel.fetchAllPashu(),
-            color: AppColors.lightSage,
-            backgroundColor: AppColors.primaryDark,
+            color: AppColors.primaryDark,
+            backgroundColor: Colors.white,
             child: _buildContent(viewModel),
           );
         },
@@ -70,18 +70,19 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -96,7 +97,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
           ),
         ],
@@ -106,12 +107,13 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.refresh_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -178,14 +180,22 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.green.withOpacity(0.15),
-            Colors.green.withOpacity(0.08),
+            Colors.green.withOpacity(0.1),
+            Colors.green.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.green.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -222,7 +232,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.lightSage.withOpacity(0.8),
+            color: AppColors.primaryDark.withOpacity(0.7),
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -248,6 +258,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.primaryDark, width: 2),
             ),
             child: Row(
               children: [
@@ -306,8 +317,16 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.red.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Stack(
         children: [
@@ -322,9 +341,12 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                   height: 130,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.primaryDark.withOpacity(0.2),
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppColors.primaryDark.withOpacity(0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -346,25 +368,25 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                                     height: 130,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Shimmer.fromColors(
-                                      baseColor: AppColors.primaryDark.withOpacity(0.1),
-                                      highlightColor: AppColors.primaryDark.withOpacity(0.2),
+                                      baseColor: AppColors.lightSage.withOpacity(0.1),
+                                      highlightColor: AppColors.lightSage.withOpacity(0.2),
                                       child: Container(
-                                        color: AppColors.primaryDark.withOpacity(0.1),
+                                        color: AppColors.lightSage.withOpacity(0.1),
                                       ),
                                     ),
                                     errorWidget: (context, url, error) => Container(
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           colors: [
-                                            AppColors.primaryDark.withOpacity(0.8),
-                                            AppColors.primaryDark.withOpacity(0.6),
+                                            AppColors.lightSage.withOpacity(0.2),
+                                            AppColors.lightSage.withOpacity(0.1),
                                           ],
                                         ),
                                       ),
-                                      child: const Center(
+                                      child: Center(
                                         child: Icon(
                                           Icons.pets_rounded,
-                                          color: Colors.white,
+                                          color: AppColors.primaryDark,
                                           size: 35,
                                         ),
                                       ),
@@ -373,7 +395,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                                   // Sold Overlay
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.6),
+                                      color: Colors.black.withOpacity(0.7),
                                     ),
                                     child: const Center(
                                       child: Column(
@@ -409,15 +431,15 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
-                                      AppColors.primaryDark.withOpacity(0.8),
-                                      AppColors.primaryDark.withOpacity(0.6),
+                                      AppColors.lightSage.withOpacity(0.2),
+                                      AppColors.lightSage.withOpacity(0.1),
                                     ],
                                   ),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Icon(
                                     Icons.pets_rounded,
-                                    color: Colors.white,
+                                    color: AppColors.primaryDark,
                                     size: 35,
                                   ),
                                 ),
@@ -425,7 +447,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                               // Sold Overlay
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.6),
+                                  color: Colors.black.withOpacity(0.7),
                                 ),
                                 child: const Center(
                                   child: Column(
@@ -461,7 +483,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.8),
+                                color: AppColors.primaryDark.withOpacity(0.8),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
@@ -480,7 +502,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
 
                 const SizedBox(width: 16),
 
-                // Details Section
+                // Details Section with improved text visibility
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,10 +515,11 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                             child: Text(
                               pashu.animalname ?? 'Unknown Animal',
                               style: AppTextStyles.bodyLarge.copyWith(
-                                color: AppColors.lightSage.withOpacity(0.8), // Slightly faded
+                                color: AppColors.primaryDark.withOpacity(0.7), // Better visibility
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 decoration: TextDecoration.lineThrough, // Strike through
+                                decorationColor: AppColors.primaryDark.withOpacity(0.5),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -510,8 +533,9 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.2),
+                              color: Colors.red.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.red.withOpacity(0.3)),
                             ),
                             child: Text(
                               'SOLD',
@@ -532,9 +556,9 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                       if (pashu.breed != null && pashu.breed!.isNotEmpty) ...[
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.pets_outlined,
-                              color: Colors.white30,
+                              color: AppColors.primaryDark.withOpacity(0.5),
                               size: 11,
                             ),
                             const SizedBox(width: 3),
@@ -542,7 +566,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                               child: Text(
                                 'Breed: ${pashu.breed}',
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.lightSage.withOpacity(0.6),
+                                  color: AppColors.primaryDark.withOpacity(0.6),
                                   fontSize: 10,
                                 ),
                                 maxLines: 1,
@@ -558,16 +582,16 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                       Row(
                         children: [
                           if (pashu.age != null) ...[
-                            const Icon(
+                            Icon(
                               Icons.cake_outlined,
-                              color: Colors.white30,
+                              color: AppColors.primaryDark.withOpacity(0.5),
                               size: 11,
                             ),
                             const SizedBox(width: 3),
                             Text(
                               '${pashu.age}y',
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.lightSage.withOpacity(0.5),
+                                color: AppColors.primaryDark.withOpacity(0.6),
                                 fontSize: 10,
                               ),
                             ),
@@ -579,7 +603,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                               pashu.gender?.toLowerCase() == 'male'
                                   ? Icons.male_rounded
                                   : Icons.female_rounded,
-                              color: Colors.white30,
+                              color: AppColors.primaryDark.withOpacity(0.5),
                               size: 11,
                             ),
                             const SizedBox(width: 3),
@@ -587,7 +611,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                               child: Text(
                                 pashu.gender ?? '',
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.lightSage.withOpacity(0.5),
+                                  color: AppColors.primaryDark.withOpacity(0.6),
                                   fontSize: 10,
                                 ),
                                 maxLines: 1,
@@ -603,9 +627,9 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                       // Address
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.location_on_outlined,
-                            color: Colors.white30,
+                            color: AppColors.primaryDark.withOpacity(0.5),
                             size: 11,
                           ),
                           const SizedBox(width: 3),
@@ -613,7 +637,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                             child: Text(
                               pashu.address ?? 'Location not available',
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.lightSage.withOpacity(0.5),
+                                color: AppColors.primaryDark.withOpacity(0.6),
                                 fontSize: 10,
                               ),
                               maxLines: 1,
@@ -642,7 +666,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                               Text(
                                 'Transaction completed',
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.lightSage.withOpacity(0.6),
+                                  color: AppColors.primaryDark.withOpacity(0.6),
                                   fontSize: 8,
                                 ),
                               ),
@@ -673,6 +697,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 8,
+                                  color: Colors.white, // Explicit white for visibility
                                 ),
                               ),
                             ),
@@ -741,14 +766,14 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
           children: [
             Icon(
               Icons.error_outline_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'Failed to Load History',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -756,7 +781,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             Text(
               viewModel.error ?? 'Something went wrong',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -769,8 +794,8 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -792,14 +817,14 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
           children: [
             Icon(
               Icons.history_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'No Sold Animals',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -807,7 +832,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             Text(
               'You haven\'t sold any animals yet. Your sold animals will appear here once transactions are completed.',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -820,8 +845,8 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
               icon: const Icon(Icons.list_rounded),
               label: const Text('View Active Listings'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -843,11 +868,12 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
         return Container(
           height: MediaQuery.of(context).size.height * 0.7,
           decoration: BoxDecoration(
-            color: AppColors.lightSage,
+            color: Colors.white, // Changed to white for light theme
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(24),
               topRight: Radius.circular(24),
             ),
+            border: Border.all(color: AppColors.primaryDark, width: 2),
           ),
           child: Column(
             children: [
@@ -870,8 +896,9 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.2),
+                        color: Colors.green.withOpacity(0.1),
                         shape: BoxShape.circle,
+                        border: Border.all(color: Colors.green.withOpacity(0.3)),
                       ),
                       child: const Icon(
                         Icons.receipt_long_rounded,
@@ -964,8 +991,16 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryDark.withOpacity(0.1),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.lightSage.withOpacity(0.1),
+                              AppColors.lightSage.withOpacity(0.05),
+                            ],
+                          ),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
                         ),
                         child: Text(
                           'Thank you for using Pashu Parivar! This receipt serves as confirmation of your successful animal sale.',

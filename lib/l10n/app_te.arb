@@ -23,7 +23,7 @@
   "comingSoon": "శీఘ్రం రాబోతున్నది...",
   "firstUsers": "మొదటి 10,000 వినియోగదారులకు లభిస్తుంది",
   "referralBonusOnly": "రిఫరల్ బోనస్ – కేవలం",
-  "slotsLeft": "స్లాట్‌లు మిగిలి ఉన్నాయి!",
+  "slotsLeft": "{slot} స్లాట్‌లు మిగిలి ఉన్నాయి!",
   "applyNow": "ఇప్పుడు దరఖాస్తు చేయండి",
   "pashuLoan": "పశు రుణం",
   "pashuInsurance": "పశు బీమా",
@@ -1414,5 +1414,6 @@
   "emailIsRequired": "ఇమెయిల్ అవసరం",
   "pleaseEnterValidEmail": "దయచేసి చెల్లుబాటు అయ్యే ఇమెయిల్ చిరునామాను నమోదు చేయండి",
   "messageIsRequired": "సందేశం అవసరం",
-  "messageMustBeAtLeast10Characters": "సందేశం కనీసం 10 అక్షరాలు ఉండాలి"
+  "messageMustBeAtLeast10Characters": "సందేశం కనీసం 10 అక్షరాలు ఉండాలి",
+  "invest": "వ్యవసాయ-పశుపాలనలో పెట్టుబడి పెట్టండి"
 }

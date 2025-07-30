@@ -23,7 +23,7 @@
   "comingSoon": "जल्द ही आ रहा है...",
   "firstUsers": "पहले 10,000 उपयोगकर्ताओं को मिलेगा",
   "referralBonusOnly": "रेफरल बोनस – केवल",
-  "slotsLeft": "स्लॉट बचे हैं!",
+  "slotsLeft": "{slot} स्लॉट बचे हैं!",
   "applyNow": "अभी आवेदन करें",
   "pashuLoan": "पशु ऋण",
   "pashuInsurance": "पशु बीमा",
@@ -1277,7 +1277,8 @@
   "emailIsRequired": "ईमेल आवश्यक है",
   "pleaseEnterValidEmail": "कृपया एक वैध ईमेल पता दर्ज करें",
   "messageIsRequired": "संदेश आवश्यक है",
-  "messageMustBeAtLeast10Characters": "संदेश कम से कम 10 अक्षर का होना चाहिए"
+  "messageMustBeAtLeast10Characters": "संदेश कम से कम 10 अक्षर का होना चाहिए",
+  "invest": "निवेश करें कृषि-पशुपालन में"
 
 
 

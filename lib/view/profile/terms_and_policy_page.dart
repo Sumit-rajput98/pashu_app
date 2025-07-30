@@ -42,7 +42,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -65,18 +65,19 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -91,7 +92,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
           ),
         ],
@@ -104,11 +105,19 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.lightSage.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -122,12 +131,22 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: _showTerms ? AppColors.lightSage : Colors.transparent,
+                  gradient: _showTerms
+                      ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark,
+                      AppColors.primaryDark.withOpacity(0.8),
+                    ],
+                  )
+                      : null,
+                  color: _showTerms ? null : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: _showTerms
                       ? [
                     BoxShadow(
-                      color: AppColors.lightSage.withOpacity(0.3),
+                      color: AppColors.primaryDark.withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -139,14 +158,14 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                   children: [
                     Icon(
                       Icons.article_rounded,
-                      color: _showTerms ? AppColors.primaryDark : AppColors.lightSage,
+                      color: _showTerms ? Colors.white : AppColors.primaryDark,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Terms of Service',
                       style: AppTextStyles.bodyLarge.copyWith(
-                        color: _showTerms ? AppColors.primaryDark : AppColors.lightSage,
+                        color: _showTerms ? Colors.white : AppColors.primaryDark,
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
@@ -166,12 +185,22 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: !_showTerms ? AppColors.lightSage : Colors.transparent,
+                  gradient: !_showTerms
+                      ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark,
+                      AppColors.primaryDark.withOpacity(0.8),
+                    ],
+                  )
+                      : null,
+                  color: !_showTerms ? null : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: !_showTerms
                       ? [
                     BoxShadow(
-                      color: AppColors.lightSage.withOpacity(0.3),
+                      color: AppColors.primaryDark.withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -183,14 +212,14 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                   children: [
                     Icon(
                       Icons.privacy_tip_rounded,
-                      color: !_showTerms ? AppColors.primaryDark : AppColors.lightSage,
+                      color: !_showTerms ? Colors.white : AppColors.primaryDark,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Privacy Policy',
                       style: AppTextStyles.bodyLarge.copyWith(
-                        color: !_showTerms ? AppColors.primaryDark : AppColors.lightSage,
+                        color: !_showTerms ? Colors.white : AppColors.primaryDark,
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
@@ -219,8 +248,16 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,12 +268,20 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.article_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 24,
                 ),
               ),
@@ -248,7 +293,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                     Text(
                       'Terms of Service',
                       style: AppTextStyles.heading.copyWith(
-                        color: AppColors.lightSage,
+                        color: AppColors.primaryDark,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -256,7 +301,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                     Text(
                       'Last updated: July 27, 2025',
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.lightSage.withOpacity(0.7),
+                        color: AppColors.primaryDark.withOpacity(0.6),
                         fontSize: 12,
                       ),
                     ),
@@ -341,8 +386,16 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,12 +406,20 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.privacy_tip_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 24,
                 ),
               ),
@@ -370,7 +431,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                     Text(
                       'Privacy Policy',
                       style: AppTextStyles.heading.copyWith(
-                        color: AppColors.lightSage,
+                        color: AppColors.primaryDark,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -378,7 +439,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                     Text(
                       'Last updated: July 27, 2025',
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.lightSage.withOpacity(0.7),
+                        color: AppColors.primaryDark.withOpacity(0.6),
                         fontSize: 12,
                       ),
                     ),
@@ -475,7 +536,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
         Text(
           title,
           style: AppTextStyles.heading.copyWith(
-            color: AppColors.lightSage,
+            color: AppColors.primaryDark,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -486,7 +547,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
         Text(
           content,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.lightSage.withOpacity(0.9),
+            color: AppColors.primaryDark.withOpacity(0.8),
             fontSize: 14,
             height: 1.6,
           ),
@@ -496,7 +557,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
           const SizedBox(height: 20),
           Container(
             height: 1,
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: AppColors.primaryDark.withOpacity(0.1),
           ),
           const SizedBox(height: 20),
         ],

@@ -12,7 +12,6 @@ import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/top_snacbar.dart';
 
-
 class VerifiedPashuScreen extends StatefulWidget {
   const VerifiedPashuScreen({super.key});
 
@@ -130,12 +129,10 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         final profile = jsonDecode(profileRes.body)['result'][0];
 
         if (profile['walletBalance'] >= 25) {
-          // Update pashu status
           await http.put(
               Uri.parse('https://pashuparivar.com/api/updatepashu/$id/verification pending')
           );
 
-          // Deduct wallet balance
           await http.post(
             Uri.parse('https://pashuparivar.com/api/payment/deduct-wallet'),
             headers: {'Content-Type': 'application/json'},
@@ -177,7 +174,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -188,18 +185,19 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -215,7 +213,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -228,12 +226,13 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.refresh_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -261,8 +260,8 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             position: _slideAnimation,
             child: RefreshIndicator(
               onRefresh: fetchPashuData,
-              color: AppColors.lightSage,
-              backgroundColor: AppColors.primaryDark,
+              color: AppColors.primaryDark,
+              backgroundColor: Colors.white,
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: pashus.length,
@@ -290,14 +289,22 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.blue.withOpacity(0.15),
-            Colors.blue.withOpacity(0.08),
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.blue.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -306,8 +313,9 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.verified_rounded,
@@ -320,7 +328,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                 child: Text(
                   'Verification Status',
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -370,7 +378,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.lightSage.withOpacity(0.8),
+            color: AppColors.primaryDark.withOpacity(0.7),
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -412,11 +420,12 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -424,7 +433,6 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
       ),
       child: Column(
         children: [
-          // Image Section
           ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
@@ -438,11 +446,11 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: AppColors.primaryDark.withOpacity(0.3),
-                    highlightColor: AppColors.primaryDark.withOpacity(0.5),
+                    baseColor: AppColors.lightSage.withOpacity(0.1),
+                    highlightColor: AppColors.lightSage.withOpacity(0.2),
                     child: Container(
                       height: 200,
-                      color: AppColors.primaryDark.withOpacity(0.3),
+                      color: AppColors.lightSage.withOpacity(0.1),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
@@ -450,22 +458,21 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryDark.withOpacity(0.8),
-                          AppColors.primaryDark.withOpacity(0.6),
+                          AppColors.lightSage.withOpacity(0.2),
+                          AppColors.lightSage.withOpacity(0.1),
                         ],
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Icons.pets_rounded,
-                        color: Colors.white,
+                        color: AppColors.primaryDark,
                         size: 50,
                       ),
                     ),
                   ),
                 ),
 
-                // Status Badge
                 Positioned(
                   top: 12,
                   right: 12,
@@ -497,7 +504,6 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             ),
           ),
 
-          // Details Section
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -523,7 +529,6 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
                 const SizedBox(height: 20),
 
-                // Verification Info
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -556,7 +561,6 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
                 const SizedBox(height: 16),
 
-                // Verification Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -611,11 +615,12 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -636,11 +641,11 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: AppColors.primaryDark.withOpacity(0.3),
-                    highlightColor: AppColors.primaryDark.withOpacity(0.5),
+                    baseColor: AppColors.lightSage.withOpacity(0.1),
+                    highlightColor: AppColors.lightSage.withOpacity(0.2),
                     child: Container(
                       height: 200,
-                      color: AppColors.primaryDark.withOpacity(0.3),
+                      color: AppColors.lightSage.withOpacity(0.1),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
@@ -648,15 +653,15 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryDark.withOpacity(0.8),
-                          AppColors.primaryDark.withOpacity(0.6),
+                          AppColors.lightSage.withOpacity(0.2),
+                          AppColors.lightSage.withOpacity(0.1),
                         ],
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Icons.pets_rounded,
-                        color: Colors.white,
+                        color: AppColors.primaryDark,
                         size: 50,
                       ),
                     ),
@@ -767,11 +772,12 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.green.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -792,11 +798,11 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: AppColors.primaryDark.withOpacity(0.3),
-                    highlightColor: AppColors.primaryDark.withOpacity(0.5),
+                    baseColor: AppColors.lightSage.withOpacity(0.1),
+                    highlightColor: AppColors.lightSage.withOpacity(0.2),
                     child: Container(
                       height: 200,
-                      color: AppColors.primaryDark.withOpacity(0.3),
+                      color: AppColors.lightSage.withOpacity(0.1),
                     ),
                   ),
                   errorWidget: (context, url, error) => Container(
@@ -804,15 +810,15 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primaryDark.withOpacity(0.8),
-                          AppColors.primaryDark.withOpacity(0.6),
+                          AppColors.lightSage.withOpacity(0.2),
+                          AppColors.lightSage.withOpacity(0.1),
                         ],
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Icons.pets_rounded,
-                        color: Colors.white,
+                        color: AppColors.primaryDark,
                         size: 50,
                       ),
                     ),
@@ -830,6 +836,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.green.withOpacity(0.3)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.green.withOpacity(0.3),
@@ -956,7 +963,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryDark,
-                      foregroundColor: AppColors.lightSage,
+                      foregroundColor: Colors.white,
                       elevation: 4,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -987,16 +994,24 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.grey.withOpacity(0.3),
+          color: AppColors.primaryDark.withOpacity(0.3),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.withOpacity(0.3)),
             ),
             child: const Icon(
               Icons.info_outline_rounded,
@@ -1009,7 +1024,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             child: Text(
               '💡 Only Active Pashu Can Be Verified',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.8),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -1031,7 +1046,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             child: Text(
               label,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.6),
                 fontSize: 12,
               ),
             ),
@@ -1041,7 +1056,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             child: Text(
               value,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -1059,7 +1074,6 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          // Header Shimmer
           Shimmer.fromColors(
             baseColor: AppColors.lightSage.withOpacity(0.1),
             highlightColor: AppColors.lightSage.withOpacity(0.2),
@@ -1068,13 +1082,13 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
           ),
 
           const SizedBox(height: 20),
 
-          // Card Shimmer
           Expanded(
             child: ListView.builder(
               itemCount: 3,
@@ -1088,6 +1102,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.primaryDark, width: 2),
                     ),
                   ),
                 );
@@ -1108,14 +1123,14 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
           children: [
             Icon(
               Icons.pets_outlined,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'Your List is Empty',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
@@ -1124,7 +1139,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             Text(
               'You haven\'t added any Pashu yet. Start exploring to add what you love!',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -1138,8 +1153,8 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
               icon: const Icon(Icons.add_rounded),
               label: const Text('Add New Pashu'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

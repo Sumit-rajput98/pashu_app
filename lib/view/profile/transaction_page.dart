@@ -207,14 +207,14 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(
           onRefresh: fetchUserDataAndTransactions,
-          color: AppColors.lightSage,
-          backgroundColor: AppColors.primaryDark,
+          color: AppColors.primaryDark,
+          backgroundColor: Colors.white,
           child: _buildContent(),
         ),
       ),
@@ -223,18 +223,19 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -250,7 +251,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -263,12 +264,13 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.refresh_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -338,14 +340,22 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.15),
-            AppColors.lightSage.withOpacity(0.08),
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -354,12 +364,20 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.analytics_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 24,
                 ),
               ),
@@ -368,7 +386,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                 child: Text(
                   'Transaction Summary',
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -418,7 +436,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.lightSage.withOpacity(0.8),
+            color: AppColors.primaryDark.withOpacity(0.7),
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -448,11 +466,12 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -468,8 +487,9 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: typeColor.withOpacity(0.2),
+                    color: typeColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: typeColor.withOpacity(0.3)),
                   ),
                   child: Icon(
                     getTypeIcon(transaction.type),
@@ -501,10 +521,10 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.2),
+                              color: statusColor.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: statusColor.withOpacity(0.5),
+                                color: statusColor.withOpacity(0.3),
                               ),
                             ),
                             child: Text(
@@ -525,7 +545,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                       Text(
                         '${transaction.type.toUpperCase()} • ${formatted['date']} at ${formatted['time']}',
                         style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.lightSage.withOpacity(0.7),
+                          color: AppColors.primaryDark.withOpacity(0.6),
                           fontSize: 12,
                         ),
                         maxLines: 1,
@@ -543,11 +563,18 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.lightSage.withOpacity(0.05),
+                color: Colors.white.withOpacity(0.8),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.lightSage.withOpacity(0.1),
+                  color: AppColors.primaryDark.withOpacity(0.2),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryDark.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -580,7 +607,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             Text(
               label,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.6),
                 fontSize: 12,
               ),
             ),
@@ -588,7 +615,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               child: Text(
                 value,
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -603,7 +630,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           const SizedBox(height: 8),
           Container(
             height: 1,
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: AppColors.primaryDark.withOpacity(0.1),
           ),
           const SizedBox(height: 8),
         ],
@@ -625,6 +652,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
           ),
@@ -645,6 +673,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.primaryDark, width: 2),
                     ),
                   ),
                 );
@@ -665,14 +694,14 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           children: [
             Icon(
               Icons.error_outline_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'Failed to Load Transactions',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -680,7 +709,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             Text(
               errorMessage ?? 'Something went wrong',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -693,8 +722,8 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -716,14 +745,14 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           children: [
             Icon(
               Icons.receipt_long_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'No Transactions Found',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -731,7 +760,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             Text(
               'Your transaction history will appear here once you make your first transaction',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -744,8 +773,8 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               icon: const Icon(Icons.arrow_back_rounded),
               label: const Text('Go Back'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

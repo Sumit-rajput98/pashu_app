@@ -1,21 +1,29 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:pashu_app/core/shared_pref_helper.dart';
+import 'package:pashu_app/model/auth/profile_model.dart';
 import 'package:pashu_app/view/auth/profile_page.dart';
 import 'package:pashu_app/view/home/pashu_insurance_form.dart';
+import 'package:pashu_app/view_model/AuthVM/get_profile_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/navigation_controller.dart';
+
 import 'animal_loan_page.dart';
 import 'live_race_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String phoneNumber;
+  const HomeScreen({super.key, required this.phoneNumber});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,10 +31,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // Location variables
+  int totalSlots = 10000;
+  int usedSlots = 0;
+  int remainingSlots = 0;
+  int buyLength =0;
+
   String _currentLocation = 'Fetching location...';
   Position? _currentPosition;
-  bool _locationPermissionGranted = true; // Set to true for demo
+  bool _locationPermissionGranted = false;
   bool _locationLoading = false;
+  bool _locationError = false;
 
   // Slider controllers for statistics
   final PageController _animalSliderController = PageController();
@@ -40,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _blinkController;
   late Animation<double> _blinkAnimation;
 
-  // Sample data for sliders - Updated with proper animal data
+  // Sample data for sliders
   final List<Map<String, dynamic>> _newAnimals = [
     {'count': '31', 'type': 'Cows', 'image': 'assets/image6.jpg'},
     {'count': '15', 'type': 'Buffalo', 'image': 'assets/image7.webp'},
@@ -53,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       'count': '971',
       'category': 'Farmers',
       'trend': '+12%',
-      'image': 'assets/image3.jpg', // Add buyer images
+      'image': 'assets/image3.jpg',
     },
     {
       'count': '543',
@@ -78,10 +92,228 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _currentLocation = 'Lucknow, Uttar Pradesh, India'; // Demo location
     _initializeBlinkAnimation();
     _startAnimalSlider();
     _startBuyerSlider();
+    fetchSlotData();
+    _checkLocationPermissionOnInit();
+  }
+
+  Future<void> _checkLocationPermissionOnInit() async {
+    // Check if location is already saved
+    final prefs = await SharedPreferences.getInstance();
+    final savedLat = prefs.getDouble('latitude');
+    final savedLng = prefs.getDouble('longitude');
+
+    if (savedLat != null && savedLng != null) {
+      // Location already saved, get address from coordinates
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(savedLat, savedLng);
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          setState(() {
+            _currentLocation = '${place.locality}, ${place.administrativeArea}, ${place.country}';
+            _locationPermissionGranted = true;
+          });
+        }
+      } catch (e) {
+        print('Error getting location from saved coordinates: $e');
+        setState(() {
+          _currentLocation = 'Location saved';
+          _locationPermissionGranted = true;
+        });
+      }
+    } else {
+      // No saved location, check permissions
+      await _checkLocationPermission();
+    }
+  }
+
+  Future<void> _checkLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        _locationPermissionGranted = false;
+        _locationError = true;
+      });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      setState(() {
+        _locationPermissionGranted = false;
+      });
+      return;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        _locationPermissionGranted = false;
+        _locationError = true;
+      });
+      return;
+    }
+
+    // Permissions are granted, get current location
+    setState(() {
+      _locationPermissionGranted = true;
+    });
+    await _getCurrentLocation();
+  }
+
+  Future<void> _requestLocationPermission() async {
+    setState(() {
+      _locationLoading = true;
+      _locationError = false;
+    });
+
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // Location services are not enabled
+        await Geolocator.openLocationSettings();
+        setState(() {
+          _locationLoading = false;
+        });
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _locationLoading = false;
+            _locationError = true;
+          });
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever
+        await Geolocator.openAppSettings();
+        setState(() {
+          _locationLoading = false;
+          _locationError = true;
+        });
+        return;
+      }
+
+      // Permissions granted, get location
+      await _getCurrentLocation();
+      setState(() {
+        _locationPermissionGranted = true;
+      });
+    } catch (e) {
+      print('Error requesting location permission: $e');
+      setState(() {
+        _locationLoading = false;
+        _locationError = true;
+      });
+    }
+  }
+
+  Future<void> _getCurrentLocation() async {
+    setState(() {
+      _locationLoading = true;
+    });
+
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
+      );
+
+      setState(() {
+        _currentPosition = position;
+      });
+
+      // Save location to SharedPreferences
+      SharedPrefHelper.saveLocation(position.latitude, position.longitude);
+
+      // Get address from coordinates
+      await _getAddressFromCoordinates(position.latitude, position.longitude);
+
+      setState(() {
+        _locationLoading = false;
+      });
+    } catch (e) {
+      print('Error getting current location: $e');
+      setState(() {
+        _currentLocation = 'Location not available';
+        _locationLoading = false;
+        _locationError = true;
+      });
+    }
+  }
+
+  Future<void> _getAddressFromCoordinates(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        setState(() {
+          _currentLocation = '${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}';
+        });
+      }
+    } catch (e) {
+      print('Error getting address: $e');
+      setState(() {
+        _currentLocation = 'Lat: ${latitude.toStringAsFixed(4)}, Lng: ${longitude.toStringAsFixed(4)}';
+      });
+    }
+  }
+
+  // Future<void> fetchSlotData() async {
+  //   try {
+  //     final buyRes = await http.get(Uri.parse('https://pashuparivar.com/api/allpashu'));
+  //     final sellRes = await http.get(Uri.parse('https://pashuparivar.com/api/getprofile'));
+  //
+  //     if (buyRes.statusCode == 200 && sellRes.statusCode == 200) {
+  //       final buyData = jsonDecode(buyRes.body);
+  //       final sellData = jsonDecode(sellRes.body);
+  //       final filteredBuy = buyData.where((item) => (item.status == "Active" || item.status == "Sold" || item.status == "verified pashu")).toList();
+  //       final filteredSell = sellData.where((item) => item['referralcode'] != null).toList();
+  //
+  //       setState(() {
+  //         usedSlots = filteredSell.length;
+  //         remainingSlots = totalSlots - usedSlots;
+  //         buyLength = filteredBuy.length;
+  //         sellLength = sellData.data.length;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching slot data: $e');
+  //   }
+  // }
+
+  Future<void> fetchSlotData() async {
+    try {
+      final sellRes = await http.get(Uri.parse('https://pashuparivar.com/api/getprofile'));
+      final buyRes = await http.get(Uri.parse('https://pashuparivar.com/api/allpashu'));
+
+
+      if (sellRes.statusCode == 200) {
+        final sellData = jsonDecode(sellRes.body);
+        final buyData = jsonDecode(buyRes.body);
+        final filteredSell = sellData.where((item) => item['referralcode'] != null).toList();
+        final filteredBuy = buyData.where((item) => (item['status'] == "Active" || item['status'] == "Sold" || item['status'] == "verified pashu")).toList();
+
+        setState(() {
+          usedSlots = filteredSell.length;
+          remainingSlots = totalSlots - usedSlots;
+          buyLength = filteredBuy.length;
+        });
+      }
+    } catch (e) {
+      print('Error fetching slot data: $e');
+    }
   }
 
   void _initializeBlinkAnimation() {
@@ -156,13 +388,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child:
-            !_locationPermissionGranted
-                ? _buildLocationPermissionScreen()
-                : _buildMainContent(screenWidth),
+        child: !_locationPermissionGranted
+            ? _buildLocationPermissionScreen()
+            : _buildMainContent(screenWidth),
       ),
     );
   }
@@ -179,12 +409,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.lightSage.withOpacity(0.2),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.lightSage.withOpacity(0.15),
+                  AppColors.lightSage.withOpacity(0.08),
+                ],
+              ),
+              border: Border.all(color: AppColors.primaryDark, width: 2),
             ),
             child: Icon(
-              Icons.location_on_rounded,
+              _locationError ? Icons.location_off_rounded : Icons.location_on_rounded,
               size: 80,
-              color: AppColors.lightSage,
+              color: _locationError ? Colors.red : AppColors.primaryDark,
             ),
           ),
 
@@ -192,11 +430,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Title
           Text(
-            AppLocalizations.of(context)!.allowLocationAccess,
+            _locationError
+                ? "Location Access Required"
+                : AppLocalizations.of(context)!.allowLocationAccess,
             style: AppTextStyles.heading.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
             textAlign: TextAlign.center,
           ),
@@ -205,9 +445,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Description
           Text(
-            AppLocalizations.of(context)!.locationDescription,
+            _locationError
+                ? 'Please enable location services in your device settings to continue.'
+                : AppLocalizations.of(context)!.locationDescription,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 16,
               height: 1.5,
             ),
@@ -221,27 +463,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _locationPermissionGranted = true;
-                });
-              },
+              onPressed: _locationLoading ? null : _requestLocationPermission,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 elevation: 4,
-                shadowColor: AppColors.lightSage.withOpacity(0.3),
+                shadowColor: AppColors.primaryDark.withOpacity(0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: Row(
+              child: _locationLoading
+                  ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.location_on_outlined, size: 24),
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  ),
                   const SizedBox(width: 12),
                   Text(
-                    AppLocalizations.of(context)!.allowLocationAccess,
+                    'Getting Location...',
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              )
+                  : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _locationError ? Icons.settings_rounded : Icons.location_on_outlined,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    _locationError
+                        ? 'Open Settings'
+                        : AppLocalizations.of(context)!.allowLocationAccess,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -253,27 +517,75 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           const SizedBox(height: 16),
 
-          // Privacy Note
-          Text(
-            AppLocalizations.of(context)!.locationPrivacyNote,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.6),
-              fontSize: 12,
+          // Retry Button (shown when there's an error)
+          if (_locationError && !_locationLoading)
+            Container(
+              width: double.infinity,
+              height: 56,
+              child: OutlinedButton(
+                onPressed: _requestLocationPermission,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primaryDark,
+                  side: BorderSide(color: AppColors.primaryDark),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.refresh_rounded, size: 24),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Try Again',
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            textAlign: TextAlign.center,
+
+          const SizedBox(height: 16),
+
+          // Privacy Note
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.blue.withOpacity(0.2)),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.privacy_tip_outlined,
+                  color: Colors.blue,
+                  size: 16,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.locationPrivacyNote,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Colors.blue,
+                      fontSize: 12,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-
   Widget _buildMainContent(double screenWidth) {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Header Section
-          //_buildHeader(screenWidth),
-
           // First 10,000 Users Section
           _buildFirst10KUsersSection(screenWidth),
 
@@ -285,6 +597,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           const SizedBox(height: 20),
         ],
+      ),
+    );
+  }
+
+  Widget buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      color: AppColors.lightSage,
+      child: Center(
+        child: Text(
+          "Hi Ankit,Welcome To Pashu Parivar",
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -371,14 +701,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildFirst10KUsersSection(double screenWidth) {
+
     final localizations = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primaryDark.withOpacity(0.1),
+        color: AppColors.lightSage.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
       ),
       child: Row(
         children: [
@@ -413,7 +744,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 Text(
                   '${localizations.firstUsers} ₹25 ${localizations.referralBonusOnly}',
                   style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
@@ -424,9 +755,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 RichText(
                   text: TextSpan(
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.lightSage.withOpacity(0.8),
+                      color: AppColors.primaryDark.withOpacity(0.8),
                     ),
-                    children: [TextSpan(text: '${localizations.slotsLeft}')],
+                    children: [
+                      TextSpan(text: localizations.slotsLeft(remainingSlots)),
+                    ],
                   ),
                 ),
               ],
@@ -447,6 +780,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           end: Alignment.bottomRight,
           colors: [AppColors.lightSage, AppColors.lightSage.withOpacity(0.9)],
         ),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -503,7 +837,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         const SizedBox(height: 12),
 
                         Text(
-                          localizations.investInFarming,
+                          localizations.invest,
                           style: AppTextStyles.heading.copyWith(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -580,20 +914,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Column(
       children: [
         // Live Races Card
-        _buildServiceCard(
-          image: 'assets/cowrace.jpg',
-          title: AppLocalizations.of(context)!.liveRaces,
-          buttonLabel: AppLocalizations.of(context)!.viewLive,
-          primaryColor: AppColors.lightSage,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LiveRacePage()),
-            );
-          },
-        ),
-
-        const SizedBox(height: 16),
 
         // New Animal Card with Slider - Updated Layout
         _buildAnimalSliderCard(),
@@ -619,6 +939,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               MaterialPageRoute(
                 builder: (context) => const PashuInsuranceFormPage(),
               ),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+
+        _buildServiceCard(
+          image: 'assets/cowrace.jpg',
+          title: AppLocalizations.of(context)!.liveRaces,
+          buttonLabel: AppLocalizations.of(context)!.viewLive,
+          primaryColor: AppColors.lightSage,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LiveRacePage()),
             );
           },
         ),
@@ -667,10 +1001,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -757,7 +1088,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Text(
                       subtitle,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.lightSage.withOpacity(0.7),
+                        color: AppColors.primaryDark.withOpacity(0.7),
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -771,7 +1102,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     style: AppTextStyles.heading.copyWith(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.lightSage,
+                      color: AppColors.primaryDark,
                     ),
                   ),
 
@@ -914,7 +1245,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                         // Count
                         Text(
-                          "31",
+                          "$buyLength",
                           style: AppTextStyles.heading.copyWith(
                             color: Colors.red,
                             fontSize: 36,

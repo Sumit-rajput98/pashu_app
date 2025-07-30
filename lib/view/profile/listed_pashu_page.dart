@@ -55,14 +55,14 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return RefreshIndicator(
             onRefresh: () => viewModel.fetchAllPashu(),
-            color: AppColors.lightSage,
-            backgroundColor: AppColors.primaryDark,
+            color: AppColors.primaryDark,
+            backgroundColor: Colors.white,
             child: _buildContent(viewModel),
           );
         },
@@ -72,18 +72,19 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -98,7 +99,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
           ),
         ],
@@ -108,12 +109,13 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.refresh_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -179,14 +181,22 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.15),
-            AppColors.lightSage.withOpacity(0.08),
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -221,7 +231,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
         Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.lightSage.withOpacity(0.8),
+            color: AppColors.primaryDark.withOpacity(0.7),
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -244,6 +254,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.primaryDark, width: 2),
             ),
             child: Row(
               children: [
@@ -305,9 +316,17 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isPending
-              ? Colors.red.withOpacity(0.3)
-              : AppColors.lightSage.withOpacity(0.2),
+              ? Colors.red
+              : AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Stack(
         children: [
@@ -322,9 +341,12 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                   height: 130,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.primaryDark.withOpacity(0.2),
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppColors.primaryDark.withOpacity(0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -344,25 +366,25 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                                 height: 130,
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => Shimmer.fromColors(
-                                  baseColor: AppColors.primaryDark.withOpacity(0.1),
-                                  highlightColor: AppColors.primaryDark.withOpacity(0.2),
+                                  baseColor: AppColors.lightSage.withOpacity(0.1),
+                                  highlightColor: AppColors.lightSage.withOpacity(0.2),
                                   child: Container(
-                                    color: AppColors.primaryDark.withOpacity(0.1),
+                                    color: AppColors.lightSage.withOpacity(0.1),
                                   ),
                                 ),
                                 errorWidget: (context, url, error) => Container(
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        AppColors.primaryDark.withOpacity(0.8),
-                                        AppColors.primaryDark.withOpacity(0.6),
+                                        AppColors.lightSage.withOpacity(0.2),
+                                        AppColors.lightSage.withOpacity(0.1),
                                       ],
                                     ),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                     child: Icon(
                                       Icons.pets_rounded,
-                                      color: Colors.white,
+                                      color: AppColors.primaryDark,
                                       size: 35,
                                     ),
                                   ),
@@ -375,15 +397,15 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  AppColors.primaryDark.withOpacity(0.8),
-                                  AppColors.primaryDark.withOpacity(0.6),
+                                  AppColors.lightSage.withOpacity(0.2),
+                                  AppColors.lightSage.withOpacity(0.1),
                                 ],
                               ),
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Icon(
                                 Icons.pets_rounded,
-                                color: Colors.white,
+                                color: AppColors.primaryDark,
                                 size: 35,
                               ),
                             ),
@@ -397,7 +419,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.6),
+                                color: AppColors.primaryDark.withOpacity(0.8),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
@@ -429,7 +451,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                             child: Text(
                               pashu.animalname ?? 'Unknown Animal',
                               style: AppTextStyles.bodyLarge.copyWith(
-                                color: AppColors.lightSage,
+                                color: AppColors.primaryDark,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -445,13 +467,16 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.primaryDark.withOpacity(0.2),
+                              color: AppColors.primaryDark.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: AppColors.primaryDark.withOpacity(0.3),
+                              ),
                             ),
                             child: Text(
                               pashu.animatCategory ?? 'Other',
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.lightSage,
+                                color: AppColors.primaryDark,
                                 fontSize: 8,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -469,9 +494,9 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                       if (pashu.breed != null && pashu.breed!.isNotEmpty) ...[
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.pets_outlined,
-                              color: Colors.white60,
+                              color: AppColors.primaryDark.withOpacity(0.6),
                               size: 11,
                             ),
                             const SizedBox(width: 3),
@@ -479,7 +504,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                               child: Text(
                                 'Breed: ${pashu.breed}',
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.lightSage.withOpacity(0.8),
+                                  color: AppColors.primaryDark.withOpacity(0.7),
                                   fontSize: 10,
                                 ),
                                 maxLines: 1,
@@ -495,16 +520,16 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                       Row(
                         children: [
                           if (pashu.age != null) ...[
-                            const Icon(
+                            Icon(
                               Icons.cake_outlined,
-                              color: Colors.white60,
+                              color: AppColors.primaryDark.withOpacity(0.6),
                               size: 11,
                             ),
                             const SizedBox(width: 3),
                             Text(
                               '${pashu.age}y',
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.lightSage.withOpacity(0.7),
+                                color: AppColors.primaryDark.withOpacity(0.7),
                                 fontSize: 10,
                               ),
                             ),
@@ -516,7 +541,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                               pashu.gender?.toLowerCase() == 'male'
                                   ? Icons.male_rounded
                                   : Icons.female_rounded,
-                              color: Colors.white60,
+                              color: AppColors.primaryDark.withOpacity(0.6),
                               size: 11,
                             ),
                             const SizedBox(width: 3),
@@ -524,7 +549,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                               child: Text(
                                 pashu.gender ?? '',
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.lightSage.withOpacity(0.7),
+                                  color: AppColors.primaryDark.withOpacity(0.7),
                                   fontSize: 10,
                                 ),
                                 maxLines: 1,
@@ -540,9 +565,9 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                       // Address
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.location_on_outlined,
-                            color: Colors.white60,
+                            color: AppColors.primaryDark.withOpacity(0.6),
                             size: 11,
                           ),
                           const SizedBox(width: 3),
@@ -550,7 +575,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                             child: Text(
                               pashu.address ?? 'Location not available',
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.lightSage.withOpacity(0.7),
+                                color: AppColors.primaryDark.withOpacity(0.7),
                                 fontSize: 10,
                               ),
                               maxLines: 1,
@@ -580,7 +605,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                                 Text(
                                   'Negotiable',
                                   style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.lightSage.withOpacity(0.6),
+                                    color: AppColors.primaryDark.withOpacity(0.6),
                                     fontSize: 8,
                                   ),
                                 ),
@@ -589,8 +614,40 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
 
                           const Spacer(),
 
-                          // Action Buttons
-
+                          // Action Buttons Row
+                          // Row(
+                          //   children: [
+                          //     // Edit Button
+                          //     Container(
+                          //       height: 28,
+                          //       child: ElevatedButton.icon(
+                          //         onPressed: () => _editPashu(pashu),
+                          //         icon: const Icon(Icons.edit_rounded, size: 12),
+                          //         label: Text(
+                          //           'Edit',
+                          //           style: AppTextStyles.bodyMedium.copyWith(
+                          //             fontSize: 10,
+                          //             fontWeight: FontWeight.w600,
+                          //           ),
+                          //         ),
+                          //         style: ElevatedButton.styleFrom(
+                          //           backgroundColor: Colors.blue,
+                          //           foregroundColor: Colors.white,
+                          //           elevation: 2,
+                          //           padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //           shape: RoundedRectangleBorder(
+                          //             borderRadius: BorderRadius.circular(8),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //
+                          //     const SizedBox(width: 6),
+                          //
+                          //     // Delete Button
+                          //
+                          //   ],
+                          // ),
                         ],
                       ),
                     ],
@@ -610,6 +667,13 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                 decoration: BoxDecoration(
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withOpacity(0.3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Text(
                   'PENDING',
@@ -635,14 +699,14 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
           children: [
             Icon(
               Icons.error_outline_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'Failed to Load Listings',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -650,7 +714,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             Text(
               viewModel.error ?? 'Something went wrong',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -663,8 +727,8 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -686,14 +750,14 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
           children: [
             Icon(
               Icons.pets_outlined,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'No Listed Animals',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -701,7 +765,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             Text(
               'You haven\'t listed any animals yet. Start by adding your first listing!',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -714,8 +778,8 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
               icon: const Icon(Icons.add_rounded),
               label: const Text('Add New Listing'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -742,16 +806,25 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           title: Row(
             children: [
-              const Icon(
-                Icons.delete_outline_rounded,
-                color: Colors.red,
-                size: 24,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: const Icon(
+                  Icons.delete_outline_rounded,
+                  color: Colors.red,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -772,6 +845,9 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primaryDark.withOpacity(0.6),
+              ),
               child: Text(
                 'Cancel',
                 style: AppTextStyles.bodyMedium.copyWith(

@@ -7,7 +7,6 @@ import '../../core/app_logo.dart';
 import '../../view_model/AuthVM/get_counter_view_model.dart';
 import '../../view_model/AuthVM/get_profile_view_model.dart';
 
-
 class WithdrawPage extends StatefulWidget {
   final String phoneNumber;
   final String userId;
@@ -65,14 +64,14 @@ class _WithdrawPageState extends State<WithdrawPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(),
       body: Consumer2<GetProfileViewModel, GetCounterViewModel>(
         builder: (context, profileViewModel, counterViewModel, child) {
           return RefreshIndicator(
             onRefresh: _loadInitialData,
-            color: AppColors.lightSage,
-            backgroundColor: AppColors.primaryDark,
+            color: AppColors.primaryDark,
+            backgroundColor: Colors.white,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: _buildContent(profileViewModel, counterViewModel),
@@ -85,18 +84,19 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -106,12 +106,16 @@ class _WithdrawPageState extends State<WithdrawPage> {
         children: [
           const AppLogo(size: 40),
           const SizedBox(width: 12),
-          Text(
-            'Withdraw from Wallet',
-            style: AppTextStyles.heading.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+          Expanded(
+            child: Text(
+              'Withdraw from Wallet',
+              style: AppTextStyles.heading.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primaryDark,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -171,6 +175,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
 
@@ -182,6 +187,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
 
@@ -193,6 +199,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.primaryDark, width: 2),
               ),
             ),
           ],
@@ -209,14 +216,15 @@ class _WithdrawPageState extends State<WithdrawPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.lightSage.withOpacity(0.9),
-            AppColors.lightSage,
+            AppColors.lightSage.withOpacity(0.15),
+            AppColors.lightSage.withOpacity(0.08),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.lightSage.withOpacity(0.3),
+            color: AppColors.primaryDark.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -227,8 +235,16 @@ class _WithdrawPageState extends State<WithdrawPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primaryDark.withOpacity(0.1),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.primaryDark.withOpacity(0.15),
+                  AppColors.primaryDark.withOpacity(0.08),
+                ],
+              ),
               shape: BoxShape.circle,
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
             ),
             child: Icon(
               Icons.account_balance_wallet_rounded,
@@ -280,20 +296,26 @@ class _WithdrawPageState extends State<WithdrawPage> {
           end: Alignment.bottomRight,
           colors: isEligible
               ? [
-            Colors.green.withOpacity(0.15),
-            Colors.green.withOpacity(0.08),
+            Colors.green.withOpacity(0.1),
+            Colors.green.withOpacity(0.05),
           ]
               : [
-            Colors.orange.withOpacity(0.15),
-            Colors.orange.withOpacity(0.08),
+            Colors.orange.withOpacity(0.1),
+            Colors.orange.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isEligible
-              ? Colors.green.withOpacity(0.3)
-              : Colors.orange.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -301,9 +323,14 @@ class _WithdrawPageState extends State<WithdrawPage> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isEligible
-                  ? Colors.green.withOpacity(0.2)
-                  : Colors.orange.withOpacity(0.2),
+                  ? Colors.green.withOpacity(0.1)
+                  : Colors.orange.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isEligible
+                    ? Colors.green.withOpacity(0.3)
+                    : Colors.orange.withOpacity(0.3),
+              ),
             ),
             child: Icon(
               isEligible ? Icons.check_circle_rounded : Icons.warning_rounded,
@@ -321,7 +348,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                 Text(
                   isEligible ? 'Withdrawal Eligible' : 'Withdrawal Requirements',
                   style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -333,7 +360,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       ? 'You have spent ₹$counter and can withdraw funds'
                       : 'Spend ₹${50 - counter} more to enable withdrawal (Current: ₹$counter)',
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.lightSage.withOpacity(0.8),
+                    color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 12,
                   ),
                 ),
@@ -361,8 +388,16 @@ class _WithdrawPageState extends State<WithdrawPage> {
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,12 +408,20 @@ class _WithdrawPageState extends State<WithdrawPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.send_to_mobile_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 24,
                 ),
               ),
@@ -387,7 +430,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                 child: Text(
                   'Withdrawal Details',
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -402,7 +445,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
           Text(
             'Enter Amount (e.g. 500)',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -412,27 +455,34 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.1),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.lightSage.withOpacity(0.2),
+                color: AppColors.primaryDark.withOpacity(0.3),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryDark.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: TextFormField(
               controller: _amountController,
               enabled: isEligible && walletBalance >= 100,
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 16,
               ),
               decoration: InputDecoration(
                 hintText: 'Enter Amount e.g. 500',
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage.withOpacity(0.6),
+                  color: AppColors.primaryDark.withOpacity(0.5),
                 ),
                 prefixIcon: Icon(
                   Icons.currency_rupee_rounded,
-                  color: AppColors.lightSage.withOpacity(0.6),
+                  color: AppColors.primaryDark.withOpacity(0.6),
                 ),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
@@ -466,7 +516,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
           Text(
             'Enter UPI ID (e.g. example@upi)',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -476,27 +526,34 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.1),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.lightSage.withOpacity(0.2),
+                color: AppColors.primaryDark.withOpacity(0.3),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryDark.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: TextFormField(
               controller: _upiController,
               enabled: isEligible && walletBalance >= 100,
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 16,
               ),
               decoration: InputDecoration(
                 hintText: 'Enter UPI ID e.g. example@upi',
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage.withOpacity(0.6),
+                  color: AppColors.primaryDark.withOpacity(0.5),
                 ),
                 prefixIcon: Icon(
                   Icons.account_balance_rounded,
-                  color: AppColors.lightSage.withOpacity(0.6),
+                  color: AppColors.primaryDark.withOpacity(0.6),
                 ),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
@@ -664,9 +721,10 @@ class _WithdrawPageState extends State<WithdrawPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -674,8 +732,9 @@ class _WithdrawPageState extends State<WithdrawPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
+                  color: Colors.green.withOpacity(0.1),
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.green.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.check_circle_rounded,
@@ -743,14 +802,14 @@ class _WithdrawPageState extends State<WithdrawPage> {
           children: [
             Icon(
               Icons.error_outline_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
               'Failed to Load Data',
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
@@ -758,7 +817,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
             Text(
               errorMessage,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -769,8 +828,8 @@ class _WithdrawPageState extends State<WithdrawPage> {
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

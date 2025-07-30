@@ -20,7 +20,7 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, vsync: this,initialIndex: 1);
     Future.microtask(() {
       Provider.of<GetInvestViewModel>(context, listen: false).loadInvestments();
     });
@@ -90,6 +90,7 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
                 ],
               ),
             ),
+
           ],
         ),
       ),

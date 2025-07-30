@@ -161,7 +161,7 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
             phoneNumber: phone,
             // Fallback to phone if userId not available
           ),
-          const HomeScreen(),
+         HomeScreen(phoneNumber: phone,),
           const WishlistPage(),
           const InvestPage(),
         ];

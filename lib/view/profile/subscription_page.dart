@@ -123,7 +123,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       appBar: _buildAppBar(l10n),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -143,18 +143,19 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
   PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -169,7 +170,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
           ),
         ],
@@ -179,12 +180,13 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.help_outline_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -207,15 +209,18 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 colors: [
-                  AppColors.lightSage.withOpacity(0.8),
-                  AppColors.lightSage,
+                  AppColors.lightSage.withOpacity(0.15),
+                  AppColors.lightSage.withOpacity(0.08),
                 ],
               ),
               shape: BoxShape.circle,
+              border: Border.all(color: AppColors.primaryDark, width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.lightSage.withOpacity(0.3),
+                  color: AppColors.primaryDark.withOpacity(0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -236,7 +241,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
             style: AppTextStyles.heading.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w800,
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
             ),
             textAlign: TextAlign.center,
           ),
@@ -247,7 +252,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           Text(
             l10n.unlockPremiumFeatures,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 16,
               height: 1.5,
             ),
@@ -283,9 +288,16 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
-          width: 1,
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -300,6 +312,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                   decoration: BoxDecoration(
                     color: plan['color'].withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: plan['color'].withOpacity(0.3),
+                    ),
                   ),
                   child: Icon(
                     plan['icon'],
@@ -314,7 +329,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                   child: Text(
                     plan['name'],
                     style: AppTextStyles.heading.copyWith(
-                      color: AppColors.lightSage,
+                      color: AppColors.primaryDark,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -343,7 +358,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                   child: Text(
                     '/ ${plan['period']}',
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.lightSage.withOpacity(0.7),
+                      color: AppColors.primaryDark.withOpacity(0.6),
                       fontSize: 16,
                     ),
                   ),
@@ -375,7 +390,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                     child: Text(
                       feature,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.lightSage.withOpacity(0.9),
+                        color: AppColors.primaryDark.withOpacity(0.8),
                         fontSize: 14,
                       ),
                     ),
@@ -386,7 +401,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
             const SizedBox(height: 24),
 
-            // Subscribe Button with better visibility
+            // Subscribe Button
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -395,10 +410,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                   _handleSubscription(plan, l10n);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: plan['color'], // Use plan color for better visibility
+                  backgroundColor: plan['color'],
                   foregroundColor: Colors.white,
                   elevation: 8,
-                  shadowColor: plan['color'].withOpacity(0.5),
+                  shadowColor: plan['color'].withOpacity(0.3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -406,9 +421,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                 child: Text(
                   l10n.choosePlan,
                   style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.w700, // Bolder text for better visibility
+                    fontWeight: FontWeight.w700,
                     fontSize: 16,
-                    color: Colors.white, // Explicit white color
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -428,14 +443,22 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.orange.withOpacity(0.15),
-            Colors.orange.withOpacity(0.08),
+            Colors.orange.withOpacity(0.1),
+            Colors.orange.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -447,6 +470,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.orange.withOpacity(0.3),
+                  ),
                 ),
                 child: const Icon(
                   Icons.account_balance_wallet_rounded,
@@ -459,7 +485,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                 child: Text(
                   l10n.addMoneyToYourWallet,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -473,7 +499,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           Text(
             l10n.addFundsToWallet,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               height: 1.5,
             ),
@@ -484,26 +510,34 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           // Amount Input
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.1),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.lightSage.withOpacity(0.2),
+                color: AppColors.primaryDark.withOpacity(0.3),
+                width: 1,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryDark.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: TextField(
               controller: _amountController,
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 16,
               ),
               decoration: InputDecoration(
                 hintText: l10n.enterAmountEg500,
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.lightSage.withOpacity(0.6),
+                  color: AppColors.primaryDark.withOpacity(0.5),
                 ),
                 prefixIcon: Icon(
                   Icons.currency_rupee_rounded,
-                  color: AppColors.lightSage.withOpacity(0.6),
+                  color: AppColors.primaryDark.withOpacity(0.6),
                 ),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
@@ -517,7 +551,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
           const SizedBox(height: 16),
 
-          // Add Money Button with dynamic amount
+          // Add Money Button
           SizedBox(
             width: double.infinity,
             height: 50,
@@ -531,6 +565,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
                 elevation: 4,
+                shadowColor: Colors.orange.withOpacity(0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -584,11 +619,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
         return Container(
           height: MediaQuery.of(context).size.height * 0.6,
           decoration: BoxDecoration(
-            color: AppColors.lightSage,
+            color: Colors.white,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(24),
               topRight: Radius.circular(24),
             ),
+            border: Border.all(color: AppColors.primaryDark, width: 2),
           ),
           child: Column(
             children: [
@@ -613,6 +649,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                       decoration: BoxDecoration(
                         color: plan['color'].withOpacity(0.2),
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: plan['color'].withOpacity(0.3),
+                        ),
                       ),
                       child: Icon(
                         plan['icon'],
@@ -624,7 +663,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                     const SizedBox(height: 16),
 
                     Text(
-                      l10n.subscribeToPlan( plan['name']),
+                      l10n.subscribeToPlan(plan['name']),
                       style: AppTextStyles.heading.copyWith(
                         color: AppColors.primaryDark,
                         fontSize: 20,
@@ -636,7 +675,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                     const SizedBox(height: 8),
 
                     Text(
-                      l10n.chargedForSubscription(plan['price'].toString(),plan['period'].toLowerCase()),
+                      l10n.chargedForSubscription(plan['price'].toString(), plan['period'].toLowerCase()),
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.primaryDark.withOpacity(0.7),
                       ),
@@ -659,7 +698,6 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          // Handle payment
                           _showPaymentSuccessDialog(plan, l10n);
                         },
                         style: ElevatedButton.styleFrom(
@@ -684,6 +722,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
                     TextButton(
                       onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.primaryDark.withOpacity(0.6),
+                      ),
                       child: Text(
                         l10n.cancel,
                         style: AppTextStyles.bodyMedium.copyWith(
@@ -726,7 +767,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
       var options = {
         'key': 'rzp_live_gm2iOnFy9nUmUx',
-        'amount': (amt * 100).toInt(), // amount in paise
+        'amount': (amt * 100).toInt(),
         'name': 'Pashu Parivar',
         'description': 'Add Wallet Balance in Pashu Parivar',
         'order_id': orderId,
@@ -775,7 +816,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
         textColor: Colors.white,
         gravity: ToastGravity.TOP,
       );
-      Navigator.pop(context); // or navigate to Home
+      Navigator.pop(context);
     } else {
       Fluttertoast.showToast(
         msg: l10n.paymentVerificationFailed,
@@ -824,9 +865,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -834,8 +876,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
+                  color: Colors.green.withOpacity(0.1),
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.green.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.check_circle_rounded,
@@ -897,16 +940,25 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSage,
+          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: AppColors.primaryDark, width: 2),
           ),
           title: Row(
             children: [
-              const Icon(
-                Icons.help_outline_rounded,
-                color: Colors.blue,
-                size: 24,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                ),
+                child: const Icon(
+                  Icons.help_outline_rounded,
+                  color: Colors.blue,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -934,6 +986,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
               child: Text(
                 l10n.gotIt,
                 style: AppTextStyles.bodyMedium.copyWith(
