@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:pashu_app/core/shared_pref_helper.dart';
+import 'package:pashu_app/view/auth/profile_page.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,9 +39,31 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
   String? currentUserId;
   bool isContactUnlocked = false;
 
+  late final PageController _pageController;
+  Timer? _autoScrollTimer;
+  int _currentPage = 0;
+
+
+
+
+
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
+
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (!mounted) return;
+      if (_pageController.hasClients) {
+        final nextPage = (_currentPage + 1) % 2; // assuming only 2 images
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        _currentPage = nextPage;
+      }
+    });
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -69,6 +96,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     super.dispose();
   }
 
+
   Future<void> _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     currentUserId = prefs.getString('user_id') ?? prefs.getString('phone_number');
@@ -80,7 +108,13 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
+      backgroundColor: const Color(0xFFF8F9FA),
+      appBar: CustomAppBar(
+        onProfileTap: ()async{
+          String? phoneNum  = await SharedPrefHelper.getPhoneNumber();
+          Navigator.push(context,MaterialPageRoute(builder: (context)=>ProfilePage(phoneNumber: phoneNum ?? '')));
+        },
+      ),// Light grayish-white background
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
@@ -107,6 +141,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
     );
   }
 
+
   Widget _buildSliverAppBar(AppLocalizations l10n) {
     final images = <String>[
       if (widget.pashu.pictureOne != null && widget.pashu.pictureOne!.isNotEmpty)
@@ -119,31 +154,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
       expandedHeight: 300,
       floating: false,
       pinned: true,
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       foregroundColor: AppColors.primaryDark,
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.arrow_back_ios_rounded,
-            color: AppColors.primaryDark,
-            size: 20,
-          ),
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
+
       actions: [
         IconButton(
           icon: Container(
@@ -210,7 +224,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
             // Background Image
             if (images.isNotEmpty)
               PageView.builder(
+                controller: _pageController,
                 itemCount: images.length,
+                onPageChanged: (index) => _currentPage = index,
                 itemBuilder: (context, index) {
                   return CachedNetworkImage(
                     imageUrl: images[index],
@@ -244,6 +260,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   );
                 },
               )
+
             else
               Container(
                 decoration: BoxDecoration(
@@ -1110,5 +1127,64 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
         icon: Icons.error,
       );
     }
+  }
+}
+// Add this wrapper class at the end of your file or in a separate file
+class AnimalDetailPageWrapper extends StatelessWidget {
+  final AllPashuModel pashu;
+  final double distance;
+  final VoidCallback onBack;
+
+  const AnimalDetailPageWrapper({
+    super.key,
+    required this.pashu,
+    required this.distance,
+    required this.onBack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom back header
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: onBack,
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: AppColors.primaryDark,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      pashu.animalname ?? 'Animal Details',
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.primaryDark,
+                        fontSize: 18,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // The actual animal detail page content
+            Expanded(
+              child: AnimalDetailPage(
+                pashu: pashu,
+                distance: distance,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/core/shared_pref_helper.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,11 +8,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
+import '../../core/navigation_controller.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/all_pashu_view_model.dart';
+import '../auth/profile_page.dart';
 
 class ListedPashuPage extends StatefulWidget {
-  const ListedPashuPage({super.key});
+
+   ListedPashuPage({super.key});
 
   @override
   State<ListedPashuPage> createState() => _ListedPashuPageState();
@@ -51,12 +56,22 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
         pashu.userphone == userPhoneNumber
     ).toList();
   }
+  Future<bool> _handleBackPress() async {
+    String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) =>  ProfilePage(phoneNumber: phoneNumber ?? ''
+          ,)),
+      ); }
+    return false; // prevent default pop behavior
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: _buildAppBar(),
+      appBar: CustomAppBar(),
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return RefreshIndicator(

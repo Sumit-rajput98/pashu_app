@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/model/auth/profile_model.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shimmer/shimmer.dart';
@@ -124,7 +125,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: _buildAppBar(l10n),
+       appBar:CustomAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(

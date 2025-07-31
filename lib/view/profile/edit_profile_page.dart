@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/app_colors.dart';
@@ -62,7 +63,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: _buildAppBar(),
+      appBar: CustomAppBar(),
       body: Consumer<UpdateProfileViewModel>(
         builder: (context, updateViewModel, child) {
           return SingleChildScrollView(

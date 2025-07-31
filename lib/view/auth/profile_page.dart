@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
+import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../model/auth/profile_model.dart';
 import '../../view_model/AuthVM/get_profile_view_model.dart';
@@ -23,45 +24,76 @@ import '../profile/withdraw_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String phoneNumber;
+  final VoidCallback? onBack;
 
-  const ProfilePage({super.key, required this.phoneNumber});
+  const ProfilePage({super.key, required this.phoneNumber, this.onBack});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  bool _hasFetchedProfile = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GetProfileViewModel>(
-        context,
-        listen: false,
-      ).getProfile(widget.phoneNumber);
-    });
+    WidgetsBinding.instance.addObserver(this);
+    print("ProfilePage initState called");
+    _fetchProfileData();
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _fetchProfileData() {
+    print("Fetching profile for: ${widget.phoneNumber}");
+    if (widget.phoneNumber.isNotEmpty) {
+      Provider.of<GetProfileViewModel>(context, listen: false)
+          .getProfile(widget.phoneNumber);
+      _hasFetchedProfile = true;
+    } else {
+      print("Phone number is empty!");
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white, // Light grayish-white background
-      body: SafeArea(
-        child: Consumer<GetProfileViewModel>(
-          builder: (context, viewModel, child) {
-            return RefreshIndicator(
-              onRefresh: () => viewModel.getProfile(widget.phoneNumber),
-              color: AppColors.primaryDark,
-              backgroundColor: Colors.white,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: _buildContent(viewModel),
+    super.build(context);
+    return Consumer<NavigationController>(
+        builder: (context, navController, child) {
+          // If profile just became visible and we haven't fetched data
+          if (navController.isProfileOpen && !_hasFetchedProfile) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              print("Profile became visible, fetching data");
+              _fetchProfileData();
+            });
+          }
+
+          return Scaffold(
+            backgroundColor: Colors.white, // Light grayish-white background
+            body: SafeArea(
+              child: Consumer<GetProfileViewModel>(
+                builder: (context, viewModel, child) {
+                  return RefreshIndicator(
+                    onRefresh: () => viewModel.getProfile(widget.phoneNumber),
+                    color: AppColors.primaryDark,
+                    backgroundColor: Colors.white,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: _buildContent(viewModel),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 
   Widget _buildContent(GetProfileViewModel viewModel) {
@@ -656,57 +688,59 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildErrorWidget(GetProfileViewModel viewModel) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      padding: const EdgeInsets.all(40),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline_rounded,
-              color: AppColors.primaryDark.withOpacity(0.5),
-              size: 80,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              l10n.failedToLoadProfile,
-              style: AppTextStyles.heading.copyWith(
-                color: AppColors.primaryDark,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              viewModel.error ?? l10n.somethingWentWrong,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primaryDark.withOpacity(0.7),
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () {
-                viewModel.getProfile(widget.phoneNumber);
-              },
-              icon: const Icon(Icons.refresh_rounded),
-              label: Text(l10n.retry),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryDark,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Center(child: CircularProgressIndicator(color: AppColors.primaryDark,));
+
+    // return Container(
+    //   padding: const EdgeInsets.all(40),
+    //   child: Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Icon(
+    //           Icons.error_outline_rounded,
+    //           color: AppColors.primaryDark.withOpacity(0.5),
+    //           size: 80,
+    //         ),
+    //         const SizedBox(height: 20),
+    //         Text(
+    //           l10n.failedToLoadProfile,
+    //           style: AppTextStyles.heading.copyWith(
+    //             color: AppColors.primaryDark,
+    //             fontSize: 20,
+    //           ),
+    //         ),
+    //         const SizedBox(height: 12),
+    //         Text(
+    //           viewModel.error ?? l10n.somethingWentWrong,
+    //           style: AppTextStyles.bodyMedium.copyWith(
+    //             color: AppColors.primaryDark.withOpacity(0.7),
+    //             fontSize: 14,
+    //           ),
+    //           textAlign: TextAlign.center,
+    //         ),
+    //         const SizedBox(height: 30),
+    //         ElevatedButton.icon(
+    //           onPressed: () {
+    //             viewModel.getProfile(widget.phoneNumber);
+    //           },
+    //           icon: const Icon(Icons.refresh_rounded),
+    //           label: Text(l10n.retry),
+    //           style: ElevatedButton.styleFrom(
+    //             backgroundColor: AppColors.primaryDark,
+    //             foregroundColor: Colors.white,
+    //             padding: const EdgeInsets.symmetric(
+    //               horizontal: 24,
+    //               vertical: 12,
+    //             ),
+    //             shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.circular(12),
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _buildEmptyWidget() {

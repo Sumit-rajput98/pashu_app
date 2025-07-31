@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -43,7 +44,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: _buildAppBar(),
+      appBar: CustomAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Column(

@@ -1,13 +1,28 @@
-// Create a new file: navigation_controller.dart
+// navigation_controller.dart
 import 'package:flutter/material.dart';
 
 class NavigationController extends ChangeNotifier {
   int _selectedIndex = 2; // Default to Home
+  bool _isProfileOpen = false;
 
   int get selectedIndex => _selectedIndex;
+  bool get isProfileOpen => _isProfileOpen;
+
+  int get stackIndex => _isProfileOpen ? 5 : _selectedIndex;
 
   void changeTab(int index) {
+    _isProfileOpen = false;
     _selectedIndex = index;
+    notifyListeners();
+  }
+
+  void openProfile() {
+    _isProfileOpen = true;
+    notifyListeners();
+  }
+
+  void closeProfile() {
+    _isProfileOpen = false;
     notifyListeners();
   }
 

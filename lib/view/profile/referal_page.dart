@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:pashu_app/view/profile/referal_code_container.dart';
 
 import 'package:share_plus/share_plus.dart';
@@ -78,7 +79,7 @@ Download now: $referralUrl
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: _buildAppBar(),
+      appBar: CustomAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(

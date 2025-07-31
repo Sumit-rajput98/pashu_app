@@ -979,7 +979,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ],
     );
   }
-
   Widget _buildServiceCard({
     required String image,
     required String title,
@@ -1014,12 +1013,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
                     width: 120,
-                    height: 100,
+                    height: 120, // Increased height
                     child: Image.asset(
                       image,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain, // Show entire image
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
+                          height: 120,
                           decoration: BoxDecoration(
                             color: primaryColor.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(16),
@@ -1083,7 +1083,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Subtitle if provided
                   if (subtitle != null) ...[
                     Text(
                       subtitle,
@@ -1096,7 +1095,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     const SizedBox(height: 4),
                   ],
 
-                  // Main Title
                   Text(
                     title,
                     style: AppTextStyles.heading.copyWith(
@@ -1108,7 +1106,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                   const SizedBox(height: 16),
 
-                  // Action Button
                   Container(
                     width: double.infinity,
                     height: 44,

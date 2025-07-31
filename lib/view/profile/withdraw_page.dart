@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -65,7 +66,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: _buildAppBar(),
+       appBar: CustomAppBar(),
       body: Consumer2<GetProfileViewModel, GetCounterViewModel>(
         builder: (context, profileViewModel, counterViewModel, child) {
           return RefreshIndicator(

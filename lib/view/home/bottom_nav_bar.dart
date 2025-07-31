@@ -13,6 +13,7 @@ import '../../core/language_helper.dart';
 import '../../core/locale_helper.dart';
 import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
+import 'package:pashu_app/view/custom_app_bar.dart';
 // Add your NavigationController import
 
 class CustomBottomNavScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class CustomBottomNavScreen extends StatefulWidget {
 class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
   String phone = '';
   void _showLanguageDialog(BuildContext context) async {
-    String? selectedLanguage = await LanguageHelper.getLocale() ?? 'en';
+    String? selectedLanguage = await LanguageHelper.getLocale();
 
     showDialog(
       context: context,
@@ -149,107 +150,47 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
     initializeUserData();
   }
 
+  // custom_bottom_nav_screen.dart
+
   @override
   Widget build(BuildContext context) {
-    // Only build pages if we have the required data
-
     return Consumer<NavigationController>(
       builder: (context, navController, child) {
         final List<Widget> pages = [
           const BuyPage(),
-          SellPashuScreen(
-            phoneNumber: phone,
-            // Fallback to phone if userId not available
-          ),
-         HomeScreen(phoneNumber: phone,),
+          SellPashuScreen(phoneNumber: phone),
+          HomeScreen(phoneNumber: phone),
           const WishlistPage(),
           const InvestPage(),
+          ProfilePage(
+            phoneNumber: phone,
+            onBack: () => navController.closeProfile(),
+          ),
         ];
 
         return WillPopScope(
           onWillPop: () async {
+            if (navController.isProfileOpen) {
+              navController.closeProfile();
+              return false;
+            }
             if (navController.selectedIndex != 2) {
               navController.goToHome();
-              return false; // don't exit app
+              return false;
             }
-            return true; // exit app
+            return true;
           },
           child: Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(70),
-              child: AppBar(
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.white,
-                elevation: 0,
-                scrolledUnderElevation: 0,
-                flexibleSpace: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 10),
-                        Image.asset('assets/newlogo.png', height: 60),
-                        const SizedBox(width: 8),
-                        Text(
-                          AppLocalizations.of(context)!.appTitle,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF244B5C),
-                          ),
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            _showLanguageDialog(context);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xFF244B5C),
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.languageShort,
-                              style: const TextStyle(color: Color(0xFF244B5C)),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          onPressed: () async {
-                            String? phoneNumber =
-                                await SharedPrefHelper.getPhoneNumber();
-                            if (mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => ProfilePage(
-                                        phoneNumber: phoneNumber ?? '',
-                                      ),
-                                ),
-                              );
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.account_circle,
-                            size: 30,
-                            color: Color(0xFF244B5C),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+            appBar: CustomAppBar(
+              onLanguageTap: () => _showLanguageDialog(context),
+              onProfileTap: () {
+                navController.openProfile();
+              },
             ),
-            body: pages[navController.selectedIndex],
+            body: IndexedStack(
+              index: navController.stackIndex,
+              children: pages,
+            ),
             extendBody: true,
             bottomNavigationBar: ClipRRect(
               borderRadius: const BorderRadius.only(
@@ -257,10 +198,8 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                 topRight: Radius.circular(20),
               ),
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFC2CE9A),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 10), // Increased padding for better look
+                decoration: const BoxDecoration(color: Color(0xFFC2CE9A)),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: SafeArea(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -272,13 +211,12 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                 ),
               ),
             ),
-
-
           ),
         );
       },
     );
   }
+
 
   Widget _buildNavItem(int index, NavigationController navController) {
     const icons = [
@@ -298,40 +236,35 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
       localizations.investInFarming,
     ];
 
-    bool isSelected = index == navController.selectedIndex;
+    bool isSelected = !navController.isProfileOpen && index == navController.selectedIndex;
 
     return GestureDetector(
       onTap: () => navController.changeTab(index),
       child: SizedBox(
         width: MediaQuery.of(context).size.width / 5,
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  icons[index],
-                  height: 24,
-                  color: isSelected ? AppColors.primaryDark : Colors.white,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  labels[index],
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isSelected ? AppColors.primaryDark : Colors.white,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            Image.asset(
+              icons[index],
+              height: 24,
+              color: isSelected ? AppColors.primaryDark : Colors.white,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              labels[index],
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected ? AppColors.primaryDark : Colors.white,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       ),
     );
   }
+
 }

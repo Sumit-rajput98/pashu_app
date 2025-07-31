@@ -472,7 +472,6 @@ class _BuyPageState extends State<BuyPage> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            // Navigate to animal detail page on card tap
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -494,7 +493,7 @@ class _BuyPageState extends State<BuyPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Animal Name & Type with Active Badge
+                      // Animal Name & Status
                       Row(
                         children: [
                           Expanded(
@@ -511,18 +510,12 @@ class _BuyPageState extends State<BuyPage> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          // Active Status Badge
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color: Colors.green.withOpacity(0.3),
-                              ),
+                              border: Border.all(color: Colors.green.withOpacity(0.3)),
                             ),
                             child: Text(
                               'ACTIVE',
@@ -540,16 +533,11 @@ class _BuyPageState extends State<BuyPage> {
 
                       // Category
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 3,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                         decoration: BoxDecoration(
                           color: AppColors.primaryDark.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
-                            color: AppColors.primaryDark.withOpacity(0.3),
-                          ),
+                          border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                         ),
                         child: Text(
                           pashu.animatCategory ?? l10n.other,
@@ -569,11 +557,7 @@ class _BuyPageState extends State<BuyPage> {
                       if (pashu.breed != null && pashu.breed!.isNotEmpty) ...[
                         Row(
                           children: [
-                            Icon(
-                              Icons.pets_outlined,
-                              color: AppColors.primaryDark.withOpacity(0.6),
-                              size: 12,
-                            ),
+                            Icon(Icons.pets_outlined, color: AppColors.primaryDark.withOpacity(0.6), size: 12),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
@@ -595,11 +579,7 @@ class _BuyPageState extends State<BuyPage> {
                       Row(
                         children: [
                           if (pashu.age != null) ...[
-                            Icon(
-                              Icons.cake_outlined,
-                              color: AppColors.primaryDark.withOpacity(0.6),
-                              size: 12,
-                            ),
+                            Icon(Icons.cake_outlined, color: AppColors.primaryDark.withOpacity(0.6), size: 12),
                             const SizedBox(width: 4),
                             Text(
                               '${pashu.age}y',
@@ -609,13 +589,10 @@ class _BuyPageState extends State<BuyPage> {
                               ),
                             ),
                           ],
-                          if (pashu.age != null && pashu.gender != null)
-                            const SizedBox(width: 12),
+                          if (pashu.age != null && pashu.gender != null) const SizedBox(width: 12),
                           if (pashu.gender != null) ...[
                             Icon(
-                              pashu.gender?.toLowerCase() == 'male'
-                                  ? Icons.male_rounded
-                                  : Icons.female_rounded,
+                              pashu.gender?.toLowerCase() == 'male' ? Icons.male_rounded : Icons.female_rounded,
                               color: AppColors.primaryDark.withOpacity(0.6),
                               size: 12,
                             ),
@@ -637,15 +614,11 @@ class _BuyPageState extends State<BuyPage> {
 
                       const SizedBox(height: 4),
 
-                      // Owner Information
+                      // Owner
                       if (pashu.username != null && pashu.username!.isNotEmpty) ...[
                         Row(
                           children: [
-                            Icon(
-                              Icons.person_outline_rounded,
-                              color: AppColors.primaryDark.withOpacity(0.6),
-                              size: 12,
-                            ),
+                            Icon(Icons.person_outline_rounded, color: AppColors.primaryDark.withOpacity(0.6), size: 12),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
@@ -663,25 +636,17 @@ class _BuyPageState extends State<BuyPage> {
                         const SizedBox(height: 4),
                       ],
 
-                      // Distance with enhanced styling
+                      // Distance
                       Row(
                         children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            color: calculatedDistance < 999 ? Colors.blue : Colors.grey,
-                            size: 12,
-                          ),
+                          Icon(Icons.location_on_outlined, color: calculatedDistance < 999 ? Colors.blue : Colors.grey, size: 12),
                           const SizedBox(width: 4),
                           Text(
                             '${calculatedDistance.toInt()} Km',
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: calculatedDistance < 999
-                                  ? Colors.blue
-                                  : AppColors.primaryDark.withOpacity(0.5),
+                              color: calculatedDistance < 999 ? Colors.blue : AppColors.primaryDark.withOpacity(0.5),
                               fontSize: 11,
-                              fontWeight: calculatedDistance < 999
-                                  ? FontWeight.w600
-                                  : FontWeight.normal,
+                              fontWeight: calculatedDistance < 999 ? FontWeight.w600 : FontWeight.normal,
                             ),
                           ),
                         ],
@@ -689,10 +654,10 @@ class _BuyPageState extends State<BuyPage> {
 
                       const SizedBox(height: 8),
 
-                      // Price and Action Buttons Row
-                      Row(
-                        children: [
-                          Column(
+                      // Price & Buttons (Responsive)
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -712,79 +677,76 @@ class _BuyPageState extends State<BuyPage> {
                                     fontSize: 9,
                                   ),
                                 ),
-                            ],
-                          ),
-                          const Spacer(),
-                          // Add to Wishlist Button
-                          Container(
-                            height: 32,
-                            margin: const EdgeInsets.only(right: 8),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                // Prevent card tap
-                                _addToWishlist(pashu, l10n);
-                              },
-                              icon: const Icon(
-                                Icons.favorite_border_rounded,
-                                size: 14,
-                              ),
-                              label: Text(
-                                'Wishlist',
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 10,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                elevation: 2,
-                                shadowColor: Colors.red.withOpacity(0.3),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                              ),
-                            ),
-                          ),
-                          // Buy Now Button
-                          SizedBox(
-                            height: 32,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                 // Prevent card tap
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AnimalDetailPage(
-                                      pashu: pashu,
-                                      distance: calculatedDistance,
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _addToWishlist(pashu, l10n),
+                                      icon: const Icon(Icons.favorite_border_rounded, size: 14),
+                                      label: FittedBox(
+                                        child: Text(
+                                          'Wishlist',
+                                          style: AppTextStyles.bodyMedium.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 10,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                        elevation: 2,
+                                        shadowColor: Colors.red.withOpacity(0.3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryDark,
-                                foregroundColor: Colors.white,
-                                elevation: 4,
-                                shadowColor: AppColors.primaryDark.withOpacity(0.3),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => AnimalDetailPage(
+                                              pashu: pashu,
+                                              distance: calculatedDistance,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primaryDark,
+                                        foregroundColor: Colors.white,
+                                        elevation: 4,
+                                        shadowColor: AppColors.primaryDark.withOpacity(0.3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                      ),
+                                      child: FittedBox(
+                                        child: Text(
+                                          l10n.buyNow,
+                                          style: AppTextStyles.bodyMedium.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: Text(
-                                l10n.buyNow,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -1126,6 +1088,65 @@ class _AutoScrollingPageViewState extends State<_AutoScrollingPageView> {
           },
         );
       },
+    );
+  }
+}
+// Add this wrapper class at the end of your file or in a separate file
+class AnimalDetailPageWrapper extends StatelessWidget {
+  final AllPashuModel pashu;
+  final double distance;
+  final VoidCallback onBack;
+
+  const AnimalDetailPageWrapper({
+    super.key,
+    required this.pashu,
+    required this.distance,
+    required this.onBack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom back header
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: onBack,
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: AppColors.primaryDark,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      pashu.animalname ?? 'Animal Details',
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.primaryDark,
+                        fontSize: 18,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // The actual animal detail page content
+            Expanded(
+              child: AnimalDetailPage(
+                pashu: pashu,
+                distance: distance,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
