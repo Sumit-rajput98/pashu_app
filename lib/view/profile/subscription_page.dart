@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/model/auth/profile_model.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,7 +18,8 @@ import '../../view_model/AuthVM/get_profile_view_model.dart';
 
 class SubscriptionPage extends StatefulWidget {
   final String phoneNumber;
-  const SubscriptionPage({super.key, required this.phoneNumber});
+  final VoidCallback? onBack;
+  const SubscriptionPage({super.key, required this.phoneNumber, this.onBack});
 
   @override
   State<SubscriptionPage> createState() => _SubscriptionPageState();
@@ -125,7 +127,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-       appBar:CustomAppBar(),
+
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(
@@ -134,7 +136,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with TickerProvider
               _buildHeader(l10n),
               _buildSubscriptionPlans(l10n),
               _buildAddMoneySection(l10n),
-              const SizedBox(height: 30),
+              const SizedBox(height: kBottomNavigationBarHeight + 30),
             ],
           ),
         ),

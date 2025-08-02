@@ -4,17 +4,20 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/top_snacbar.dart';
 
 class VerifiedPashuScreen extends StatefulWidget {
-  const VerifiedPashuScreen({super.key});
+  final VoidCallback? onBack;
+  const VerifiedPashuScreen({super.key, this.onBack});
 
   @override
   State<VerifiedPashuScreen> createState() => _VerifiedPashuScreenState();
@@ -76,12 +79,11 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
   }
 
   Future<void> fetchPashuData() async {
+    final l = AppLocalizations.of(context)!;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final phone = await SharedPrefHelper.getPhoneNumber();
     latitude = 5.5;
     longitude = 7.5;
-    print(latitude);
-    print(longitude);
 
     setState(() => isLoading = true);
 
@@ -96,7 +98,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
       debugPrint('Error fetching data: $e');
       TopSnackBar.show(
         context,
-        message: 'Failed to load data: $e',
+        message: '${l.fetchDataError}: $e',
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,
@@ -119,6 +121,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
   }
 
   Future<void> handleVerification(int id) async {
+    final l = AppLocalizations.of(context)!;
     setState(() => isLoading = true);
 
     try {
@@ -144,7 +147,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
           TopSnackBar.show(
             context,
-            message: 'Verification request submitted successfully!',
+            message: l.verificationSuccess,
             backgroundColor: Colors.green,
             textColor: Colors.white,
             icon: Icons.verified,
@@ -152,7 +155,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
         } else {
           TopSnackBar.show(
             context,
-            message: 'Insufficient wallet balance. Minimum ₹25 required.',
+            message: l.insufficientBalance,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             icon: Icons.account_balance_wallet,
@@ -162,7 +165,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     } catch (e) {
       TopSnackBar.show(
         context,
-        message: 'Verification failed: $e',
+        message: '${l.verificationFailed}: $e',
         backgroundColor: Colors.red,
         textColor: Colors.white,
         icon: Icons.error,
@@ -174,88 +177,30 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
+      backgroundColor: const Color(0xFFF8F9FA),
+
       body: FadeTransition(
         opacity: _fadeAnimation,
-        child: _buildContent(),
+        child: _buildContent(l),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.primaryDark.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
-          ),
-          child: Icon(
-            Icons.arrow_back_ios_rounded,
-            color: AppColors.primaryDark,
-            size: 20,
-          ),
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: Row(
-        children: [
-          const AppLogo(size: 40),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'Verify Your Pashu',
-              style: AppTextStyles.heading.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primaryDark,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.primaryDark.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
-            ),
-            child: Icon(
-              Icons.refresh_rounded,
-              color: AppColors.primaryDark,
-              size: 20,
-            ),
-          ),
-          onPressed: fetchPashuData,
-        ),
-        const SizedBox(width: 16),
-      ],
-    );
-  }
-
-  Widget _buildContent() {
+  Widget _buildContent(AppLocalizations l) {
     if (isLoading) {
-      return _buildShimmerLoading();
+      return _buildShimmerLoading(l);
     }
 
     if (pashus.isEmpty) {
-      return _buildEmptyWidget();
+      return _buildEmptyWidget(l);
     }
 
     return Column(
       children: [
-        _buildInfoHeader(),
+        _buildInfoHeader(l),
         Expanded(
           child: SlideTransition(
             position: _slideAnimation,
@@ -267,7 +212,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: pashus.length,
                 itemBuilder: (context, index) {
-                  return _buildPashuCard(pashus[index], index);
+                  return _buildPashuCard(pashus[index], index, l);
                 },
               ),
             ),
@@ -277,7 +222,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildInfoHeader() {
+  Widget _buildInfoHeader(AppLocalizations l) {
     final activeCount = pashus.where((p) => p['status'] == 'Active').length;
     final pendingCount = pashus.where((p) => p['status'] == 'verification pending').length;
     final verifiedCount = pashus.where((p) => p['status'] == 'verified pashu').length;
@@ -327,7 +272,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Verification Status',
+                  l.verificationStatus,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -345,15 +290,15 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
           Row(
             children: [
               Expanded(
-                child: _buildStatItem('Active', activeCount.toString(), Colors.green),
+                child: _buildStatItem(l.active, activeCount.toString(), Colors.green),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: _buildStatItem('Pending', pendingCount.toString(), Colors.orange),
+                child: _buildStatItem(l.pending, pendingCount.toString(), Colors.orange),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: _buildStatItem('Verified', verifiedCount.toString(), Colors.blue),
+                child: _buildStatItem(l.verified, verifiedCount.toString(), Colors.blue),
               ),
             ],
           ),
@@ -391,23 +336,23 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildPashuCard(Map<String, dynamic> pashu, int index) {
+  Widget _buildPashuCard(Map<String, dynamic> pashu, int index, AppLocalizations l) {
     final dist = calculateDistance(latitude!, longitude!, 24.2, 41.4);
     final imageUrl = 'https://pashuparivar.com/uploads/${carouselIndex == 0 ? pashu['pictureOne'] : pashu['pictureTwo']}';
     final status = pashu['status'] ?? '';
 
     if (status == 'Active') {
-      return _buildActivePashuCard(pashu, imageUrl, dist);
+      return _buildActivePashuCard(pashu, imageUrl, dist, l);
     } else if (status == 'verification pending') {
-      return _buildPendingPashuCard(pashu, imageUrl, dist);
+      return _buildPendingPashuCard(pashu, imageUrl, dist, l);
     } else if (status == 'verified pashu') {
-      return _buildVerifiedPashuCard(pashu, imageUrl, dist);
+      return _buildVerifiedPashuCard(pashu, imageUrl, dist, l);
     } else {
-      return _buildInactiveNotice();
+      return _buildInactiveNotice(l);
     }
   }
 
-  Widget _buildActivePashuCard(Map<String, dynamic> pashu, String imageUrl, double dist) {
+  Widget _buildActivePashuCard(Map<String, dynamic> pashu, String imageUrl, double dist, AppLocalizations l) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -491,7 +436,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       ],
                     ),
                     child: Text(
-                      'ACTIVE',
+                      l.active.toUpperCase(),
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white,
                         fontSize: 10,
@@ -516,12 +461,12 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildDetailRow('Type', pashu['type'] ?? 'Unknown'),
-                          _buildDetailRow('Age', '${pashu['age'] ?? 'Unknown'} years'),
-                          _buildDetailRow('Price', '₹${pashu['price'] ?? '0'}'),
-                          _buildDetailRow('Negotiable', pashu['negotiable'] ?? 'No'),
-                          _buildDetailRow('Owner', '${pashu['username'] ?? 'Unknown'} ji'),
-                          _buildDetailRow('Distance', '${dist.toStringAsFixed(1)} km'),
+                          _buildDetailRow(l.type, pashu['type'] ?? l.unknown),
+                          _buildDetailRow(l.age, '${pashu['age'] ?? l.unknown} ${l.years}'),
+                          _buildDetailRow(l.priceA, '₹${pashu['price'] ?? '0'}'),
+                          _buildDetailRow(l.negotiable, pashu['negotiable'] == 'Yes' ? l.yes : l.no),
+                          _buildDetailRow(l.owner, '${pashu['username'] ?? l.unknown}'),
+                          _buildDetailRow(l.distance, '${dist.toStringAsFixed(1)} ${l.km}'),
                         ],
                       ),
                     ),
@@ -549,7 +494,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Get your pashu verified for better visibility and trust',
+                          l.verificationInfo,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.blue,
                             fontSize: 11,
@@ -578,7 +523,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     )
                         : const Icon(Icons.verified_rounded),
                     label: Text(
-                      isLoading ? 'Processing...' : 'Get Verified (₹25)',
+                      isLoading ? l.processing : l.getVerified(25),
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -602,7 +547,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildPendingPashuCard(Map<String, dynamic> pashu, String imageUrl, double dist) {
+  Widget _buildPendingPashuCard(Map<String, dynamic> pashu, String imageUrl, double dist, AppLocalizations l) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -686,7 +631,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       ],
                     ),
                     child: Text(
-                      'VERIFICATION PENDING',
+                      l.verificationPending.toUpperCase(),
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white,
                         fontSize: 9,
@@ -724,7 +669,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Verification Under Review',
+                        l.verificationUnderReview,
                         style: AppTextStyles.heading.copyWith(
                           color: Colors.orange,
                           fontSize: 16,
@@ -734,7 +679,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Our team is reviewing your submission',
+                        l.verificationReviewMessage,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: Colors.orange.withOpacity(0.8),
                           fontSize: 12,
@@ -747,10 +692,10 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
                 const SizedBox(height: 16),
 
-                _buildDetailRow('Type', pashu['type'] ?? 'Unknown'),
-                _buildDetailRow('Age', '${pashu['age'] ?? 'Unknown'} years'),
-                _buildDetailRow('Owner', '${pashu['username'] ?? 'Unknown'} ji'),
-                _buildDetailRow('Distance', '${dist.toStringAsFixed(1)} km'),
+                _buildDetailRow(l.type, pashu['type'] ?? l.unknown),
+                _buildDetailRow(l.age, '${pashu['age'] ?? l.unknown} ${l.years}'),
+                _buildDetailRow(l.owner, '${pashu['username'] ?? l.unknown}'),
+                _buildDetailRow(l.distance, '${dist.toStringAsFixed(1)} ${l.km}'),
               ],
             ),
           ),
@@ -759,7 +704,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildVerifiedPashuCard(Map<String, dynamic> pashu, String imageUrl, double dist) {
+  Widget _buildVerifiedPashuCard(Map<String, dynamic> pashu, String imageUrl, double dist, AppLocalizations l) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -856,7 +801,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'VERIFIED',
+                            l.verified.toUpperCase(),
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: Colors.green,
                               fontSize: 10,
@@ -908,7 +853,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Verified Pashu',
+                              l.verifiedPashu,
                               style: AppTextStyles.heading.copyWith(
                                 color: Colors.green,
                                 fontSize: 16,
@@ -917,7 +862,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'This animal has been verified by our team',
+                              l.verifiedPashuMessage,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: Colors.green.withOpacity(0.8),
                                 fontSize: 11,
@@ -932,12 +877,12 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
 
                 const SizedBox(height: 16),
 
-                _buildDetailRow('Type', pashu['type'] ?? 'Unknown'),
-                _buildDetailRow('Age', '${pashu['age'] ?? 'Unknown'} years'),
-                _buildDetailRow('Price', '₹${pashu['price'] ?? '0'}'),
-                _buildDetailRow('Negotiable', pashu['negotiable'] ?? 'No'),
-                _buildDetailRow('Owner', '${pashu['username'] ?? 'Unknown'} ji'),
-                _buildDetailRow('Distance', '${dist.toStringAsFixed(1)} km'),
+                _buildDetailRow(l.type, pashu['type'] ?? l.unknown),
+                _buildDetailRow(l.age, '${pashu['age'] ?? l.unknown} ${l.years}'),
+                _buildDetailRow(l.priceA, '₹${pashu['price'] ?? '0'}'),
+                _buildDetailRow(l.negotiable, pashu['negotiable'] == 'Yes' ? l.yes : l.no),
+                _buildDetailRow(l.owner, '${pashu['username'] ?? l.unknown}'),
+                _buildDetailRow(l.distance, '${dist.toStringAsFixed(1)} ${l.km}'),
 
                 const SizedBox(height: 16),
 
@@ -948,7 +893,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     onPressed: () {
                       TopSnackBar.show(
                         context,
-                        message: 'More details coming soon!',
+                        message: l.moreDetailsComing,
                         backgroundColor: Colors.blue,
                         textColor: Colors.white,
                         icon: Icons.info,
@@ -956,7 +901,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
                     },
                     icon: const Icon(Icons.info_rounded),
                     label: Text(
-                      'More Details',
+                      l.moreDetails,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -980,7 +925,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildInactiveNotice() {
+  Widget _buildInactiveNotice(AppLocalizations l) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
@@ -1023,7 +968,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              '💡 Only Active Pashu Can Be Verified',
+              l.onlyActiveCanBeVerified,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -1070,7 +1015,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildShimmerLoading() {
+  Widget _buildShimmerLoading(AppLocalizations l) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -1115,7 +1060,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
     );
   }
 
-  Widget _buildEmptyWidget() {
+  Widget _buildEmptyWidget(AppLocalizations l) {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -1129,7 +1074,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             ),
             const SizedBox(height: 20),
             Text(
-              'Your List is Empty',
+              l.emptyListTitle,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -1138,7 +1083,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
             ),
             const SizedBox(height: 12),
             Text(
-              'You haven\'t added any Pashu yet. Start exploring to add what you love!',
+              l.emptyListMessage,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -1149,19 +1094,7 @@ class _VerifiedPashuScreenState extends State<VerifiedPashuScreen> with TickerPr
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Add New Pashu'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryDark,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),

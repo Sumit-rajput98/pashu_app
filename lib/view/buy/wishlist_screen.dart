@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
+import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 import '../../model/pashu/all_pashu.dart';
@@ -285,276 +286,305 @@ class _WishlistPageState extends State<WishlistPage> {
         'https://pashuparivar.com/uploads/${pashu.pictureTwo ?? ''}',
     ];
 
-    return Container(
-      key: ValueKey('wishlist_animal_${pashu.id}'),
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primaryDark, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryDark.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image Container
-              Container(
-                width: 110,
-                height: 130,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: AppColors.primaryDark.withOpacity(0.2)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryDark.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Stack(
-                    children: [
-                      if (images.isNotEmpty)
-                        PageView.builder(
-                          itemCount: images.length,
-                          itemBuilder: (context, index) {
-                            return CachedNetworkImage(
-                              imageUrl: images[index],
-                              width: 110,
-                              height: 130,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Shimmer.fromColors(
-                                baseColor: AppColors.lightSage.withOpacity(0.1),
-                                highlightColor: AppColors.lightSage.withOpacity(0.2),
-                                child: Container(
-                                  color: AppColors.lightSage.withOpacity(0.1),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColors.primaryDark.withOpacity(0.8),
-                                      AppColors.primaryDark.withOpacity(0.6),
-                                    ],
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.pets_rounded,
-                                    color: Colors.white,
-                                    size: 35,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      else
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.primaryDark.withOpacity(0.8),
-                                AppColors.primaryDark.withOpacity(0.6),
-                              ],
-                            ),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.pets_rounded,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          ),
-                        ),
-                      Positioned(
-                        top: 6,
-                        right: 6,
-                        child: Container(
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color: AppColors.primaryDark.withOpacity(0.15),
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                            size: 12,
-                          ),
-                        ),
+    return GestureDetector(
+      onTap: (){
+        double calculatedDistance = 999.0;
+        Provider.of<NavigationController>(context, listen: false)
+            .openAnimalDetail(pashu, calculatedDistance);
+      },
+      child: Container(
+        key: ValueKey('wishlist_animal_${pashu.id}'),
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.primaryDark, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryDark.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image Container
+                Container(
+                  width: 110,
+                  height: 130,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: AppColors.primaryDark.withOpacity(0.2)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryDark.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                      if (images.length > 1)
-                        Positioned(
-                          bottom: 6,
-                          right: 6,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryDark.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              '${images.length}',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: Colors.white,
-                                fontSize: 8,
-                              ),
-                            ),
-                          ),
-                        ),
                     ],
                   ),
-                ),
-              ),
-
-              const SizedBox(width: 16),
-
-              // Animal Details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Name and Category
-                    Row(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Stack(
                       children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            pashu.animalname ?? l10n.unknownAnimal,
-                            style: AppTextStyles.bodyLarge.copyWith(
-                              color: AppColors.primaryDark,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
+                        if (images.isNotEmpty)
+                          PageView.builder(
+                            itemCount: images.length,
+                            itemBuilder: (context, index) {
+                              return CachedNetworkImage(
+                                imageUrl: images[index],
+                                width: 110,
+                                height: 130,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Shimmer.fromColors(
+                                  baseColor: AppColors.lightSage.withOpacity(0.1),
+                                  highlightColor: AppColors.lightSage.withOpacity(0.2),
+                                  child: Container(
+                                    color: AppColors.lightSage.withOpacity(0.1),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.primaryDark.withOpacity(0.8),
+                                        AppColors.primaryDark.withOpacity(0.6),
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.pets_rounded,
+                                      color: Colors.white,
+                                      size: 35,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        else
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primaryDark.withOpacity(0.8),
+                                  AppColors.primaryDark.withOpacity(0.6),
+                                ],
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            child: const Center(
+                              child: Icon(
+                                Icons.pets_rounded,
+                                color: Colors.white,
+                                size: 35,
+                              ),
+                            ),
+                          ),
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: AppColors.primaryDark.withOpacity(0.15),
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                              size: 12,
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          flex: 1,
-                          child: Container(
-                            constraints: const BoxConstraints(maxWidth: 60),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 5,
-                              vertical: 2,
+                        if (images.length > 1)
+                          Positioned(
+                            bottom: 6,
+                            right: 6,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryDark.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                '${images.length}',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 8,
+                                ),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryDark.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 16),
+
+                // Animal Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name and Category
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
                             child: Text(
-                              pashu.animatCategory ?? l10n.other,
-                              style: AppTextStyles.bodyMedium.copyWith(
+                              pashu.animalname ?? l10n.unknownAnimal,
+                              style: AppTextStyles.bodyLarge.copyWith(
                                 color: AppColors.primaryDark,
-                                fontSize: 8,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
                             ),
                           ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            flex: 1,
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 60),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryDark.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                pashu.animatCategory ?? l10n.other,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.primaryDark,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      if (pashu.breed != null && pashu.breed!.isNotEmpty) ...[
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.pets_outlined,
+                              color: AppColors.primaryDark.withOpacity(0.5),
+                              size: 11,
+                            ),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                '${l10n.breed}: ${pashu.breed}',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.primaryDark.withOpacity(0.7),
+                                  fontSize: 10,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 3),
                       ],
-                    ),
-                    const SizedBox(height: 5),
-                    if (pashu.breed != null && pashu.breed!.isNotEmpty) ...[
                       Row(
                         children: [
-                          Icon(
-                            Icons.pets_outlined,
-                            color: AppColors.primaryDark.withOpacity(0.5),
-                            size: 11,
-                          ),
-                          const SizedBox(width: 3),
-                          Expanded(
-                            child: Text(
-                              '${l10n.breed}: ${pashu.breed}',
+                          if (pashu.age != null) ...[
+                            Icon(
+                              Icons.cake_outlined,
+                              color: AppColors.primaryDark.withOpacity(0.5),
+                              size: 11,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${pashu.age}y',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.primaryDark.withOpacity(0.7),
                                 fontSize: 10,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
+                          ],
+                          if (pashu.age != null && pashu.gender != null)
+                            const SizedBox(width: 10),
+                          if (pashu.gender != null) ...[
+                            Icon(
+                              pashu.gender?.toLowerCase() == 'male'
+                                  ? Icons.male_rounded
+                                  : Icons.female_rounded,
+                              color: AppColors.primaryDark.withOpacity(0.5),
+                              size: 11,
+                            ),
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                pashu.gender ?? '',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.primaryDark.withOpacity(0.7),
+                                  fontSize: 10,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                       const SizedBox(height: 3),
-                    ],
-                    Row(
-                      children: [
-                        if (pashu.age != null) ...[
-                          Icon(
-                            Icons.cake_outlined,
-                            color: AppColors.primaryDark.withOpacity(0.5),
-                            size: 11,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            '${pashu.age}y',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.primaryDark.withOpacity(0.7),
-                              fontSize: 10,
+                      if (pashu.username != null && pashu.username!.isNotEmpty) ...[
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.person_outline_rounded,
+                              color: AppColors.primaryDark.withOpacity(0.5),
+                              size: 11,
                             ),
-                          ),
-                        ],
-                        if (pashu.age != null && pashu.gender != null)
-                          const SizedBox(width: 10),
-                        if (pashu.gender != null) ...[
-                          Icon(
-                            pashu.gender?.toLowerCase() == 'male'
-                                ? Icons.male_rounded
-                                : Icons.female_rounded,
-                            color: AppColors.primaryDark.withOpacity(0.5),
-                            size: 11,
-                          ),
-                          const SizedBox(width: 3),
-                          Flexible(
-                            child: Text(
-                              pashu.gender ?? '',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.primaryDark.withOpacity(0.7),
-                                fontSize: 10,
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                '${l10n.owner}: ${pashu.username}',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.primaryDark.withOpacity(0.6),
+                                  fontSize: 10,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        const SizedBox(height: 3),
                       ],
-                    ),
-                    const SizedBox(height: 3),
-                    if (pashu.username != null && pashu.username!.isNotEmpty) ...[
                       Row(
                         children: [
                           Icon(
-                            Icons.person_outline_rounded,
+                            Icons.location_on_outlined,
                             color: AppColors.primaryDark.withOpacity(0.5),
                             size: 11,
                           ),
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(
-                              '${l10n.owner}: ${pashu.username}',
+                              pashu.address ?? l10n.locationNotAvailable,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.primaryDark.withOpacity(0.6),
                                 fontSize: 10,
@@ -565,143 +595,121 @@ class _WishlistPageState extends State<WishlistPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 3),
-                    ],
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          color: AppColors.primaryDark.withOpacity(0.5),
-                          size: 11,
-                        ),
-                        const SizedBox(width: 3),
-                        Expanded(
-                          child: Text(
-                            pashu.address ?? l10n.locationNotAvailable,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.primaryDark.withOpacity(0.6),
-                              fontSize: 10,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '₹${pashu.price ?? '0'}',
-                              style: AppTextStyles.heading.copyWith(
-                                color: Colors.red,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            if (pashu.negotiable?.toLowerCase() == 'yes' ||
-                                pashu.negotiable?.toLowerCase() == 'true')
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               Text(
-                                l10n.callMe,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.primaryDark.withOpacity(0.6),
-                                  fontSize: 8,
+                                '₹${pashu.price ?? '0'}',
+                                style: AppTextStyles.heading.copyWith(
+                                  color: Colors.red,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                          ],
-                        ),
-                        const Spacer(),
-                        Column(
-                          children: [
-                            // VIEW/BUY Button
-                            SizedBox(
-                              width: 70,
-                              height: 28,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AnimalDetailPage(
-                                              pashu: pashu, distance: 0)));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primaryDark,
-                                  foregroundColor: Colors.white,
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                                ),
-                                child: Text(
-                                  l10n.buyNow,
+                              if (pashu.negotiable?.toLowerCase() == 'yes' ||
+                                  pashu.negotiable?.toLowerCase() == 'true')
+                                Text(
+                                  l10n.callMe,
                                   style: AppTextStyles.bodyMedium.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 10,
+                                    color: AppColors.primaryDark.withOpacity(0.6),
+                                    fontSize: 8,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const Spacer(),
+                          Column(
+                            children: [
+                              // VIEW/BUY Button
+                              SizedBox(
+                                width: 70,
+                                height: 28,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    double calculatedDistance = 999.0;
+                                    Provider.of<NavigationController>(context, listen: false)
+                                        .openAnimalDetail(pashu, calculatedDistance);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primaryDark,
+                                    foregroundColor: Colors.white,
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  ),
+                                  child: Text(
+                                    l10n.buyNow,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 10,
+                                      color: Colors.white
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            // Remove Button
-                            SizedBox(
-                              width: 70,
-                              height: 28,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  final username = await SharedPrefHelper.getUsername();
-                                  final phoneNumber = await SharedPrefHelper.getPhoneNumber();
-                                  final success = await viewModel.removeFromWishlist(
-                                    name: username!,
-                                    phoneNumber: phoneNumber!,
-                                    id: pashu.id ?? 0,
-                                  );
-                                  if (success) {
-                                    TopSnackBar.show(
-                                      context,
-                                      message: l10n.removedFromWishlist,
-                                      backgroundColor: Colors.red,
-                                      icon: Icons.delete,
+                              const SizedBox(height: 4),
+                              // Remove Button
+                              SizedBox(
+                                width: 70,
+                                height: 28,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    final username = await SharedPrefHelper.getUsername();
+                                    final phoneNumber = await SharedPrefHelper.getPhoneNumber();
+                                    final success = await viewModel.removeFromWishlist(
+                                      name: username!,
+                                      phoneNumber: phoneNumber!,
+                                      id: pashu.id ?? 0,
                                     );
-                                  } else {
-                                    TopSnackBar.show(
-                                      context,
-                                      message: l10n.failedToRemove,
-                                      backgroundColor: Colors.red,
-                                      icon: Icons.error,
-                                    );
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                                    if (success) {
+                                      TopSnackBar.show(
+                                        context,
+                                        message: l10n.removedFromWishlist,
+                                        backgroundColor: Colors.red,
+                                        icon: Icons.delete,
+                                      );
+                                    } else {
+                                      TopSnackBar.show(
+                                        context,
+                                        message: l10n.failedToRemove,
+                                        backgroundColor: Colors.red,
+                                        icon: Icons.error,
+                                      );
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
                                   ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                                ),
-                                child: Text(
-                                  l10n.remove,
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 10,
+                                  child: Text(
+                                    l10n.remove,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 10,
+                                      color: Colors.white
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

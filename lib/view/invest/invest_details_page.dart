@@ -8,13 +8,18 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../model/invest/invest_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../model/invest/invest_model.dart';
 
 class InvestDetailsPage extends StatefulWidget {
   final InvestModel project;
+  final VoidCallback onBack;
 
-  const InvestDetailsPage({super.key, required this.project});
+  const InvestDetailsPage({
+    super.key,
+    required this.project,
+    required this.onBack,
+  });
 
   @override
   State<InvestDetailsPage> createState() => _InvestDetailsPageState();
@@ -172,11 +177,6 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
     final project = widget.project;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Project Details"),
-        backgroundColor: const Color(0xFF1E4A59),
-        foregroundColor: Colors.white,
-      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -255,6 +255,7 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
             ),
             const SizedBox(height: 20),
             ProjectFAQWidget(),
+            const SizedBox(height: 60),
           ],
         ),
       ),

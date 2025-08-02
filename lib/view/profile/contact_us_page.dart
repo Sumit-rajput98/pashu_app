@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,7 +9,8 @@ import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 
 class ContactUsPage extends StatefulWidget {
-  const ContactUsPage({super.key});
+  final VoidCallback? onBack;
+  const ContactUsPage({super.key, this.onBack});
 
   @override
   State<ContactUsPage> createState() => _ContactUsPageState();
@@ -72,7 +74,6 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(
@@ -87,7 +88,7 @@ class _ContactUsPageState extends State<ContactUsPage> with TickerProviderStateM
                 _buildContactForm(l10n),
                 const SizedBox(height: 25),
                 _buildSocialMediaSection(l10n),
-                const SizedBox(height: 30),
+                SizedBox(height: kBottomNavigationBarHeight + 30),
               ],
             ),
           ),

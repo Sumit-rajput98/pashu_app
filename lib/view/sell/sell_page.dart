@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pashu_app/view/sell/widget/custom_button.dart';
 import 'package:pashu_app/view/sell/widget/location_section.dart';
 import 'package:pashu_app/view/sell/widget/submit_and_pay_button.dart';
 import 'package:pashu_app/view/sell/widget/upload_pashu_images.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/shared_pref_helper.dart';
 import '../../demo.dart';
@@ -180,7 +181,7 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
     if (nameController.text.trim().isEmpty) missingFields.add(l10n.nameOfTheAnimal);
     if (ageController.text.trim().isEmpty) missingFields.add(l10n.enterAnimalAge);
     if (selectedGender == null) missingFields.add(l10n.selectGenderOfAnimal);
-    if (priceController.text.trim().isEmpty) missingFields.add(l10n.price);
+    if (priceController.text.trim().isEmpty) missingFields.add(l10n.priceA);
     if (negotiableController.text.trim().isEmpty) missingFields.add(l10n.negotiable);
     if (phoneController.text.trim().isEmpty) missingFields.add(l10n.yourPhoneNumber);
     if (descriptionController.text.trim().isEmpty) missingFields.add(l10n.animalDescription);
@@ -457,8 +458,8 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
                         ),
                       ),
 
-                      buildLabel(l10n.price),
-                      buildTextField(l10n.price, priceController, isNumeric: true),
+                      buildLabel(l10n.priceA),
+                      buildTextField(l10n.priceA, priceController, isNumeric: true),
 
                       buildLabel(l10n.negotiable),
                       buildSelectorBox(

@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:pashu_app/view/profile/referal_code_container.dart';
-
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 
 class ReferralPage extends StatefulWidget {
   final String referralCode;
   final String username;
+  final VoidCallback? onBack;
 
   const ReferralPage({
     super.key,
     required this.referralCode,
-    required this.username,
+    required this.username, this.onBack,
   });
 
   @override
@@ -29,18 +31,9 @@ class _ReferralPageState extends State<ReferralPage> with TickerProviderStateMix
 
   String get referralUrl => 'https://pashuparivar.com/pashulink?referralCode=${widget.referralCode}';
 
-  String get shareMessage => '''
-🐄 Join me on Pashu Parivar - India's trusted livestock marketplace! 🐄
-
-Find quality animals, connect with verified sellers, and grow your livestock business with premium features.
-
-✨ Use my referral code: ${widget.referralCode}
-🎁 Get exclusive rewards for both of us!
-
-Download now: $referralUrl
-
-#PashuParivar #Livestock #Farming #AnimalTrading
-''';
+  String getShareMessage(AppLocalizations l10n) {
+    return l10n.shareMessage(widget.referralCode,referralUrl);
+  }
 
   @override
   void initState() {
@@ -79,7 +72,7 @@ Download now: $referralUrl
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
+
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SingleChildScrollView(
@@ -96,7 +89,7 @@ Download now: $referralUrl
                 _buildBenefitsSection(),
                 const SizedBox(height: 25),
                 _buildHowItWorksSection(),
-                const SizedBox(height: 30),
+                 SizedBox(height: kBottomNavigationBarHeight+30),
               ],
             ),
           ),
@@ -106,6 +99,8 @@ Download now: $referralUrl
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final l10n = AppLocalizations.of(context)!;
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -130,7 +125,7 @@ Download now: $referralUrl
           const AppLogo(size: 40),
           const SizedBox(width: 12),
           Text(
-            'Referral Code',
+            l10n.referralCode,
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -164,6 +159,8 @@ Download now: $referralUrl
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -202,7 +199,7 @@ Download now: $referralUrl
 
           // Title
           Text(
-            'Invite & Earn Rewards',
+            l10n.inviteEarnRewards,
             style: AppTextStyles.heading.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w800,
@@ -215,7 +212,7 @@ Download now: $referralUrl
 
           // Subtitle
           Text(
-            'Share your referral code with friends and family to earn exclusive rewards when they join Pashu Parivar',
+            l10n.shareReferralDescription,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 16,
@@ -229,6 +226,8 @@ Download now: $referralUrl
   }
 
   Widget _buildReferralCodeCard() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -278,7 +277,7 @@ Download now: $referralUrl
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Your Referral Code',
+                  l10n.yourReferralCode,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -299,6 +298,8 @@ Download now: $referralUrl
   }
 
   Widget _buildShareOptionsSection() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -345,7 +346,7 @@ Download now: $referralUrl
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Share with Friends',
+                  l10n.shareWithFriends,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -368,25 +369,25 @@ Download now: $referralUrl
             childAspectRatio: 2.5,
             children: [
               _buildShareOption(
-                'Share Link',
+                l10n.shareLink,
                 Icons.link_rounded,
                 Colors.green,
                     () => _shareReferralLink(),
               ),
               _buildShareOption(
-                'Copy Link',
+                l10n.copyLink,
                 Icons.copy_all_rounded,
                 Colors.orange,
                     () => _copyToClipboard(referralUrl),
               ),
               _buildShareOption(
-                'WhatsApp',
+                l10n.whatsApp,
                 Icons.chat_rounded,
                 const Color(0xFF25D366),
                     () => _shareToWhatsApp(),
               ),
               _buildShareOption(
-                'More Options',
+                l10n.moreOptions,
                 Icons.more_horiz_rounded,
                 Colors.purple,
                     () => _shareReferralLink(),
@@ -454,6 +455,8 @@ Download now: $referralUrl
   }
 
   Widget _buildBenefitsSection() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -500,7 +503,7 @@ Download now: $referralUrl
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Referral Benefits',
+                  l10n.referralBenefits,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -515,23 +518,23 @@ Download now: $referralUrl
 
           // Benefits List
           _buildBenefitItem(
-            'Earn Rewards',
-            'Get exclusive rewards when your friends join using your code',
+            l10n.earnRewards,
+            l10n.earnRewardsDescription,
             Icons.card_giftcard_rounded,
           ),
           _buildBenefitItem(
-            'Help Friends',
-            'Your friends also get special bonuses when they sign up',
+            l10n.helpFriends,
+            l10n.helpFriendsDescription,
             Icons.people_rounded,
           ),
           _buildBenefitItem(
-            'Unlimited Sharing',
-            'Share your code as many times as you want with anyone',
+            l10n.unlimitedSharing,
+            l10n.unlimitedSharingDescription,
             Icons.all_inclusive_rounded,
           ),
           _buildBenefitItem(
-            'Track Progress',
-            'Monitor your referral success and rewards in your profile',
+            l10n.trackProgress,
+            l10n.trackProgressDescription,
             Icons.analytics_rounded,
             isLast: true,
           ),
@@ -599,6 +602,8 @@ Download now: $referralUrl
   }
 
   Widget _buildHowItWorksSection() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -645,7 +650,7 @@ Download now: $referralUrl
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'How It Works',
+                  l10n.howItWorks,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -661,20 +666,20 @@ Download now: $referralUrl
           // Steps
           _buildStep(
             '1',
-            'Share Your Code',
-            'Send your referral code or link to friends and family',
+            l10n.shareYourCode,
+            l10n.shareYourCodeDescription,
             Colors.blue,
           ),
           _buildStep(
             '2',
-            'Friend Signs Up',
-            'They create an account using your referral code',
+            l10n.friendSignsUp,
+            l10n.friendSignsUpDescription,
             Colors.orange,
           ),
           _buildStep(
             '3',
-            'Both Get Rewards',
-            'You and your friend receive exclusive bonuses',
+            l10n.bothGetRewards,
+            l10n.bothGetRewardsDescription,
             Colors.green,
             isLast: true,
           ),
@@ -758,14 +763,16 @@ Download now: $referralUrl
 
   // Share Functions
   void _shareReferralLink() async {
+    final l10n = AppLocalizations.of(context)!;
     final sharePlus = SharePlus.instance;
     await sharePlus.share(
-        ShareParams(title: "",text: shareMessage)
+        ShareParams(title: "", text: getShareMessage(l10n))
     );
   }
 
   void _shareToWhatsApp() async {
-    final whatsappUrl = Uri.parse('whatsapp://send?text=${Uri.encodeComponent(shareMessage)}');
+    final l10n = AppLocalizations.of(context)!;
+    final whatsappUrl = Uri.parse('whatsapp://send?text=${Uri.encodeComponent(getShareMessage(l10n))}');
 
     if (await canLaunchUrl(whatsappUrl)) {
       await launchUrl(whatsappUrl);
@@ -773,6 +780,7 @@ Download now: $referralUrl
   }
 
   void _copyToClipboard(String text) {
+    final l10n = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: text));
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -786,7 +794,7 @@ Download now: $referralUrl
             ),
             const SizedBox(width: 12),
             Text(
-              text.length > 20 ? 'Link copied to clipboard!' : 'Code copied to clipboard!',
+              text.length > 20 ? l10n.linkCopiedToClipboard : l10n.codeCopiedToClipboard,
             ),
           ],
         ),
@@ -801,6 +809,8 @@ Download now: $referralUrl
   }
 
   void _showHelpDialog() {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -827,7 +837,7 @@ Download now: $referralUrl
               ),
               const SizedBox(width: 12),
               Text(
-                'Referral Help',
+                l10n.referralHelp,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -840,11 +850,7 @@ Download now: $referralUrl
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '• Share your unique referral code with friends\n'
-                    '• Both you and your friend get rewards\n'
-                    '• No limit on how many friends you can refer\n'
-                    '• Track your referrals in your profile\n'
-                    '• Rewards are credited automatically',
+                l10n.referralHelpContent,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.8),
                   height: 1.5,
@@ -859,7 +865,7 @@ Download now: $referralUrl
                 foregroundColor: Colors.blue,
               ),
               child: Text(
-                'Got it',
+                l10n.gotIt,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: Colors.blue,
                   fontWeight: FontWeight.w600,

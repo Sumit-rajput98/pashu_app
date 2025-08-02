@@ -3,14 +3,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
 import 'package:pashu_app/view_model/AuthVM/verify_register_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'core/language_helper.dart';
 import 'core/locale_helper.dart';
 
 import 'core/navigation_controller.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'demo.dart';
+
 import 'view/home/splash_screen.dart';
 import 'view_model/AuthVM/get_counter_view_model.dart';
 import 'view_model/AuthVM/get_profile_view_model.dart';

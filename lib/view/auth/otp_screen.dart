@@ -1,11 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pashu_app/view/home/bottom_nav_bar.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
 import 'package:provider/provider.dart';
-
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/primary_button.dart';
@@ -137,9 +136,9 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                               message: localizations.successfulLogin,
                               isError: false,
                             );
-                            Navigator.pushReplacement(
+                            Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => const CustomBottomNavScreen()),
+                              MaterialPageRoute(builder: (context) => const CustomBottomNavScreen()),(r)=>false
                             );
                             viewModel.resetVerification();
                           });
@@ -316,72 +315,81 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildOTPInputFields() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(6, (index) {
-        return Container(
-          width: 45,
-          height: 56,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: _focusNodes[index].hasFocus
-                  ? AppColors.primaryDark
-                  : AppColors.primaryDark.withOpacity(0.1),
-              width: _focusNodes[index].hasFocus ? 2 : 1,
-            ),
-            boxShadow: _focusNodes[index].hasFocus
-                ? [
-              BoxShadow(
-                color: AppColors.primaryDark.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double boxWidth = (constraints.maxWidth - 5 * 8) / 6; // 6 boxes, 5 gaps
+        final double adjustedBoxWidth = boxWidth.clamp(40.0, 56.0);
+        final double boxHeight = MediaQuery.of(context).size.width < 360 ? 50.0 : 56.0;
+        final double fontSize = MediaQuery.of(context).size.width < 360 ? 18.0 : 20.0;
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(6, (index) {
+            return SizedBox(
+              width: adjustedBoxWidth,
+              height: boxHeight,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _focusNodes[index].hasFocus
+                        ? AppColors.primaryDark
+                        : AppColors.primaryDark.withOpacity(0.1),
+                    width: _focusNodes[index].hasFocus ? 2 : 1,
+                  ),
+                  boxShadow: _focusNodes[index].hasFocus
+                      ? [
+                    BoxShadow(
+                      color: AppColors.primaryDark.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                      : null,
+                ),
+                child: TextFormField(
+                  controller: _otpControllers[index],
+                  focusNode: _focusNodes[index],
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  maxLength: 1,
+                  style: AppTextStyles.heading.copyWith(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: const InputDecoration(
+                    counterText: '',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  onChanged: (value) {
+                    if (value.isNotEmpty) {
+                      if (index < 5) {
+                        _focusNodes[index + 1].requestFocus();
+                      } else {
+                        _focusNodes[index].unfocus();
+                      }
+                    } else if (value.isEmpty && index > 0) {
+                      _focusNodes[index - 1].requestFocus();
+                    }
+                  },
+                  onTap: () {
+                    _otpControllers[index].clear();
+                  },
+                ),
               ),
-            ]
-                : null,
-          ),
-          child: TextFormField(
-            controller: _otpControllers[index],
-            focusNode: _focusNodes[index],
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            style: AppTextStyles.heading.copyWith(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-            decoration: const InputDecoration(
-              counterText: '',
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-            ),
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                // Move to next field
-                if (index < 5) {
-                  _focusNodes[index + 1].requestFocus();
-                } else {
-                  // Last field, remove focus
-                  _focusNodes[index].unfocus();
-                }
-              } else if (value.isEmpty && index > 0) {
-                // Move to previous field when deleting
-                _focusNodes[index - 1].requestFocus();
-              }
-            },
-            onTap: () {
-              // Clear the field when tapped
-              _otpControllers[index].clear();
-            },
-          ),
+            );
+          }),
         );
-      }),
+      },
     );
   }
+
+
+
+
 
   Widget _buildResendSection(AppLocalizations localizations) {
     return Column(

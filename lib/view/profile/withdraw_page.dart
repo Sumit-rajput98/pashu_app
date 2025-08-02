@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -11,11 +13,12 @@ import '../../view_model/AuthVM/get_profile_view_model.dart';
 class WithdrawPage extends StatefulWidget {
   final String phoneNumber;
   final String userId;
+  final VoidCallback? onBack;
 
   const WithdrawPage({
     super.key,
     required this.phoneNumber,
-    required this.userId,
+    required this.userId, this.onBack,
   });
 
   @override
@@ -66,7 +69,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-       appBar: CustomAppBar(),
+
       body: Consumer2<GetProfileViewModel, GetCounterViewModel>(
         builder: (context, profileViewModel, counterViewModel, child) {
           return RefreshIndicator(
@@ -83,7 +86,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -109,7 +112,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Withdraw from Wallet',
+              l10n.withdrawFromWallet,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -155,7 +158,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
             // Withdrawal Form
             _buildWithdrawalForm(walletBalance, counter),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: kBottomNavigationBarHeight+30),
           ],
         ),
       ),
@@ -210,6 +213,8 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 
   Widget _buildWalletBalanceCard(int walletBalance) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -261,7 +266,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Available Balance',
+                  l10n.availableBalance,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 14,
@@ -287,6 +292,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 
   Widget _buildCounterStatusCard(int counter) {
+    final l10n = AppLocalizations.of(context)!;
     final bool isEligible = counter >= 50;
 
     return Container(
@@ -347,7 +353,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isEligible ? 'Withdrawal Eligible' : 'Withdrawal Requirements',
+                  isEligible ? l10n.withdrawalEligible : l10n.withdrawalRequirements,
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: AppColors.primaryDark,
                     fontWeight: FontWeight.w600,
@@ -358,8 +364,9 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
                 Text(
                   isEligible
-                      ? 'You have spent ₹$counter and can withdraw funds'
-                      : 'Spend ₹${50 - counter} more to enable withdrawal (Current: ₹$counter)',
+                      ? l10n.youHaveSpentAndCanWithdraw(counter.toString())
+                      : l10n.spendMoreToEnableWithdrawal((50 - counter).toString(), counter.toString())
+                  ,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 12,
@@ -374,6 +381,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 
   Widget _buildWithdrawalForm(int walletBalance, int counter) {
+    final l10n = AppLocalizations.of(context)!;
     final bool isEligible = counter >= 50;
 
     return Container(
@@ -429,7 +437,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Withdrawal Details',
+                  l10n.withdrawalDetails,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -444,7 +452,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
           // Amount Input
           Text(
-            'Enter Amount (e.g. 500)',
+            l10n.enterAmountEg500,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
@@ -477,7 +485,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                 fontSize: 16,
               ),
               decoration: InputDecoration(
-                hintText: 'Enter Amount e.g. 500',
+                hintText: l10n.enterAmountEg,
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.5),
                 ),
@@ -494,17 +502,17 @@ class _WithdrawPageState extends State<WithdrawPage> {
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Amount cannot be empty';
+                  return l10n.amountCannotBeEmpty;
                 }
                 final amount = int.tryParse(value);
                 if (amount == null || amount <= 0) {
-                  return 'Please enter a valid amount';
+                  return l10n.pleaseEnterValidAmount;
                 }
                 if (amount > walletBalance) {
-                  return 'Amount cannot exceed wallet balance (₹$walletBalance)';
+                  return l10n.amountCannotExceedBalance(walletBalance.toString());
                 }
                 if (walletBalance < 100) {
-                  return 'Minimum wallet balance of ₹100 required';
+                  return l10n.minimumWalletBalanceRequired;
                 }
                 return null;
               },
@@ -515,7 +523,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
 
           // UPI Input
           Text(
-            'Enter UPI ID (e.g. example@upi)',
+            l10n.enterUpiIdEg,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
@@ -548,7 +556,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                 fontSize: 16,
               ),
               decoration: InputDecoration(
-                hintText: 'Enter UPI ID e.g. example@upi',
+                hintText: l10n.enterUpiIdEgPlaceholder,
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.5),
                 ),
@@ -564,10 +572,10 @@ class _WithdrawPageState extends State<WithdrawPage> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'UPI ID cannot be empty';
+                  return l10n.upiIdCannotBeEmpty;
                 }
                 if (!value.contains('@')) {
-                  return 'Please enter a valid UPI ID';
+                  return l10n.pleaseEnterValidUpiId;
                 }
                 return null;
               },
@@ -596,8 +604,8 @@ class _WithdrawPageState extends State<WithdrawPage> {
                   : const Icon(Icons.send_rounded),
               label: Text(
                 _isProcessing
-                    ? 'Processing...'
-                    : 'Withdraw ₹$_withdrawAmount',
+                    ? l10n.processing
+                    : l10n.withdrawAmount(_withdrawAmount),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: (isEligible && walletBalance >= 100)
@@ -637,7 +645,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Withdrawal Requirements:',
+                        l10n.withdrawalRequirementsLabel,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: Colors.red,
                           fontSize: 12,
@@ -648,10 +656,10 @@ class _WithdrawPageState extends State<WithdrawPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '• Minimum spending of ₹50 required\n'
-                        '• Wallet balance must be ≥ ₹100\n'
-                        '• Current spending: ₹$counter (${counter >= 50 ? '✓' : 'Need ₹${50 - counter} more'})\n'
-                        '• Wallet balance: ₹$walletBalance (${walletBalance >= 100 ? '✓' : 'Need ₹${100 - walletBalance} more'})',
+                    '${l10n.minimumSpendingRequired}\n'
+                        '${l10n.walletBalanceRequired}\n'
+                        '${l10n.currentSpending(counter.toString(),counter >= 50 ? l10n.verified :l10n.needMoreAmount( (50 - counter).toString()))}\n'
+                        '${l10n.walletBalanceStatus(walletBalance.toString(), walletBalance >= 100 ? l10n.verified : l10n.needMoreAmount( (100 - walletBalance).toString()))}',
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.red,
                       fontSize: 11,
@@ -681,7 +689,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Tip: Withdrawals are processed within 24-48 hours to your UPI account.',
+                      l10n.tipWithdrawProcessingTime,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.blue,
                         fontSize: 12,
@@ -717,6 +725,8 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 
   void _showWithdrawSuccessDialog() {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -747,7 +757,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               const SizedBox(height: 20),
 
               Text(
-                'Withdrawal Request Submitted!',
+                l10n.withdrawalRequestSubmitted,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -759,7 +769,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
               const SizedBox(height: 12),
 
               Text(
-                'Your withdrawal request of ₹$_withdrawAmount has been submitted successfully. You will receive the amount in your UPI account within 24-48 hours.',
+                l10n.withdrawalRequestSuccessMessage(_withdrawAmount),
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.7),
                 ),
@@ -782,7 +792,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child: Text(l10n.continueA),
                 ),
               ),
             ],
@@ -793,7 +803,8 @@ class _WithdrawPageState extends State<WithdrawPage> {
   }
 
   Widget _buildErrorWidget(GetProfileViewModel profileViewModel, GetCounterViewModel counterViewModel) {
-    final String errorMessage = profileViewModel.error ?? counterViewModel.error ?? 'Something went wrong';
+    final l10n = AppLocalizations.of(context)!;
+    final String errorMessage = profileViewModel.error ?? counterViewModel.error ?? l10n.somethingWentWrong;
 
     return Container(
       padding: const EdgeInsets.all(40),
@@ -808,7 +819,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Failed to Load Data',
+              l10n.failedToLoadData,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -827,7 +838,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
             ElevatedButton.icon(
               onPressed: _loadInitialData,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryDark,
                 foregroundColor: Colors.white,

@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
+import '../../core/navigation_controller.dart';
 import '../../model/pashu/category_model.dart';
 import '../../view_model/pashuVM/get_category_view_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,8 +18,7 @@ class LiveRacePage extends StatefulWidget {
   State<LiveRacePage> createState() => _LiveRacePageState();
 }
 
-class _LiveRacePageState extends State<LiveRacePage>
-    with TickerProviderStateMixin {
+class _LiveRacePageState extends State<LiveRacePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -61,18 +61,19 @@ class _LiveRacePageState extends State<LiveRacePage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      appBar: _buildAppBar(),
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Consumer<GetCategoryViewModel>(
           builder: (context, viewModel, child) {
             return RefreshIndicator(
               onRefresh: () => viewModel.fetchAllCategories(),
-              color: AppColors.lightSage,
-              backgroundColor: AppColors.primaryDark,
-              child: _buildContent(viewModel),
+              color: AppColors.primaryDark,
+              backgroundColor: Colors.white,
+              child: _buildContent(viewModel, l10n),
             );
           },
         ),
@@ -80,20 +81,21 @@ class _LiveRacePageState extends State<LiveRacePage>
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -105,11 +107,11 @@ class _LiveRacePageState extends State<LiveRacePage>
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              AppLocalizations.of(context)!.liveRaceTitle,
+              l10n.liveRaceTitle,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -122,12 +124,13 @@ class _LiveRacePageState extends State<LiveRacePage>
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.lightSage.withOpacity(0.2),
+              color: AppColors.primaryDark.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.refresh_rounded,
-              color: Colors.white,
+              color: AppColors.primaryDark,
               size: 20,
             ),
           ),
@@ -143,32 +146,32 @@ class _LiveRacePageState extends State<LiveRacePage>
     );
   }
 
-  Widget _buildContent(GetCategoryViewModel viewModel) {
+  Widget _buildContent(GetCategoryViewModel viewModel, AppLocalizations l10n) {
     if (viewModel.isLoading) {
-      return _buildShimmerContent();
+      return _buildShimmerContent(l10n);
     }
 
     if (viewModel.error != null) {
-      return _buildErrorWidget(viewModel);
+      return _buildErrorWidget(viewModel, l10n);
     }
 
     if (viewModel.categoryList.isEmpty) {
-      return _buildEmptyWidget();
+      return _buildEmptyWidget(l10n);
     }
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
-          _buildHeader(),
-          _buildCategoriesList(viewModel.categoryList), // Changed to list view
+          _buildHeader(l10n),
+          _buildCategoriesList(viewModel.categoryList, l10n),
           const SizedBox(height: 30),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return SlideTransition(
       position: _slideAnimation,
       child: Container(
@@ -179,16 +182,17 @@ class _LiveRacePageState extends State<LiveRacePage>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.orange.withOpacity(0.8),
-              Colors.red.withOpacity(0.8),
+              Colors.orange.withOpacity(0.15),
+              Colors.red.withOpacity(0.1),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.primaryDark, width: 2),
           boxShadow: [
             BoxShadow(
-              color: Colors.orange.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              color: AppColors.primaryDark.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -215,9 +219,9 @@ class _LiveRacePageState extends State<LiveRacePage>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    AppLocalizations.of(context)!.liveRaceHeader,
+                    l10n.liveRaceHeader,
                     style: AppTextStyles.heading.copyWith(
-                      color: Colors.white,
+                      color: AppColors.primaryDark,
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 2.0,
@@ -233,9 +237,9 @@ class _LiveRacePageState extends State<LiveRacePage>
             const SizedBox(height: 12),
 
             Text(
-              AppLocalizations.of(context)!.chooseRaceCategory,
+              l10n.chooseRaceCategory,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: Colors.white.withOpacity(0.9),
+                color: AppColors.primaryDark.withOpacity(0.8),
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -247,9 +251,9 @@ class _LiveRacePageState extends State<LiveRacePage>
             const SizedBox(height: 8),
 
             Text(
-              AppLocalizations.of(context)!.raceExperienceSubheader,
+              l10n.raceExperienceSubheader,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: Colors.white.withOpacity(0.8),
+                color: AppColors.primaryDark.withOpacity(0.6),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -262,7 +266,7 @@ class _LiveRacePageState extends State<LiveRacePage>
     );
   }
 
-  Widget _buildCategoriesList(List<CategoryModel> categories) {
+  Widget _buildCategoriesList(List<CategoryModel> categories, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ListView.builder(
@@ -270,23 +274,33 @@ class _LiveRacePageState extends State<LiveRacePage>
         physics: const NeverScrollableScrollPhysics(),
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          return _buildCategoryCard(categories[index], index);
+          return _buildCategoryCard(categories[index], index, l10n);
         },
       ),
     );
   }
 
-  Widget _buildCategoryCard(CategoryModel category, int index) {
+  Widget _buildCategoryCard(CategoryModel category, int index, AppLocalizations l10n) {
     final List<List<Color>> gradientColors = [
-      [Colors.blue.withOpacity(0.8), Colors.blue.withOpacity(0.6)],
-      [Colors.green.withOpacity(0.8), Colors.green.withOpacity(0.6)],
-      [Colors.purple.withOpacity(0.8), Colors.purple.withOpacity(0.6)],
-      [Colors.orange.withOpacity(0.8), Colors.orange.withOpacity(0.6)],
-      [Colors.teal.withOpacity(0.8), Colors.teal.withOpacity(0.6)],
-      [Colors.indigo.withOpacity(0.8), Colors.indigo.withOpacity(0.6)],
+      [Colors.blue.withOpacity(0.15), Colors.blue.withOpacity(0.08)],
+      [Colors.green.withOpacity(0.15), Colors.green.withOpacity(0.08)],
+      [Colors.purple.withOpacity(0.15), Colors.purple.withOpacity(0.08)],
+      [Colors.orange.withOpacity(0.15), Colors.orange.withOpacity(0.08)],
+      [Colors.teal.withOpacity(0.15), Colors.teal.withOpacity(0.08)],
+      [Colors.indigo.withOpacity(0.15), Colors.indigo.withOpacity(0.08)],
     ];
 
-    final colors = gradientColors[index % gradientColors.length];
+    final List<Color> accentColors = [
+      Colors.blue,
+      Colors.green,
+      Colors.purple,
+      Colors.orange,
+      Colors.teal,
+      Colors.indigo,
+    ];
+
+    final gradients = gradientColors[index % gradientColors.length];
+    final accentColor = accentColors[index % accentColors.length];
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -296,20 +310,24 @@ class _LiveRacePageState extends State<LiveRacePage>
           onTap: () => _navigateToRaceDetail(category),
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            width: double.infinity, // Full width
-            height: 180, // Fixed height to prevent overflow
+            width: double.infinity,
+            constraints: const BoxConstraints(
+              minHeight: 180,
+              maxHeight: 200,
+            ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: colors,
+                colors: gradients,
               ),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.primaryDark, width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: colors[0].withOpacity(0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
+                  color: AppColors.primaryDark.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -340,13 +358,16 @@ class _LiveRacePageState extends State<LiveRacePage>
                     children: [
                       // Category Image
                       Container(
-                        width: 120,
-                        height: 140,
+                        width: 100,
+                        height: 120,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: accentColor.withOpacity(0.3),
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: AppColors.primaryDark.withOpacity(0.1),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -354,66 +375,56 @@ class _LiveRacePageState extends State<LiveRacePage>
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child:
-                              category.categoryImage != null &&
-                                      category.categoryImage!.isNotEmpty
-                                  ? CachedNetworkImage(
-                                    imageUrl:
-                                        'https://pashuparivar.com/uploads/${category.categoryImage}',
-                                    fit: BoxFit.cover,
-                                    placeholder:
-                                        (context, url) => Shimmer.fromColors(
-                                          baseColor: Colors.white.withOpacity(
-                                            0.3,
-                                          ),
-                                          highlightColor: Colors.white
-                                              .withOpacity(0.5),
-                                          child: Container(
-                                            color: Colors.white.withOpacity(
-                                              0.3,
-                                            ),
-                                          ),
-                                        ),
-                                    errorWidget:
-                                        (context, url, error) => Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white.withOpacity(0.3),
-                                                Colors.white.withOpacity(0.1),
-                                              ],
-                                            ),
-                                          ),
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.sports_rounded,
-                                              color: Colors.white,
-                                              size: 40,
-                                            ),
-                                          ),
-                                        ),
-                                  )
-                                  : Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withOpacity(0.3),
-                                          Colors.white.withOpacity(0.1),
-                                        ],
-                                      ),
-                                    ),
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.sports_rounded,
-                                        color: Colors.white,
-                                        size: 40,
-                                      ),
-                                    ),
-                                  ),
+                          child: category.categoryImage != null && category.categoryImage!.isNotEmpty
+                              ? CachedNetworkImage(
+                            imageUrl: 'https://pashuparivar.com/uploads/${category.categoryImage}',
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: AppColors.lightSage.withOpacity(0.1),
+                              highlightColor: AppColors.lightSage.withOpacity(0.2),
+                              child: Container(
+                                color: AppColors.lightSage.withOpacity(0.1),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    accentColor.withOpacity(0.2),
+                                    accentColor.withOpacity(0.1),
+                                  ],
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.sports_rounded,
+                                  color: accentColor,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                          )
+                              : Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  accentColor.withOpacity(0.2),
+                                  accentColor.withOpacity(0.1),
+                                ],
+                              ),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.sports_rounded,
+                                color: accentColor,
+                                size: 30,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 16),
 
                       // Category Details
                       Expanded(
@@ -423,81 +434,85 @@ class _LiveRacePageState extends State<LiveRacePage>
                           children: [
                             // Category Name
                             Text(
-                              category.categoryName ??
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.raceCategoryFallback,
+                              category.categoryName ?? l10n.raceCategoryFallback,
                               style: AppTextStyles.heading.copyWith(
-                                color: Colors.white,
-                                fontSize: 20,
+                                color: AppColors.primaryDark,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
 
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 8),
 
                             // Category Detail
                             Text(
-                              category.categoryDetail ??
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.raceCategoryDetailFallback,
+                              category.categoryDetail ?? l10n.raceCategoryDetailFallback,
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 14,
-                                height: 1.4,
+                                color: AppColors.primaryDark.withOpacity(0.7),
+                                fontSize: 13,
+                                height: 1.3,
                               ),
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                             ),
 
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
                             // Race Status
                             Row(
                               children: [
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
+                                    horizontal: 6,
+                                    vertical: 3,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.green,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.green.withOpacity(0.3),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Container(
-                                        width: 6,
-                                        height: 6,
+                                        width: 5,
+                                        height: 5,
                                         decoration: const BoxDecoration(
                                           color: Colors.white,
                                           shape: BoxShape.circle,
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
+                                      const SizedBox(width: 3),
                                       Text(
-                                        AppLocalizations.of(context)!.liveNow,
-                                        style: AppTextStyles.bodyMedium
-                                            .copyWith(
-                                              color: Colors.white,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                                        l10n.liveNow,
+                                        style: AppTextStyles.bodyMedium.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
-                                  AppLocalizations.of(context)!.tapToJoin,
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: Colors.white.withOpacity(0.8),
-                                    fontSize: 12,
-                                    fontStyle: FontStyle.italic,
+                                Flexible(
+                                  child: Text(
+                                    l10n.tapToJoin,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      color: AppColors.primaryDark.withOpacity(0.6),
+                                      fontSize: 11,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -515,16 +530,16 @@ class _LiveRacePageState extends State<LiveRacePage>
                   right: 12,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                      horizontal: 6,
+                      vertical: 3,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.red,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(6),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.red.withOpacity(0.5),
-                          blurRadius: 6,
+                          color: Colors.red.withOpacity(0.3),
+                          blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
                       ],
@@ -533,21 +548,21 @@ class _LiveRacePageState extends State<LiveRacePage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 6,
-                          height: 6,
+                          width: 4,
+                          height: 4,
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 3),
                         Text(
-                          AppLocalizations.of(context)!.liveBadge,
+                          l10n.liveBadge,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 8,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: 0.5,
+                            letterSpacing: 0.3,
                           ),
                         ),
                       ],
@@ -562,52 +577,54 @@ class _LiveRacePageState extends State<LiveRacePage>
     );
   }
 
-  Widget _buildShimmerContent() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          // Header Shimmer
-          Shimmer.fromColors(
-            baseColor: AppColors.lightSage.withOpacity(0.1),
-            highlightColor: AppColors.lightSage.withOpacity(0.2),
-            child: Container(
-              height: 140,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+  Widget _buildShimmerContent(AppLocalizations l10n) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            // Header Shimmer
+            Shimmer.fromColors(
+              baseColor: AppColors.primaryDark.withOpacity(0.1),
+              highlightColor: AppColors.primaryDark.withOpacity(0.2),
+              child: Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.primaryDark, width: 2),
+                ),
               ),
             ),
-          ),
 
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          // List Shimmer
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 4,
-            itemBuilder: (context, index) {
+            // List Shimmer
+            ...List.generate(4, (index) {
               return Shimmer.fromColors(
-                baseColor: AppColors.lightSage.withOpacity(0.1),
-                highlightColor: AppColors.lightSage.withOpacity(0.2),
+                baseColor: AppColors.primaryDark.withOpacity(0.1),
+                highlightColor: AppColors.primaryDark.withOpacity(0.2),
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   height: 180,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.primaryDark, width: 2),
                   ),
                 ),
               );
-            },
-          ),
-        ],
+            }),
+
+            const SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildErrorWidget(GetCategoryViewModel viewModel) {
+  Widget _buildErrorWidget(GetCategoryViewModel viewModel, AppLocalizations l10n) {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -616,23 +633,22 @@ class _LiveRacePageState extends State<LiveRacePage>
           children: [
             Icon(
               Icons.error_outline_rounded,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
-              AppLocalizations.of(context)!.failedToLoadCategories,
+              l10n.failedToLoadCategories,
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              viewModel.error ??
-                  AppLocalizations.of(context)!.somethingWentWrong,
+              viewModel.error ?? l10n.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -645,10 +661,10 @@ class _LiveRacePageState extends State<LiveRacePage>
                 viewModel.fetchAllCategories();
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: Text(AppLocalizations.of(context)!.retry),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.lightSage,
-                foregroundColor: AppColors.primaryDark,
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 12,
@@ -664,7 +680,7 @@ class _LiveRacePageState extends State<LiveRacePage>
     );
   }
 
-  Widget _buildEmptyWidget() {
+  Widget _buildEmptyWidget(AppLocalizations l10n) {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -673,22 +689,22 @@ class _LiveRacePageState extends State<LiveRacePage>
           children: [
             Icon(
               Icons.sports_outlined,
-              color: AppColors.lightSage.withOpacity(0.5),
+              color: AppColors.primaryDark.withOpacity(0.5),
               size: 80,
             ),
             const SizedBox(height: 20),
             Text(
-              AppLocalizations.of(context)!.noLiveRacesAvailable,
+              l10n.noLiveRacesAvailable,
               style: AppTextStyles.heading.copyWith(
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
                 fontSize: 20,
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              AppLocalizations.of(context)!.checkBackLater,
+              l10n.checkBackLater,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.7),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -702,11 +718,7 @@ class _LiveRacePageState extends State<LiveRacePage>
   }
 
   void _navigateToRaceDetail(CategoryModel category) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RaceDetailPage(category: category),
-      ),
-    );
+    final nav = Provider.of<NavigationController>(context, listen: false);
+    nav.openRaceDetail(category);
   }
 }

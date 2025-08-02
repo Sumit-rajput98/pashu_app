@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
 import 'package:pashu_app/view/auth/register_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +11,7 @@ import '../../core/custom_text_field.dart';
 import '../../core/primary_button.dart';
 import '../../core/secandory_button.dart';
 import '../../core/top_snacbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../view_model/AuthVM/request_otp_view_model.dart';
 import 'otp_screen.dart';
 

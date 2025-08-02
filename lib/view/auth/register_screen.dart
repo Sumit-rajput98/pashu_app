@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Add this import
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pashu_app/view/auth/otp_screen_register.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_view_model.dart';

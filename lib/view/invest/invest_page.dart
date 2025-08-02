@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pashu_app/view/invest/projects_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:pashu_app/view/invest/widget/my_investment_button.dart';
+import '../../core/navigation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../view_model/pashuVM/get_invest_view_model.dart';
@@ -33,7 +34,7 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
   }
 
   void _handleMyInvestmentTap() {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> MyInvestmentPage()));
+    Provider.of<NavigationController>(context, listen: false).openMyInvestment();
   }
 
   @override

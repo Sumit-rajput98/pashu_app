@@ -23,7 +23,8 @@
   "comingSoon": "Coming Soon...",
   "firstUsers": "First 10,000 Users will get",
   "referralBonusOnly": "referral bonus – Only",
-  "slotsLeft": "{slot} slots are left!",
+  "slotsLeft": "slots are left!",
+
   "applyNow": "Apply Now",
   "pashuLoan": "PASHU LOAN",
   "pashuInsurance": "PASHU INSURANCE",
@@ -535,7 +536,508 @@
   "pleaseEnterValidEmail": "Please enter a valid email address",
   "messageIsRequired": "Message is required",
   "messageMustBeAtLeast10Characters": "Message must be at least 10 characters",
-  "invest": "Invest in Agri-Livestock"
+  "invest": "Invest in Agri-Livestock",
+  "yourListedPashu": "Your Listed Pashu",
+  "total": "Total",
+  "active": "Active",
+  "pending": "Pending",
+  "unknownAnimal": "Unknown Animal",
+  "other": "Other",
+  "breed": "Breed",
+  "locationNotAvailable": "Location not available",
+  "negotiable": "Negotiable",
+  "edit": "Edit",
+  "delete": "Delete",
+  "pendingStatus": "PENDING",
+  "failedToLoadListings": "Failed to Load Listings",
+  "somethingWentWrong": "Something went wrong",
+  "retry": "Retry",
+  "noListedAnimals": "No Listed Animals",
+  "noListedAnimalsDescription": "You haven't listed any animals yet. Start by adding your first listing!",
+  "addNewListing": "Add New Listing",
+  "deleteListing": "Delete Listing",
+  "deleteConfirmation": "Are you sure you want to delete \"{animalName}\"? This action cannot be undone.",
+  "@deleteConfirmation": {
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "deleteSuccessMessage": "{animalName} deleted successfully",
+  "@deleteSuccessMessage": {
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "animal": "Animal",
+  "withdrawFromWallet": "Withdraw from Wallet",
+  "availableBalance": "Available Balance",
+  "withdrawalEligible": "Withdrawal Eligible",
+  "withdrawalRequirements": "Withdrawal Requirements",
+  "youHaveSpentAndCanWithdraw": "You have spent ₹{counter} and can withdraw funds",
+  "@youHaveSpentAndCanWithdraw": {
+    "placeholders": {
+      "counter": {
+        "type": "String"
+      }
+    }
+  },
+  "spendMoreToEnableWithdrawal": "Spend ₹{amount} more to enable withdrawal (Current: ₹{counter})",
+  "@spendMoreToEnableWithdrawal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "counter": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawalDetails": "Withdrawal Details",
+  "enterAmountEg500": "Enter Amount (e.g. 500)",
+  "enterAmountEg": "Enter Amount e.g. 500",
+  "enterUpiIdEg": "Enter UPI ID (e.g. example@upi)",
+  "enterUpiIdEgPlaceholder": "Enter UPI ID e.g. example@upi",
+  "processing": "Processing...",
+  "withdrawAmount": "Withdraw ₹{amount}",
+  "@withdrawAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawalRequirementsLabel": "Withdrawal Requirements:",
+  "minimumSpendingRequired": "• Minimum spending of ₹50 required",
+  "walletBalanceRequired": "• Wallet balance must be ≥ ₹100",
+  "currentSpending": "• Current spending: ₹{counter} ({status})",
+  "@currentSpending": {
+    "placeholders": {
+      "counter": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "walletBalanceStatus": "• Wallet balance: ₹{balance} ({status})",
+  "@walletBalanceStatus": {
+    "placeholders": {
+      "balance": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "verified": "✓",
+  "needMoreAmount": "Need ₹{amount} more",
+  "@needMoreAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tipWithdrawProcessingTime": "Tip: Withdrawals are processed within 24-48 hours to your UPI account.",
+  "withdrawalRequestSubmitted": "Withdrawal Request Submitted!",
+  "withdrawalRequestSuccessMessage": "Your withdrawal request of ₹{amount} has been submitted successfully. You will receive the amount in your UPI account within 24-48 hours.",
+  "@withdrawalRequestSuccessMessage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToLoadData": "Failed to Load Data",
+  "somethingWentWrong": "Something went wrong",
+  "retry": "Retry",
+  "amountCannotBeEmpty": "Amount cannot be empty",
+  "pleaseEnterValidAmount": "Please enter a valid amount",
+  "amountCannotExceedBalance": "Amount cannot exceed wallet balance (₹{balance})",
+  "@amountCannotExceedBalance": {
+    "placeholders": {
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "minimumWalletBalanceRequired": "Minimum wallet balance of ₹100 required",
+  "upiIdCannotBeEmpty": "UPI ID cannot be empty",
+  "pleaseEnterValidUpiId": "Please enter a valid UPI ID",
+  "transactionHistory": "Transaction History",
+  "noTransactions": "No transactions",
+  "transactionSummary": "Transaction Summary",
+  "totalCredit": "Total Credit",
+  "totalDebit": "Total Debit",
+  "successful": "Successful",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "daysAgo": "{days} days ago",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentId": "Payment ID",
+  "fullDate": "Full Date",
+  "utrNumber": "UTR Number",
+  "message": "Message",
+  "failedToLoadTransactions": "Failed to Load Transactions",
+  "somethingWentWrong": "Something went wrong",
+  "retry": "Retry",
+  "noTransactionsFound": "No Transactions Found",
+  "transactionHistoryDescription": "Your transaction history will appear here once you make your first transaction",
+  "goBack": "Go Back",
+  "success": "SUCCESS",
+  "pending": "PENDING",
+  "failed": "FAILED",
+  "credit": "CREDIT",
+  "debit": "DEBIT",
+  "editProfile": "Edit Profile",
+  "profileDetails": "Profile Details",
+  "fullName": "Full Name",
+  "phoneNumber": "Phone Number",
+  "emailAddress": "Email Address",
+  "address": "Address",
+  "referralCode": "Referral Code",
+  "notProvided": "Not provided",
+  "notAvailable": "Not available",
+  "profileDetailsSectionHeader": "Profile Details",
+  "editProfileInformation": "Edit Profile Information",
+  "nameCannotBeEmpty": "Name cannot be empty",
+  "nameMinimumCharacters": "Name must be at least 2 characters",
+  "pleaseEnterValidEmail": "Please enter a valid email address",
+  "addressCannotBeEmpty": "Address cannot be empty",
+  "pleaseEnterCompleteAddress": "Please enter a complete address",
+  "phoneAndReferralNotChangeable": "Note: Phone number and referral code cannot be changed. Only name, email, and address can be updated.",
+  "updatingProfile": "Updating Profile...",
+  "updateProfile": "Update Profile",
+  "profileUpdatedSuccessfully": "Profile Updated Successfully!",
+  "profileUpdateSuccessMessage": "Your profile information has been updated successfully.",
+  "updateFailed": "Update Failed",
+  "ok": "OK",
+  "referralCode": "Referral Code",
+  "inviteEarnRewards": "Invite & Earn Rewards",
+  "shareReferralDescription": "Share your referral code with friends and family to earn exclusive rewards when they join Pashu Parivar",
+  "yourReferralCode": "Your Referral Code",
+  "shareWithFriends": "Share with Friends",
+  "shareLink": "Share Link",
+  "copyLink": "Copy Link",
+  "whatsApp": "WhatsApp",
+  "moreOptions": "More Options",
+  "referralBenefits": "Referral Benefits",
+  "earnRewards": "Earn Rewards",
+  "earnRewardsDescription": "Get exclusive rewards when your friends join using your code",
+  "helpFriends": "Help Friends",
+  "helpFriendsDescription": "Your friends also get special bonuses when they sign up",
+  "unlimitedSharing": "Unlimited Sharing",
+  "unlimitedSharingDescription": "Share your code as many times as you want with anyone",
+  "trackProgress": "Track Progress",
+  "trackProgressDescription": "Monitor your referral success and rewards in your profile",
+  "howItWorks": "How It Works",
+  "shareYourCode": "Share Your Code",
+  "shareYourCodeDescription": "Send your referral code or link to friends and family",
+  "friendSignsUp": "Friend Signs Up",
+  "friendSignsUpDescription": "They create an account using your referral code",
+  "bothGetRewards": "Both Get Rewards",
+  "bothGetRewardsDescription": "You and your friend receive exclusive bonuses",
+  "linkCopiedToClipboard": "Link copied to clipboard!",
+  "codeCopiedToClipboard": "Code copied to clipboard!",
+  "referralHelp": "Referral Help",
+  "referralHelpContent": "• Share your unique referral code with friends\n• Both you and your friend get rewards\n• No limit on how many friends you can refer\n• Track your referrals in your profile\n• Rewards are credited automatically",
+  "gotIt": "Got it",
+  "shareMessage": "🐄 Join me on Pashu Parivar - India's trusted livestock marketplace! 🐄\n\nFind quality animals, connect with verified sellers, and grow your livestock business with premium features.\n\n✨ Use my referral code: {referralCode}\n🎁 Get exclusive rewards for both of us!\n\nDownload now: {referralUrl}\n\n#PashuParivar #Livestock #Farming #AnimalTrading",
+  "@shareMessage": {
+    "placeholders": {
+      "referralCode": {
+        "type": "String"
+      },
+      "referralUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "termsAndPrivacy": "Terms & Privacy",
+  "termsOfService": "Terms of Service",
+  "privacyPolicy": "Privacy Policy",
+  "lastUpdated": "Last updated: July 27, 2025",
+  "acceptanceOfTerms": "Acceptance of Terms",
+  "acceptanceOfTermsContent": "By accessing and using Pashu Parivar, you accept and agree to be bound by the terms and provision of this agreement.",
+  "useLicense": "Use License",
+  "useLicenseContent": "Permission is granted to temporarily download one copy of Pashu Parivar per device for personal, non-commercial transitory viewing only.",
+  "userResponsibilities": "User Responsibilities",
+  "userResponsibilitiesContent": "• Provide accurate information when creating listings\n• Respect other users and maintain professional conduct\n• Comply with all applicable laws and regulations\n• Not misuse the platform for fraudulent activities",
+  "platformServices": "Platform Services",
+  "platformServicesContent": "Pashu Parivar provides a platform for livestock trading, connecting buyers and sellers. We facilitate transactions but are not directly involved in the buying/selling process.",
+  "accountSecurity": "Account Security",
+  "accountSecurityContent": "Users are responsible for maintaining the confidentiality of their account information and password. Notify us immediately of any unauthorized use.",
+  "paymentTerms": "Payment Terms",
+  "paymentTermsContent": "All payments for premium services are processed securely. Subscription fees are non-refundable unless specified otherwise.",
+  "contentGuidelines": "Content Guidelines",
+  "contentGuidelinesContent": "All content uploaded must be appropriate, accurate, and comply with our community guidelines. We reserve the right to remove inappropriate content.",
+  "limitationOfLiability": "Limitation of Liability",
+  "limitationOfLiabilityContent": "Pashu Parivar shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service.",
+  "modifications": "Modifications",
+  "modificationsContent": "We reserve the right to modify these terms at any time. Users will be notified of significant changes.",
+  "contactInformation": "Contact Information",
+  "contactInformationContent": "For questions about these Terms of Service, please contact us at support@pashuparivar.com",
+  "informationWeCollect": "Information We Collect",
+  "informationWeCollectContent": "• Personal information: Name, phone number, email address\n• Profile information: Address, preferences, usage data\n• Device information: IP address, browser type, operating system\n• Usage data: App interactions, features used, session duration",
+  "howWeUseYourInformation": "How We Use Your Information",
+  "howWeUseYourInformationContent": "We use collected information to:\n• Provide and maintain our services\n• Process transactions and send notifications\n• Improve user experience and app functionality\n• Communicate with you about updates and offers",
+  "informationSharing": "Information Sharing",
+  "informationSharingContent": "We may share your information:\n• With other users (profile information in listings)\n• With service providers who assist our operations\n• When required by law or to protect our rights\n• With your consent for specific purposes",
+  "dataSecurity": "Data Security",
+  "dataSecurityContent": "We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.",
+  "dataRetention": "Data Retention",
+  "dataRetentionContent": "We retain your personal information only as long as necessary for the purposes outlined in this policy or as required by law.",
+  "yourRights": "Your Rights",
+  "yourRightsContent": "You have the right to:\n• Access your personal information\n• Correct inaccurate information\n• Delete your account and data\n• Opt-out of marketing communications",
+  "cookiesAndTracking": "Cookies and Tracking",
+  "cookiesAndTrackingContent": "We use cookies and similar technologies to enhance your experience, analyze usage patterns, and provide personalized content.",
+  "thirdPartyServices": "Third-Party Services",
+  "thirdPartyServicesContent": "Our app may contain links to third-party services. We are not responsible for their privacy practices.",
+  "childrensPrivacy": "Children's Privacy",
+  "childrensPrivacyContent": "Our service is not intended for children under 13. We do not knowingly collect personal information from children under 13.",
+  "changesToThisPolicy": "Changes to This Policy",
+  "changesToThisPolicyContent": "We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.",
+  "contactUs": "Contact Us",
+  "privacyContactContent": "If you have questions about this Privacy Policy, please contact us at:\nEmail: privacy@pashuparivar.com\nPhone: +91-XXXXXXXXXX",
+  "failedToLoadHistory": "Failed to Load History",
+  "somethingWentWrong": "Something went wrong",
+  "retry": "Retry",
+  "noSoldAnimals": "No Sold Animals",
+  "noSoldAnimalsDescription": "You haven't sold any animals yet. Your sold animals will appear here once transactions are completed.",
+  "viewActiveListings": "View Active Listings",
+  "verifyYourPashu": "Verify Your Pashu",
+  "verificationStatus": "Verification Status",
+  "active": "Active",
+  "pending": "Pending",
+  "verified": "Verified",
+  "fetchDataError": "Failed to load data",
+  "verificationSuccess": "Verification request submitted successfully!",
+  "insufficientBalance": "Insufficient wallet balance. Minimum ₹25 required.",
+  "verificationFailed": "Verification failed",
+  "type": "Type",
+  "age": "Age",
+  "priceA": "Price",
+  "negotiable": "Negotiable",
+  "owner": "Owner",
+  "distance": "Distance",
+  "unknown": "Unknown",
+  "years": "years",
+  "km": "km",
+  "yes": "Yes",
+  "no": "No",
+  "verificationInfo": "Get your pashu verified for better visibility and trust",
+  "getVerified": "Get Verified (₹{amount})",
+  "processing": "Processing...",
+  "verificationPending": "Verification Pending",
+  "verificationUnderReview": "Verification Under Review",
+  "verificationReviewMessage": "Our team is reviewing your submission",
+  "verifiedPashu": "Verified Pashu",
+  "verifiedPashuMessage": "This animal has been verified by our team",
+  "moreDetails": "More Details",
+  "onlyActiveCanBeVerified": "💡 Only Active Pashu Can Be Verified",
+  "emptyListTitle": "Your List is Empty",
+  "emptyListMessage": "You haven't added any Pashu yet. Start exploring to add what you love!",
+  "addNewPashu": "Add New Pashu",
+  "moreDetailsComing": "More details coming soon!",
+  "projectDetails": "Project Details",
+  "selectLots": "Select Lots",
+  "totalInvestment": "Total Investment: ₹{amount}",
+  "@totalInvestment": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "proceedToPayment": "Proceed To Payment",
+  "projectOverview": "Project Overview",
+  "owner": "Owner:",
+  "investmentType": "Investment Type:",
+  "address": "Address:",
+  "projectValue": "Project Value:",
+  "roi": "ROI:",
+  "lotPrice": "Lot Price:",
+  "availableLots": "Available Lots:",
+  "startTime": "Start Time:",
+  "harvestTime": "Harvest Time:",
+  "duration": "Duration:",
+  "projectManagerContact": "Project Manager Contact:",
+  "projectReport": "Project Report",
+  "projectReportDescription": "This document contains detailed information about the project, including planning, investment, breakdown, timelines and expectations.",
+  "downloadReport": "Download Report",
+  "frequentlyAskedQuestions": "❓ Frequently Asked Questions",
+  "paymentCompletedSuccessfully": "Payment completed successfully",
+  "paymentVerificationFailed": "Payment verification failed",
+  "errorVerifyingPayment": "Error verifying payment",
+  "couldNotInitiatePayment": "Could not initiate payment",
+  "paymentFailed": "Payment failed: {message}",
+  "@paymentFailed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "externalWalletSelected": "External Wallet Selected: {walletName}",
+  "@externalWalletSelected": {
+    "placeholders": {
+      "walletName": {
+        "type": "String"
+      }
+    }
+  },
+  "investIn": "Invest in {projectTitle}",
+  "@investIn": {
+    "placeholders": {
+      "projectTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "faqQuestion1": "What is the Pashuparivar Investment Scheme?",
+  "faqAnswer1": "Pashuparivar Investment Scheme is an initiative where individuals can invest in livestock-based businesses, through the Pashuparivar platform and earn returns based on profit-sharing or fixed models.",
+  "faqQuestion2": "How does the investment model work?",
+  "faqAnswer2": "You invest a specific amount, which will be used for purchasing and maintaining dairy animals. Our partnered farmers take care of daily operations, and profits from milk sales or animal trade are shared as per agreed terms.",
+  "faqQuestion3": "Is my investment safe?",
+  "faqAnswer3": "All investments are made transparently with proper documentation. Livestock is insured, and the farm operations are monitored by our team. However, like any investment, this also carries minimal risks.",
+  "faqQuestion4": "How will I earn returns?",
+  "faqAnswer4": "Returns are either fixed (monthly/quarterly) or profit-based depending on the plan you choose. Details are provided in the agreement for each plan.",
+  "faqQuestion5": "When will I get my returns?",
+  "faqAnswer5": "Returns are disbursed as per the payment cycle chosen — monthly, quarterly, or annually. The complete details will be shared at the time of agreement.",
+  "faqQuestion6": "Can I visit the farm?",
+  "faqAnswer6": "Yes, investors can visit partner farms after scheduling an appointment with our support team.",
+  "faqQuestion7": "Is there any agreement?",
+  "faqAnswer7": "Yes, we provide a legally binding MoU (Memorandum of Understanding) outlining your investment details, responsibilities, risk factors, and return timelines.",
+  "faqQuestion8": "How can I withdraw my investment?",
+  "faqAnswer8": "Most projects have a minimum lock-in period. After that, you can exit or choose to reinvest. Early withdrawal may be subject to charges or forfeiture of returns.",
+  "myInvestment": "My Investment",
+  "investmentId": "Investment ID: {id}",
+  "@investmentId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "slots": "Slots: {count}",
+  "@slots": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "price": "Price: ₹{amount}",
+  "@price": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "date": "Date: {date}",
+  "@date": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "noInvestmentsFound": "No investments found",
+  "holstein": "Holstein",
+  "jersey": "Jersey",
+  "gir": "Gir",
+  "sahiwal": "Sahiwal",
+  "redSindhi": "Red Sindhi",
+  "tharparkar": "Tharparkar",
+  "murrah": "Murrah",
+  "niliRavi": "Nili-Ravi",
+  "surti": "Surti",
+  "jaffarabadi": "Jaffarabadi",
+  "mehsana": "Mehsana",
+  "beetal": "Beetal",
+  "jamunapari": "Jamunapari",
+  "barbari": "Barbari",
+  "sirohi": "Sirohi",
+  "marwari": "Marwari",
+  "garole": "Garole",
+  "nellore": "Nellore",
+  "rampurBushair": "Rampur Bushair",
+  "chokla": "Chokla",
+  "marwariSheep": "Marwari Sheep",
+  "marwariHorse": "Marwari Horse",
+  "kathiawari": "Kathiawari",
+  "manipuri": "Manipuri",
+  "spiti": "Spiti",
+  "zanskari": "Zanskari",
+  "mixedBreed": "Mixed Breed",
+  "localBreed": "Local Breed",
+  "crossBreed": "Cross Breed",
+  "excellent": "Excellent",
+  "good": "Good",
+  "fair": "Fair",
+  "needsMedicalAttention": "Needs Medical Attention",
+  "underTreatment": "Under Treatment",
+  "sixMonths": "6 months",
+  "twelveMonths": "12 months",
+  "eighteenMonths": "18 months",
+  "twentyFourMonths": "24 months",
+  "thirtySixMonths": "36 months",
+  "fortyEightMonths": "48 months",
+  "sixtyMonths": "60 months",
+  "agriculture": "Agriculture",
+  "livestockFarming": "Livestock Farming",
+  "dairyBusiness": "Dairy Business",
+  "smallBusiness": "Small Business",
+  "salariedJob": "Salaried Job",
+  "selfEmployment": "Self Employment",
+  "other": "Other",
+  "purchaseNewAnimals": "Purchase New Animals",
+  "animalFeedNutrition": "Animal Feed & Nutrition",
+  "veterinaryTreatment": "Veterinary Treatment",
+  "farmEquipment": "Farm Equipment",
+  "shelterConstruction": "Shelter Construction",
+  "breedingProgram": "Breeding Program",
+  "businessExpansion": "Business Expansion",
+  "hi": "Hi",
+  "user": "User",
+  "welcomeToPashuParivar": "Welcome to Pashu Parivar!",
+  "loadingUser": "Loading...",
+  "currentLocation": "Current Location",
+  "allowLocationAccess": "Allow Location Access",
+  "locationDescription": "We need access to your location to show nearby animals and services.",
+  "locationPrivacyNote": "Your location data is used only to enhance your experience and is kept secure.",
+  "checkOutThisAnimal": "Check out this animal",
+  "details": "Details",
+  "downloadPashuParivarApp": "Download Pashu Parivar App for more details!",
+  "animalListing": "Animal Listing",
+  "animalDetailsShared": "Animal details shared successfully!",
+  "sharingFailed": "Failed to share animal details"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

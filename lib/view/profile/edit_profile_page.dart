@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -11,11 +13,12 @@ import '../../view_model/AuthVM/update_profile_view_model.dart';
 class EditProfilePage extends StatefulWidget {
   final Result userProfile;
   final String phoneNumber;
+  final VoidCallback? onBack;
 
   const EditProfilePage({
     super.key,
     required this.userProfile,
-    required this.phoneNumber,
+    required this.phoneNumber, this.onBack,
   });
 
   @override
@@ -61,9 +64,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
+
       body: Consumer<UpdateProfileViewModel>(
         builder: (context, updateViewModel, child) {
           return SingleChildScrollView(
@@ -72,14 +77,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: Column(
                 children: [
                   // Profile Display Section
-                  _buildProfileDisplaySection(),
+                  _buildProfileDisplaySection(l10n),
 
                   const SizedBox(height: 30),
 
                   // Edit Profile Form
-                  _buildEditProfileForm(updateViewModel),
+                  _buildEditProfileForm(updateViewModel, l10n),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: kBottomNavigationBarHeight + 30),
                 ],
               ),
             ),
@@ -90,6 +95,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final l10n = AppLocalizations.of(context)!;
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -114,7 +121,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           const AppLogo(size: 40),
           const SizedBox(width: 12),
           Text(
-            'Edit Profile',
+            l10n.editProfile,
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -126,7 +133,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildProfileDisplaySection() {
+  Widget _buildProfileDisplaySection(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -179,7 +186,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               const SizedBox(width: 16),
               Text(
-                'Profile Details',
+                l10n.profileDetailsSectionHeader,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -193,28 +200,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
           // Profile Info Rows
           _buildInfoRow(
-            'Full Name',
-            widget.userProfile.username ?? 'Not provided',
+            l10n.fullName,
+            widget.userProfile.username ?? l10n.notProvided,
             Icons.person_rounded,
           ),
           _buildInfoRow(
-            'Phone Number',
-            widget.userProfile.number ?? 'Not provided',
+            l10n.phoneNumber,
+            widget.userProfile.number ?? l10n.notProvided,
             Icons.phone_rounded,
           ),
           _buildInfoRow(
-            'Email Address',
-            widget.userProfile.emailid?.toString() ?? 'Not provided',
+            l10n.emailAddress,
+            widget.userProfile.emailid?.toString() ?? l10n.notProvided,
             Icons.email_rounded,
           ),
           _buildInfoRow(
-            'Address',
-            widget.userProfile.address ?? 'Not provided',
+            l10n.address,
+            widget.userProfile.address ?? l10n.notProvided,
             Icons.location_on_rounded,
           ),
           _buildInfoRow(
-            'Referral Code',
-            widget.userProfile.referralcode ?? 'Not available',
+            l10n.referralCode,
+            widget.userProfile.referralcode ?? l10n.notAvailable,
             Icons.share_rounded,
             isLast: true,
           ),
@@ -274,7 +281,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildEditProfileForm(UpdateProfileViewModel updateViewModel) {
+  Widget _buildEditProfileForm(UpdateProfileViewModel updateViewModel, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -330,7 +337,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    'Edit Profile Information',
+                    l10n.editProfileInformation,
                     style: AppTextStyles.heading.copyWith(
                       color: AppColors.primaryDark,
                       fontSize: 18,
@@ -345,15 +352,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             // Editable Name Field
             _buildEditableField(
-              label: 'Full Name',
+              label: l10n.fullName,
               controller: _nameController,
               icon: Icons.person_rounded,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Name cannot be empty';
+                  return l10n.nameCannotBeEmpty;
                 }
                 if (value.trim().length < 2) {
-                  return 'Name must be at least 2 characters';
+                  return l10n.nameMinimumCharacters;
                 }
                 return null;
               },
@@ -363,8 +370,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             // Non-editable Phone Field
             _buildNonEditableField(
-              label: 'Phone Number',
-              value: widget.userProfile.number ?? 'Not provided',
+              label: l10n.phoneNumber,
+              value: widget.userProfile.number ?? l10n.notProvided,
               icon: Icons.phone_rounded,
             ),
 
@@ -372,14 +379,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             // Editable Email Field
             _buildEditableField(
-              label: 'Email Address',
+              label: l10n.emailAddress,
               controller: _emailController,
               icon: Icons.email_rounded,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value != null && value.isNotEmpty) {
                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Please enter a valid email address';
+                    return l10n.pleaseEnterValidEmail;
                   }
                 }
                 return null;
@@ -390,16 +397,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             // Editable Address Field
             _buildEditableField(
-              label: 'Address',
+              label: l10n.address,
               controller: _addressController,
               icon: Icons.location_on_rounded,
               maxLines: 3,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Address cannot be empty';
+                  return l10n.addressCannotBeEmpty;
                 }
                 if (value.trim().length < 10) {
-                  return 'Please enter a complete address';
+                  return l10n.pleaseEnterCompleteAddress;
                 }
                 return null;
               },
@@ -409,8 +416,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             // Non-editable Referral Code Field
             _buildNonEditableField(
-              label: 'Referral Code',
-              value: widget.userProfile.referralcode ?? 'Not available',
+              label: l10n.referralCode,
+              value: widget.userProfile.referralcode ?? l10n.notAvailable,
               icon: Icons.share_rounded,
             ),
 
@@ -436,8 +443,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     : const Icon(Icons.save_rounded),
                 label: Text(
                   updateViewModel.isLoading
-                      ? 'Updating Profile...'
-                      : 'Update Profile',
+                      ? l10n.updatingProfile
+                      : l10n.updateProfile,
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: (_hasChanges && !updateViewModel.isLoading)
@@ -474,7 +481,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Note: Phone number and referral code cannot be changed. Only name, email, and address can be updated.',
+                      l10n.phoneAndReferralNotChangeable,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.blue,
                         fontSize: 12,
@@ -609,6 +616,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void _handleUpdateProfile(UpdateProfileViewModel updateViewModel) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -625,17 +634,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (updateViewModel.message == "Profile updated successfully") {
-      _showSuccessDialog();
+      _showSuccessDialog(l10n);
 
       // Refresh profile data
       Provider.of<GetProfileViewModel>(context, listen: false)
           .getProfile(widget.phoneNumber);
     } else {
-      _showErrorDialog(updateViewModel.message ?? "Failed to update profile");
+      _showErrorDialog(updateViewModel.message ?? l10n.updateFailed, l10n);
     }
   }
 
-  void _showSuccessDialog() {
+  // void _showSuccessDialog(AppLocalizations l10n) {
+  //   showDialog(
+  //       context: context,
+  //       barrierDismissible
+
+  void _showSuccessDialog(AppLocalizations l10n) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -666,7 +680,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: 20),
 
               Text(
-                'Profile Updated Successfully!',
+                l10n.profileUpdatedSuccessfully,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -678,7 +692,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: 12),
 
               Text(
-                'Your profile information has been updated successfully.',
+                l10n.profileUpdateSuccessMessage,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.7),
                 ),
@@ -701,7 +715,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child:  Text(l10n.continueA),
                 ),
               ),
             ],
@@ -711,7 +725,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  void _showErrorDialog(String message) {
+  void _showErrorDialog(String message,AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -738,7 +752,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               const SizedBox(width: 12),
               Text(
-                'Update Failed',
+                l10n.updateFailed,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -759,7 +773,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 foregroundColor: Colors.red,
               ),
               child: Text(
-                'OK',
+                l10n.ok,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,

@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int usedSlots = 0;
   int remainingSlots = 0;
   int buyLength =0;
+  int sellLength = 0;
 
   String _currentLocation = 'Fetching location...';
   Position? _currentPosition;
@@ -88,186 +89,212 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       'image': 'assets/image7.webp',
     },
   ];
-
   @override
   void initState() {
     super.initState();
-    _initializeBlinkAnimation();
-    _startAnimalSlider();
-    _startBuyerSlider();
-    fetchSlotData();
-    _checkLocationPermissionOnInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _initializeBlinkAnimation();
+        _startAnimalSlider();
+        _startBuyerSlider();
+        fetchSlotData();
+        _initLocationFlow();
+      }
+    });
   }
 
-  Future<void> _checkLocationPermissionOnInit() async {
-    // Check if location is already saved
+  // New optimized location handling
+  Future<void> _initLocationFlow() async {
+    // Step 1: Check if we already have location permissions
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      if (mounted) {
+        setState(() {
+          _locationPermissionGranted = false;
+          _locationError = true;
+          _currentLocation = 'Location permission permanently denied';
+        });
+      }
+      return;
+    }
+
+    // Step 2: Check if we have saved location
     final prefs = await SharedPreferences.getInstance();
     final savedLat = prefs.getDouble('latitude');
     final savedLng = prefs.getDouble('longitude');
 
     if (savedLat != null && savedLng != null) {
-      // Location already saved, get address from coordinates
-      try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(savedLat, savedLng);
-        if (placemarks.isNotEmpty) {
-          final place = placemarks.first;
-          setState(() {
-            _currentLocation = '${place.locality}, ${place.administrativeArea}, ${place.country}';
-            _locationPermissionGranted = true;
-          });
-        }
-      } catch (e) {
-        print('Error getting location from saved coordinates: $e');
-        setState(() {
-          _currentLocation = 'Location saved';
-          _locationPermissionGranted = true;
-        });
-      }
-    } else {
-      // No saved location, check permissions
-      await _checkLocationPermission();
-    }
-  }
-
-  Future<void> _checkLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      setState(() {
-        _locationPermissionGranted = false;
-        _locationError = true;
-      });
+      _processExistingLocation(savedLat, savedLng);
       return;
     }
 
-    permission = await Geolocator.checkPermission();
+    // Step 3: Request permission if not granted
     if (permission == LocationPermission.denied) {
-      setState(() {
-        _locationPermissionGranted = false;
-      });
-      return;
+      await _requestLocationPermission();
+    } else {
+      await _getCurrentLocation();
     }
-
-    if (permission == LocationPermission.deniedForever) {
-      setState(() {
-        _locationPermissionGranted = false;
-        _locationError = true;
-      });
-      return;
-    }
-
-    // Permissions are granted, get current location
-    setState(() {
-      _locationPermissionGranted = true;
-    });
-    await _getCurrentLocation();
   }
 
   Future<void> _requestLocationPermission() async {
-    setState(() {
-      _locationLoading = true;
-      _locationError = false;
-    });
-
     try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        // Location services are not enabled
-        await Geolocator.openLocationSettings();
-        setState(() {
-          _locationLoading = false;
-        });
-        return;
-      }
+      LocationPermission permission = await Geolocator.requestPermission();
 
-      LocationPermission permission = await Geolocator.checkPermission();
+      if (!mounted) return;
+
       if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          setState(() {
-            _locationLoading = false;
-            _locationError = true;
-          });
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        // Permissions are denied forever
-        await Geolocator.openAppSettings();
         setState(() {
-          _locationLoading = false;
-          _locationError = true;
+          _locationPermissionGranted = false;
+          _locationError = false;
+          _currentLocation = 'Location permission denied';
         });
-        return;
       }
-
-      // Permissions granted, get location
-      await _getCurrentLocation();
-      setState(() {
-        _locationPermissionGranted = true;
-      });
+      else if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _locationPermissionGranted = false;
+          _locationError = true;
+          _currentLocation = 'Location permission permanently denied';
+        });
+      }
+      else {
+        await _getCurrentLocation();
+      }
     } catch (e) {
-      print('Error requesting location permission: $e');
-      setState(() {
-        _locationLoading = false;
-        _locationError = true;
-      });
+      debugPrint('Permission request error: $e');
+      if (mounted) {
+        setState(() {
+          _locationError = true;
+          _currentLocation = 'Permission request failed';
+        });
+      }
     }
   }
 
   Future<void> _getCurrentLocation() async {
-    setState(() {
-      _locationLoading = true;
-    });
+    if (!mounted) return;
+
+    setState(() => _locationLoading = true);
 
     try {
+      // First check if services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        if (mounted) {
+          setState(() {
+            _locationLoading = false;
+            _locationError = true;
+            _currentLocation = 'Location services disabled';
+          });
+        }
+        return;
+      }
+
+      // Get position with timeout
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
-      );
+        desiredAccuracy: LocationAccuracy.best,
+      ).timeout(const Duration(seconds: 15));
 
-      setState(() {
-        _currentPosition = position;
-      });
-
-      // Save location to SharedPreferences
-      SharedPrefHelper.saveLocation(position.latitude, position.longitude);
-
-      // Get address from coordinates
+      // Save and process location
+      await SharedPrefHelper.saveLocation(position.latitude, position.longitude);
       await _getAddressFromCoordinates(position.latitude, position.longitude);
 
-      setState(() {
-        _locationLoading = false;
-      });
+    } on TimeoutException {
+      _handleLocationError('Location request timed out');
     } catch (e) {
-      print('Error getting current location: $e');
+      _handleLocationError('Unable to get location');
+    }
+  }
+
+  Future<void> _getAddressFromCoordinates(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+
+      if (!mounted) return;
+
+      if (placemarks.isNotEmpty) {
+        setState(() {
+          _currentLocation = _formatLocationString(placemarks.first);
+          _locationPermissionGranted = true;
+          _locationLoading = false;
+        });
+      } else {
+        setState(() {
+          _currentLocation = 'Lat: ${lat.toStringAsFixed(4)}, Lng: ${lng.toStringAsFixed(4)}';
+          _locationPermissionGranted = true;
+          _locationLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Geocoding error: $e');
+      if (mounted) {
+        setState(() {
+          _currentLocation = 'Lat: ${lat.toStringAsFixed(4)}, Lng: ${lng.toStringAsFixed(4)}';
+          _locationLoading = false;
+        });
+      }
+    }
+  }
+
+  void _handleLocationError(String message) {
+    if (!mounted) return;
+    setState(() {
+      _locationError = true;
+      _locationLoading = false;
+      _currentLocation = message;
+    });
+  }
+
+  Future<void> _processExistingLocation(double lat, double lng) async {
+    if (!mounted) return;
+
+    try {
+      // Validate coordinates before using them
+      if (lat.isNaN || lng.isNaN || lat.abs() > 90 || lng.abs() > 180) {
+        throw Exception('Invalid coordinates');
+      }
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+
+      if (!mounted) return;
+
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        setState(() {
+          _currentLocation = _formatLocationString(place);
+          _locationPermissionGranted = true;
+          _locationLoading = false;
+          _locationError = false;
+        });
+      } else {
+        setState(() {
+          _currentLocation = 'Lat: ${lat.toStringAsFixed(4)}, Lng: ${lng.toStringAsFixed(4)}';
+          _locationPermissionGranted = true;
+          _locationLoading = false;
+          _locationError = false;
+        });
+      }
+    } catch (e) {
+      print('Error processing existing location: $e');
+      if (!mounted) return;
       setState(() {
-        _currentLocation = 'Location not available';
+        _currentLocation = 'Location saved';
+        _locationPermissionGranted = true;
         _locationLoading = false;
-        _locationError = true;
+        _locationError = false;
       });
     }
   }
 
-  Future<void> _getAddressFromCoordinates(double latitude, double longitude) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        final place = placemarks.first;
-        setState(() {
-          _currentLocation = '${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}';
-        });
-      }
-    } catch (e) {
-      print('Error getting address: $e');
-      setState(() {
-        _currentLocation = 'Lat: ${latitude.toStringAsFixed(4)}, Lng: ${longitude.toStringAsFixed(4)}';
-      });
-    }
+  String _formatLocationString(Placemark place) {
+    final locality = place.locality?.isNotEmpty == true ? place.locality! : '';
+    final area = place.administrativeArea?.isNotEmpty == true ? place.administrativeArea! : '';
+    final country = place.country?.isNotEmpty == true ? place.country! : '';
+
+    return [locality, area, country]
+        .where((element) => element.isNotEmpty)
+        .join(', ')
+        .trim();
   }
 
   // Future<void> fetchSlotData() async {
@@ -309,6 +336,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           usedSlots = filteredSell.length;
           remainingSlots = totalSlots - usedSlots;
           buyLength = filteredBuy.length;
+          sellLength = sellData.length;
         });
       }
     } catch (e) {
@@ -375,13 +403,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    // Cancel timers first
     _animalSliderTimer?.cancel();
     _buyerSliderTimer?.cancel();
+
+    // Dispose controllers
     _animalSliderController.dispose();
     _buyerSliderController.dispose();
     _blinkController.dispose();
+
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -396,6 +429,226 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Widget _buildWelcomeSection() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: Consumer<GetProfileViewModel>(
+        builder: (context, profileViewModel, child) {
+          // Trigger profile fetch if not already done
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!profileViewModel.isLoading && profileViewModel.profile == null) {
+              profileViewModel.getProfile(widget.phoneNumber);
+            }
+          });
+
+          return Row(
+            children: [
+              // Profile Image or Initial
+              // Container(
+              //   width: 50,
+              //   height: 50,
+              //   decoration: BoxDecoration(
+              //     gradient: LinearGradient(
+              //       begin: Alignment.topLeft,
+              //       end: Alignment.bottomRight,
+              //       colors: [
+              //         AppColors.primaryDark.withOpacity(0.15),
+              //         AppColors.primaryDark.withOpacity(0.08),
+              //       ],
+              //     ),
+              //     shape: BoxShape.circle,
+              //     border: Border.all(color: AppColors.primaryDark, width: 2),
+              //   ),
+              //   child: profileViewModel.profile?.profilePicture != null &&
+              //       profileViewModel.profile!.profilePicture!.isNotEmpty
+              //       ? ClipOval(
+              //     child: Image.network(
+              //       'https://pashuparivar.com/uploads/${profileViewModel.profile!.profilePicture}',
+              //       fit: BoxFit.cover,
+              //       errorBuilder: (context, error, stackTrace) {
+              //         return _buildUserInitial(profileViewModel.profile?.username);
+              //       },
+              //     ),
+              //   )
+              //       : _buildUserInitial(profileViewModel.profile?.username),
+              // ),
+
+              const SizedBox(width: 16),
+
+              // Welcome Text
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.hi,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.primaryDark.withOpacity(0.7),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      profileViewModel.isLoading
+                          ? AppLocalizations.of(context)!.loadingUser
+                          : (profileViewModel.profile?.result?.first.username ??
+                          AppLocalizations.of(context)!.user),
+                      style: AppTextStyles.heading.copyWith(
+                        color: AppColors.primaryDark,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      AppLocalizations.of(context)!.welcomeToPashuParivar,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.primaryDark.withOpacity(0.6),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+// Helper method to build user initial
+  Widget _buildUserInitial(String? username) {
+    String initial = username?.isNotEmpty == true
+        ? username!.substring(0, 1).toUpperCase()
+        : 'U';
+
+    return Center(
+      child: Text(
+        initial,
+        style: AppTextStyles.heading.copyWith(
+          color: AppColors.primaryDark,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+// Location Section Method
+  Widget _buildLocationSection() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blue.withOpacity(0.1),
+            Colors.blue.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primaryDark.withOpacity(0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Location Icon
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.blue.withOpacity(0.2)),
+            ),
+            child: Icon(
+              Icons.location_on_rounded,
+              color: Colors.blue,
+              size: 18,
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          // Location Text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.currentLocation,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.primaryDark.withOpacity(0.6),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  _currentLocation,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.primaryDark,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+
+          // Refresh Location Button
+          GestureDetector(
+            onTap: _locationLoading ? null : _getCurrentLocation,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: _locationLoading
+                  ? SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: Colors.blue,
+                ),
+              )
+                  : Icon(
+                Icons.refresh_rounded,
+                color: Colors.blue,
+                size: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildLocationPermissionScreen() {
     return Container(
@@ -508,6 +761,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         : AppLocalizations.of(context)!.allowLocationAccess,
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: AppColors.lightSage
                     ),
                   ),
                 ],
@@ -587,6 +841,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Column(
         children: [
           // First 10,000 Users Section
+          _buildWelcomeSection(),
+
+          _buildLocationSection(),
+
           _buildFirst10KUsersSection(screenWidth),
 
           // Investment Card
@@ -742,7 +1000,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${localizations.firstUsers} ₹25 ${localizations.referralBonusOnly}',
+                  '${localizations.firstUsers} ₹25 ${localizations.referralBonusOnly} $remainingSlots',
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: AppColors.primaryDark,
                     fontWeight: FontWeight.w600,
@@ -758,7 +1016,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       color: AppColors.primaryDark.withOpacity(0.8),
                     ),
                     children: [
-                      TextSpan(text: localizations.slotsLeft(remainingSlots)),
+                      TextSpan(text: localizations.slotsLeft),
                     ],
                   ),
                 ),
@@ -934,12 +1192,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           badge: AppLocalizations.of(context)!.newBadge,
           primaryColor: const Color(0xFF4CAF50),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PashuInsuranceFormPage(),
-              ),
-            );
+            Provider.of<NavigationController>(context, listen: false).openPashuInsurance();
           },
         ),
         const SizedBox(height: 16),
@@ -950,10 +1203,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           buttonLabel: AppLocalizations.of(context)!.viewLive,
           primaryColor: AppColors.lightSage,
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LiveRacePage()),
-            );
+            Provider.of<NavigationController>(context, listen: false).openLiveRace();
           },
         ),
 
@@ -968,12 +1218,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           badge: AppLocalizations.of(context)!.newBadge,
           primaryColor: const Color(0xFF2196F3),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PashuLoanFormPage(),
-              ),
-            );
+            Provider.of<NavigationController>(context, listen: false).openPashuLoan();
           },
         ),
       ],
@@ -1442,7 +1687,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                         // Count
                         Text(
-                          "971",
+                          "$sellLength",
                           style: AppTextStyles.heading.copyWith(
                             color: Colors.red,
                             fontSize: 36,

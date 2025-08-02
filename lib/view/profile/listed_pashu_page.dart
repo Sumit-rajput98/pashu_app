@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -14,8 +16,8 @@ import '../../view_model/pashuVM/all_pashu_view_model.dart';
 import '../auth/profile_page.dart';
 
 class ListedPashuPage extends StatefulWidget {
-
-   ListedPashuPage({super.key});
+  final VoidCallback? onBack;
+  const ListedPashuPage({super.key, this.onBack});
 
   @override
   State<ListedPashuPage> createState() => _ListedPashuPageState();
@@ -56,22 +58,22 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
         pashu.userphone == userPhoneNumber
     ).toList();
   }
+
   Future<bool> _handleBackPress() async {
     String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
     if (mounted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) =>  ProfilePage(phoneNumber: phoneNumber ?? ''
-          ,)),
-      ); }
+        MaterialPageRoute(builder: (_) => ProfilePage(phoneNumber: phoneNumber ?? '')),
+      );
+    }
     return false; // prevent default pop behavior
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
+
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return RefreshIndicator(
@@ -85,7 +87,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -110,7 +112,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
           const AppLogo(size: 40),
           const SizedBox(width: 12),
           Text(
-            'Your Listed Pashu',
+            l10n.yourListedPashu,
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -182,7 +184,8 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   }
 
   Widget _buildStatsHeader(List<AllPashuModel> filteredPashu) {
-    print(filteredPashu.map((e)=> e.status).toList());
+    final l10n = AppLocalizations.of(context)!;
+    print(filteredPashu.map((e) => e.status).toList());
 
     final totalListings = filteredPashu.length;
     final activeListings = filteredPashu.where((p) => p.status?.toLowerCase() == 'active').length;
@@ -216,15 +219,15 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
       child: Row(
         children: [
           Expanded(
-            child: _buildStatItem('Total', totalListings.toString(), Colors.blue),
+            child: _buildStatItem(l10n.total, totalListings.toString(), Colors.blue),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: _buildStatItem('Active', activeListings.toString(), Colors.green),
+            child: _buildStatItem(l10n.active, activeListings.toString(), Colors.green),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: _buildStatItem('Pending', pendingListings.toString(), Colors.orange),
+            child: _buildStatItem(l10n.pending, pendingListings.toString(), Colors.orange),
           ),
         ],
       ),
@@ -307,6 +310,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   }
 
   Widget _buildPashuCard(AllPashuModel pashu, int index) {
+    final l10n = AppLocalizations.of(context)!;
     final images = <String>[
       if (pashu.pictureOne != null && pashu.pictureOne!.isNotEmpty)
         'https://pashuparivar.com/uploads/${pashu.pictureOne}',
@@ -330,9 +334,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isPending
-              ? Colors.red
-              : AppColors.primaryDark,
+          color: isPending ? Colors.red : AppColors.primaryDark,
           width: 2,
         ),
         boxShadow: [
@@ -464,7 +466,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                           Expanded(
                             flex: 3,
                             child: Text(
-                              pashu.animalname ?? 'Unknown Animal',
+                              pashu.animalname ?? l10n.unknownAnimal,
                               style: AppTextStyles.bodyLarge.copyWith(
                                 color: AppColors.primaryDark,
                                 fontWeight: FontWeight.w600,
@@ -489,7 +491,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                               ),
                             ),
                             child: Text(
-                              pashu.animatCategory ?? 'Other',
+                              pashu.animatCategory ?? l10n.other,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.primaryDark,
                                 fontSize: 8,
@@ -517,7 +519,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                             const SizedBox(width: 3),
                             Expanded(
                               child: Text(
-                                'Breed: ${pashu.breed}',
+                                '${l10n.breed}: ${pashu.breed}',
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: AppColors.primaryDark.withOpacity(0.7),
                                   fontSize: 10,
@@ -588,7 +590,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(
-                              pashu.address ?? 'Location not available',
+                              pashu.address ?? l10n.locationNotAvailable,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.primaryDark.withOpacity(0.7),
                                 fontSize: 10,
@@ -618,7 +620,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                               ),
                               if (pashu.negotiable?.toLowerCase() == 'yes')
                                 Text(
-                                  'Negotiable',
+                                  l10n.negotiable,
                                   style: AppTextStyles.bodyMedium.copyWith(
                                     color: AppColors.primaryDark.withOpacity(0.6),
                                     fontSize: 8,
@@ -628,41 +630,6 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                           ),
 
                           const Spacer(),
-
-                          // Action Buttons Row
-                          // Row(
-                          //   children: [
-                          //     // Edit Button
-                          //     Container(
-                          //       height: 28,
-                          //       child: ElevatedButton.icon(
-                          //         onPressed: () => _editPashu(pashu),
-                          //         icon: const Icon(Icons.edit_rounded, size: 12),
-                          //         label: Text(
-                          //           'Edit',
-                          //           style: AppTextStyles.bodyMedium.copyWith(
-                          //             fontSize: 10,
-                          //             fontWeight: FontWeight.w600,
-                          //           ),
-                          //         ),
-                          //         style: ElevatedButton.styleFrom(
-                          //           backgroundColor: Colors.blue,
-                          //           foregroundColor: Colors.white,
-                          //           elevation: 2,
-                          //           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          //           shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(8),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //
-                          //     const SizedBox(width: 6),
-                          //
-                          //     // Delete Button
-                          //
-                          //   ],
-                          // ),
                         ],
                       ),
                     ],
@@ -691,7 +658,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                   ],
                 ),
                 child: Text(
-                  'PENDING',
+                  l10n.pendingStatus,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: Colors.white,
                     fontSize: 10,
@@ -706,6 +673,8 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   }
 
   Widget _buildErrorWidget(AllPashuViewModel viewModel) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -719,7 +688,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Failed to Load Listings',
+              l10n.failedToLoadListings,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -727,7 +696,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             ),
             const SizedBox(height: 12),
             Text(
-              viewModel.error ?? 'Something went wrong',
+              viewModel.error ?? l10n.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -740,7 +709,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                 viewModel.fetchAllPashu();
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryDark,
                 foregroundColor: Colors.white,
@@ -757,6 +726,8 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   }
 
   Widget _buildEmptyWidget() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -770,7 +741,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'No Listed Animals',
+              l10n.noListedAnimals,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -778,7 +749,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             ),
             const SizedBox(height: 12),
             Text(
-              'You haven\'t listed any animals yet. Start by adding your first listing!',
+              l10n.noListedAnimalsDescription,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -786,21 +757,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, '/sell-pashu');
-              },
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Add New Listing'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryDark,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),
@@ -817,6 +774,8 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   }
 
   void _deletePashu(AllPashuModel pashu) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -843,7 +802,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
               ),
               const SizedBox(width: 12),
               Text(
-                'Delete Listing',
+                l10n.deleteListing,
                 style: AppTextStyles.heading.copyWith(
                   color: AppColors.primaryDark,
                   fontSize: 18,
@@ -852,7 +811,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
             ],
           ),
           content: Text(
-            'Are you sure you want to delete "${pashu.animalname}"? This action cannot be undone.',
+            l10n.deleteConfirmation( pashu.animalname ?? l10n.animal),
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.primaryDark.withOpacity(0.8),
             ),
@@ -864,7 +823,7 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
                 foregroundColor: AppColors.primaryDark.withOpacity(0.6),
               ),
               child: Text(
-                'Cancel',
+                l10n.cancel,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.primaryDark.withOpacity(0.6),
                 ),
@@ -874,13 +833,13 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
               onPressed: () {
                 Navigator.pop(context);
                 // TODO: Implement delete API call
-                _showDeleteSuccessSnackBar(pashu.animalname ?? 'Animal');
+                _showDeleteSuccessSnackBar(pashu.animalname ?? l10n.animal);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Delete'),
+              child: Text(l10n.delete),
             ),
           ],
         );
@@ -889,9 +848,11 @@ class _ListedPashuPageState extends State<ListedPashuPage> {
   }
 
   void _showDeleteSuccessSnackBar(String animalName) {
+    final l10n = AppLocalizations.of(context)!;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$animalName deleted successfully'),
+        content: Text(l10n.deleteSuccessMessage(animalName)),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

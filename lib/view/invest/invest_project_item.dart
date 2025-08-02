@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../core/navigation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../model/invest/invest_model.dart';
@@ -17,13 +19,9 @@ class InvestProjectItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: InkWell(
-        onTap: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => InvestDetailsPage(project: project),
-            ),
-          );
+        onTap: () {
+          Provider.of<NavigationController>(context, listen: false)
+              .openInvestDetails(project);
         },
         child: Container(
           decoration: BoxDecoration(

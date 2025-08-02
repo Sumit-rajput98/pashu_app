@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/all_pashu_view_model.dart';
 
 class SoldOutHistoryPage extends StatefulWidget {
-  const SoldOutHistoryPage({super.key});
+  final VoidCallback? onBack;
+  const SoldOutHistoryPage({super.key, this.onBack});
 
   @override
   State<SoldOutHistoryPage> createState() => _SoldOutHistoryPageState();
@@ -55,7 +57,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
+
       body: Consumer<AllPashuViewModel>(
         builder: (context, viewModel, child) {
           return RefreshIndicator(
@@ -757,8 +759,12 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
       ),
     );
   }
+// Add this import at the top of your file
+
 
   Widget _buildErrorWidget(AllPashuViewModel viewModel) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -772,7 +778,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Failed to Load History',
+              l10n.failedToLoadHistory,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -780,7 +786,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             ),
             const SizedBox(height: 12),
             Text(
-              viewModel.error ?? 'Something went wrong',
+              viewModel.error ?? l10n.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -793,7 +799,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
                 viewModel.fetchAllPashu();
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryDark,
                 foregroundColor: Colors.white,
@@ -810,6 +816,8 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
   }
 
   Widget _buildEmptyWidget() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -823,7 +831,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             ),
             const SizedBox(height: 20),
             Text(
-              'No Sold Animals',
+              l10n.noSoldAnimals,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -831,7 +839,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
             ),
             const SizedBox(height: 12),
             Text(
-              'You haven\'t sold any animals yet. Your sold animals will appear here once transactions are completed.',
+              l10n.noSoldAnimalsDescription,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -839,21 +847,7 @@ class _SoldOutHistoryPageState extends State<SoldOutHistoryPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, '/listed-pashu');
-              },
-              icon: const Icon(Icons.list_rounded),
-              label: const Text('View Active Listings'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryDark,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),

@@ -5,7 +5,9 @@ import '../../AppManager/api/constant/api_constant.dart';
 import '../../core/shared_pref_helper.dart';
 
 class MyInvestmentPage extends StatefulWidget {
-  const MyInvestmentPage({Key? key}) : super(key: key);
+  final VoidCallback onBack;
+
+  const MyInvestmentPage({Key? key, required this.onBack}) : super(key: key);
 
   @override
   State<MyInvestmentPage> createState() => _MyInvestmentPageState();
@@ -95,22 +97,34 @@ class _MyInvestmentPageState extends State<MyInvestmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Investment"),
-        backgroundColor: const Color(0xFF1E4A59),
-        foregroundColor: Colors.white,
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : userInvestments.isEmpty
-          ? const Center(child: Text("No investments found"))
-          : ListView.builder(
-        itemCount: userInvestments.length,
-        itemBuilder: (context, index) {
-          return buildInvestmentCard(userInvestments[index]);
-        },
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : userInvestments.isEmpty
+              ? const Center(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "No investments found",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 100,),
+                ],
+              ))
+              : ListView.builder(
+            itemCount: userInvestments.length,
+            itemBuilder: (context, index) {
+              return buildInvestmentCard(userInvestments[index]);
+            },
+          ),
+        ),
+      ],
     );
   }
 }

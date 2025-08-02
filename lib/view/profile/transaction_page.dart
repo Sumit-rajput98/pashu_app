@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
@@ -16,6 +18,7 @@ class Transaction {
   final String type;
   final String status;
   final String comment;
+
 
   Transaction({
     required this.amount,
@@ -39,7 +42,8 @@ class Transaction {
 }
 
 class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+  final VoidCallback? onBack;
+  const TransactionPage({super.key, this.onBack});
 
   @override
   State<TransactionPage> createState() => _TransactionPageState();
@@ -49,6 +53,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   List<Transaction> transactions = [];
   bool isLoading = true;
   String? errorMessage;
+
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -114,8 +119,9 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
         throw Exception('User not logged in');
       }
     } catch (e) {
+      final l10n = AppLocalizations.of(context)!;
       setState(() {
-        errorMessage = 'No transactions';
+        errorMessage = l10n.noTransactions;
       });
       print('Error fetching user or transactions: $e');
     } finally {
@@ -148,17 +154,18 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   }
 
   Map<String, String> formatDateTime(String datetime) {
+    final l10n = AppLocalizations.of(context)!;
     final date = DateTime.parse(datetime);
     final now = DateTime.now();
     final difference = now.difference(date);
 
     String dateStr;
     if (difference.inDays == 0) {
-      dateStr = 'Today';
+      dateStr = l10n.today;
     } else if (difference.inDays == 1) {
-      dateStr = 'Yesterday';
+      dateStr = l10n.yesterday;
     } else if (difference.inDays < 7) {
-      dateStr = '${difference.inDays} days ago';
+      dateStr = l10n.daysAgo(difference.inDays.toString());
     } else {
       dateStr = "${date.day}/${date.month}/${date.year}";
     }
@@ -205,11 +212,35 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
     }
   }
 
+  String getLocalizedStatus(String status, AppLocalizations l10n) {
+    switch (status.toLowerCase()) {
+      case 'success':
+        return l10n.success;
+      case 'pending':
+        return l10n.pending;
+      case 'failed':
+        return l10n.failed;
+      default:
+        return status.toUpperCase();
+    }
+  }
+
+  String getLocalizedType(String type, AppLocalizations l10n) {
+    switch (type.toLowerCase()) {
+      case 'credit':
+        return l10n.credit;
+      case 'debit':
+        return l10n.debit;
+      default:
+        return type.toUpperCase();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
+
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: RefreshIndicator(
@@ -222,7 +253,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -248,7 +279,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Transaction History',
+              l10n.transactionHistory,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -315,6 +346,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   }
 
   Widget _buildStatsHeader() {
+    final l10n = AppLocalizations.of(context)!;
     if (transactions.isEmpty) return const SizedBox.shrink();
 
     double totalCredit = 0;
@@ -385,7 +417,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  'Transaction Summary',
+                  l10n.transactionSummary,
                   style: AppTextStyles.heading.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 18,
@@ -403,15 +435,15 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
           Row(
             children: [
               Expanded(
-                child: _buildStatItem('Total Credit', '₹${totalCredit.toInt()}', Colors.green),
+                child: _buildStatItem(l10n.totalCredit, '₹${totalCredit.toInt()}', Colors.green),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: _buildStatItem('Total Debit', '₹${totalDebit.toInt()}', Colors.red),
+                child: _buildStatItem(l10n.totalDebit, '₹${totalDebit.toInt()}', Colors.red),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: _buildStatItem('Successful', '$successCount', Colors.blue),
+                child: _buildStatItem(l10n.successful, '$successCount', Colors.blue),
               ),
             ],
           ),
@@ -450,6 +482,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   }
 
   Widget _buildTransactionCard(Transaction transaction, int index) {
+    final l10n = AppLocalizations.of(context)!;
     final formatted = formatDateTime(transaction.createdAt);
     final typeColor = getTypeColor(transaction.type);
     final statusColor = getStatusColor(transaction.status);
@@ -529,7 +562,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                               ),
                             ),
                             child: Text(
-                              transaction.status.toUpperCase(),
+                              getLocalizedStatus(transaction.status, l10n),
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: statusColor,
                                 fontSize: 10,
@@ -544,7 +577,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
                       const SizedBox(height: 4),
 
                       Text(
-                        '${transaction.type.toUpperCase()} • ${formatted['date']} at ${formatted['time']}',
+                        '${getLocalizedType(transaction.type, l10n)} • ${formatted['date']} at ${formatted['time']}',
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.primaryDark.withOpacity(0.6),
                           fontSize: 12,
@@ -580,14 +613,15 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
               child: Column(
                 children: [
                   if (transaction.razorpayPaymentId.isNotEmpty)
-                    _buildDetailRow('Payment ID', transaction.razorpayPaymentId),
+                    _buildDetailRow(l10n.paymentId, transaction.razorpayPaymentId, l10n),
 
-                  _buildDetailRow('Full Date', formatted['fullDate']!),
+                  _buildDetailRow(l10n.fullDate, formatted['fullDate']!, l10n),
 
                   if (transaction.comment.isNotEmpty)
                     _buildDetailRow(
-                      transaction.status.toLowerCase() == 'success' ? 'UTR Number' : 'Message',
+                      transaction.status.toLowerCase() == 'success' ? l10n.utrNumber : l10n.message,
                       transaction.comment,
+                      l10n,
                       isLast: true,
                     ),
                 ],
@@ -599,7 +633,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {bool isLast = false}) {
+  Widget _buildDetailRow(String label, String value, AppLocalizations l10n, {bool isLast = false}) {
     return Column(
       children: [
         Row(
@@ -687,6 +721,8 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   }
 
   Widget _buildErrorWidget() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -700,7 +736,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             ),
             const SizedBox(height: 20),
             Text(
-              'Failed to Load Transactions',
+              l10n.failedToLoadTransactions,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -708,7 +744,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             ),
             const SizedBox(height: 12),
             Text(
-              errorMessage ?? 'Something went wrong',
+              errorMessage ?? l10n.somethingWentWrong,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -721,7 +757,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             ElevatedButton.icon(
               onPressed: fetchUserDataAndTransactions,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(l10n.retry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryDark,
                 foregroundColor: Colors.white,
@@ -738,6 +774,8 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
   }
 
   Widget _buildEmptyWidget() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.all(40),
@@ -751,7 +789,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             ),
             const SizedBox(height: 20),
             Text(
-              'No Transactions Found',
+              l10n.noTransactionsFound,
               style: AppTextStyles.heading.copyWith(
                 color: AppColors.primaryDark,
                 fontSize: 20,
@@ -759,7 +797,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             ),
             const SizedBox(height: 12),
             Text(
-              'Your transaction history will appear here once you make your first transaction',
+              l10n.transactionHistoryDescription,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
@@ -772,7 +810,7 @@ class _TransactionPageState extends State<TransactionPage> with TickerProviderSt
             ElevatedButton.icon(
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.arrow_back_rounded),
-              label: const Text('Go Back'),
+              label: Text(l10n.goBack),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryDark,
                 foregroundColor: Colors.white,

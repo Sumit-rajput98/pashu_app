@@ -5,26 +5,29 @@ import 'package:pashu_app/core/shared_pref_helper.dart';
 import 'package:pashu_app/view/auth/profile_page.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/top_snacbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/unlock_counter_provider.dart';
 
 class AnimalDetailPage extends StatefulWidget {
   final AllPashuModel pashu;
   final double distance;
+  final VoidCallback? onBack;
 
   const AnimalDetailPage({
-    super.key,
     required this.pashu,
     required this.distance,
+    this.onBack,
   });
 
   @override
@@ -36,16 +39,62 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
+  void _shareAnimalDetails(AppLocalizations l10n) {
+    try {
+      // Gather animal information
+      final animalName = widget.pashu.animalname ?? l10n.animal;
+      final category = widget.pashu.animatCategory ?? l10n.category;
+      final price = widget.pashu.price ?? l10n.notSpecified;
+      final breed = widget.pashu.breed ?? l10n.unknown;
+      final age = widget.pashu.age ?? l10n.unknown;
+      final gender = widget.pashu.gender ?? l10n.unknown;
+      final location = widget.pashu.address ?? l10n.notSpecified;
+      final ownerName = widget.pashu.username ?? l10n.unknown;
+
+      // Create formatted share text
+      final shareText = '''
+🐄 ${l10n.checkOutThisAnimal}: $animalName
+
+📋 ${l10n.details}:
+• ${l10n.category}: $category
+• ${l10n.breed}: $breed  
+• ${l10n.age}: $age ${l10n.years}
+• ${l10n.gender}: $gender
+• 💰 ${l10n.priceA}: ₹$price
+• 📍 ${l10n.location}: $location
+• 👤 ${l10n.owner}: $ownerName
+
+📱 ${l10n.downloadPashuParivarApp}
+    '''.trim();
+
+      // Share with subject
+      Share.share(
+        shareText,
+        subject: '${l10n.animalListing}: $animalName',
+      );
+
+      // Show confirmation snackbar
+
+    } catch (e) {
+      // Handle any sharing errors
+      TopSnackBar.show(
+        context,
+        message: l10n.sharingFailed,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        icon: Icons.error,
+      );
+      print('Share error: $e');
+    }
+  }
+
+
   String? currentUserId;
   bool isContactUnlocked = false;
 
   late final PageController _pageController;
   Timer? _autoScrollTimer;
   int _currentPage = 0;
-
-
-
-
 
   @override
   void initState() {
@@ -109,12 +158,6 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: CustomAppBar(
-        onProfileTap: ()async{
-          String? phoneNum  = await SharedPrefHelper.getPhoneNumber();
-          Navigator.push(context,MaterialPageRoute(builder: (context)=>ProfilePage(phoneNumber: phoneNum ?? '')));
-        },
-      ),// Light grayish-white background
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: CustomScrollView(
@@ -130,7 +173,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                     _buildOwnerLocationSection(l10n),
                     _buildDescriptionSection(l10n),
                     _buildContactSection(l10n),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: kBottomNavigationBarHeight + 20),
                   ],
                 ),
               ),
@@ -157,7 +200,6 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
       automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       foregroundColor: AppColors.primaryDark,
-
       actions: [
         IconButton(
           icon: Container(
@@ -212,7 +254,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
             ),
           ),
           onPressed: () {
-            // Share functionality
+              _shareAnimalDetails(l10n);
           },
         ),
         const SizedBox(width: 16),
@@ -524,7 +566,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage> with TickerProvider
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.price,
+                      l10n.priceA,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.primaryDark.withOpacity(0.7),
                         fontSize: 14,

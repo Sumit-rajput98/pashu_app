@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../core/navigation_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
+
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/add_to_wishlist_view_model.dart';
 import '../../view_model/pashuVM/all_pashu_view_model.dart';
@@ -472,15 +473,7 @@ class _BuyPageState extends State<BuyPage> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AnimalDetailPage(
-                  pashu: pashu,
-                  distance: calculatedDistance,
-                ),
-              ),
-            );
+            Provider.of<NavigationController>(context, listen: false).openAnimalDetail(pashu, calculatedDistance);
           },
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -710,15 +703,8 @@ class _BuyPageState extends State<BuyPage> {
                                   Expanded(
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AnimalDetailPage(
-                                              pashu: pashu,
-                                              distance: calculatedDistance,
-                                            ),
-                                          ),
-                                        );
+                                        Provider.of<NavigationController>(context, listen: false)
+                                            .openAnimalDetail(pashu, calculatedDistance);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.primaryDark,

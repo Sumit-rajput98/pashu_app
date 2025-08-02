@@ -61,26 +61,33 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final hasBottomNav = bottomPadding > 0 ||
+        MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: CustomScrollView(
-          slivers: [
-            _buildSliverAppBar(l10n),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  _buildRaceInfo(l10n),
-                  _buildLiveStatus(l10n),
-                  _buildRaceDescription(l10n),
-                  _buildVideoSection(l10n),
-                  const SizedBox(height: 30),
-                ],
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
+      body: SafeArea(
+        bottom: false, // Don't apply safe area to bottom, we'll handle it manually
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: CustomScrollView(
+            slivers: [
+              _buildSliverAppBar(l10n),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    _buildRaceInfo(l10n),
+                    _buildLiveStatus(l10n),
+                    _buildRaceDescription(l10n),
+                    _buildVideoSection(l10n),
+                    // Add bottom padding to account for bottom navigation bar
+                    SizedBox(height: hasBottomNav ? 100 : 30),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -91,42 +98,9 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
       expandedHeight: 300,
       floating: false,
       pinned: true,
-      backgroundColor: AppColors.primaryDark,
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      actions: [
-        IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.share_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          onPressed: () {
-            // Share functionality
-          },
-        ),
-        const SizedBox(width: 16),
-      ],
+      backgroundColor: Colors.white,
+      foregroundColor: AppColors.primaryDark,
+
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
@@ -137,10 +111,10 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               imageUrl: 'https://pashuparivar.com/uploads/${widget.category.categoryImage}',
               fit: BoxFit.cover,
               placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: AppColors.primaryDark.withOpacity(0.3),
-                highlightColor: AppColors.primaryDark.withOpacity(0.5),
+                baseColor: AppColors.lightSage.withOpacity(0.1),
+                highlightColor: AppColors.lightSage.withOpacity(0.2),
                 child: Container(
-                  color: AppColors.primaryDark.withOpacity(0.3),
+                  color: AppColors.lightSage.withOpacity(0.1),
                 ),
               ),
               errorWidget: (context, url, error) => Container(
@@ -149,15 +123,15 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.primaryDark.withOpacity(0.8),
-                      AppColors.primaryDark,
+                      AppColors.lightSage.withOpacity(0.2),
+                      AppColors.lightSage.withOpacity(0.1),
                     ],
                   ),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.sports_rounded,
-                    color: Colors.white,
+                    color: AppColors.primaryDark,
                     size: 80,
                   ),
                 ),
@@ -169,21 +143,21 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppColors.primaryDark.withOpacity(0.8),
-                    AppColors.primaryDark,
+                    AppColors.lightSage.withOpacity(0.2),
+                    AppColors.lightSage.withOpacity(0.1),
                   ],
                 ),
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
                   Icons.sports_rounded,
-                  color: Colors.white,
+                  color: AppColors.primaryDark,
                   size: 80,
                 ),
               ),
             ),
 
-            // Gradient Overlay
+            // Gradient Overlay for better text visibility
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -191,7 +165,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withOpacity(0.6),
                   ],
                 ),
               ),
@@ -208,7 +182,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.red.withOpacity(0.5),
+                      color: Colors.red.withOpacity(0.4),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -254,6 +228,13 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                       color: Colors.white,
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -264,6 +245,13 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 16,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.7),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -288,14 +276,22 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.lightSage.withOpacity(0.15),
-              AppColors.lightSage.withOpacity(0.08),
+              AppColors.lightSage.withOpacity(0.1),
+              AppColors.lightSage.withOpacity(0.05),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.lightSage.withOpacity(0.3),
+            color: AppColors.primaryDark,
+            width: 2,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryDark.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,12 +301,20 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.lightSage.withOpacity(0.2),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primaryDark.withOpacity(0.15),
+                        AppColors.primaryDark.withOpacity(0.08),
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                   ),
                   child: Icon(
                     Icons.info_outline_rounded,
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     size: 24,
                   ),
                 ),
@@ -319,7 +323,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                   child: Text(
                     l10n.raceInformation,
                     style: AppTextStyles.heading.copyWith(
-                      color: AppColors.lightSage,
+                      color: AppColors.primaryDark,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -354,7 +358,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
             child: Text(
               label,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.lightSage.withOpacity(0.8),
+                color: AppColors.primaryDark.withOpacity(0.7),
                 fontSize: 14,
               ),
             ),
@@ -364,7 +368,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
             child: Text(
               value,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: valueColor ?? AppColors.lightSage,
+                color: valueColor ?? AppColors.primaryDark,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -386,22 +390,31 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.green.withOpacity(0.15),
-            Colors.green.withOpacity(0.08),
+            Colors.green.withOpacity(0.1),
+            Colors.green.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.green.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.2),
+              color: Colors.green.withOpacity(0.1),
               shape: BoxShape.circle,
+              border: Border.all(color: Colors.green.withOpacity(0.3)),
             ),
             child: const Icon(
               Icons.play_circle_filled_rounded,
@@ -430,7 +443,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Text(
                   l10n.watchExcitingCompetition,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.lightSage.withOpacity(0.8),
+                    color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 14,
                   ),
                   maxLines: 2,
@@ -459,8 +472,16 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.2),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -470,12 +491,20 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSage.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.primaryDark.withOpacity(0.15),
+                      AppColors.primaryDark.withOpacity(0.08),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                 ),
                 child: Icon(
                   Icons.description_rounded,
-                  color: AppColors.lightSage,
+                  color: AppColors.primaryDark,
                   size: 20,
                 ),
               ),
@@ -484,7 +513,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 child: Text(
                   l10n.aboutThisRace,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -500,7 +529,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
           Text(
             widget.category.categoryDetail ?? l10n.defaultRaceDescription,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.9),
+              color: AppColors.primaryDark.withOpacity(0.8),
               fontSize: 14,
               height: 1.6,
             ),
@@ -521,14 +550,22 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.red.withOpacity(0.15),
-            Colors.red.withOpacity(0.08),
+            Colors.red.withOpacity(0.1),
+            Colors.red.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.red.withOpacity(0.3),
+          color: AppColors.primaryDark,
+          width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,8 +575,9 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.2),
+                  color: Colors.red.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
                 child: const Icon(
                   Icons.play_circle_rounded,
@@ -552,7 +590,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 child: Text(
                   l10n.liveStream,
                   style: AppTextStyles.heading.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -570,10 +608,17 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
             width: double.infinity,
             height: 200,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.grey.withOpacity(0.2),
+                  Colors.grey.withOpacity(0.1),
+                ],
+              ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.red.withOpacity(0.3),
+                color: AppColors.primaryDark.withOpacity(0.3),
               ),
             ),
             child: Column(
@@ -582,8 +627,9 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.2),
+                    color: Colors.red.withOpacity(0.1),
                     shape: BoxShape.circle,
+                    border: Border.all(color: Colors.red.withOpacity(0.3)),
                   ),
                   child: const Icon(
                     Icons.videocam_off_rounded,
@@ -595,7 +641,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Text(
                   l10n.liveStreamComingSoon,
                   style: AppTextStyles.heading.copyWith(
-                    color: Colors.white,
+                    color: AppColors.primaryDark,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
@@ -604,7 +650,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Text(
                   l10n.youtubeLinksAvailable,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: AppColors.primaryDark.withOpacity(0.7),
                     fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
@@ -625,7 +671,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Colors.blue.withOpacity(0.2),
+                color: Colors.blue.withOpacity(0.3),
               ),
             ),
             child: Row(
@@ -663,10 +709,17 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.lightSage.withOpacity(0.05),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.lightSage.withOpacity(0.1),
+            AppColors.lightSage.withOpacity(0.05),
+          ],
+        ),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: AppColors.lightSage.withOpacity(0.1),
+          color: AppColors.primaryDark.withOpacity(0.2),
         ),
       ),
       child: Row(
@@ -675,8 +728,9 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.purple.withOpacity(0.2),
+              color: Colors.purple.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.purple.withOpacity(0.3)),
             ),
             child: Center(
               child: Text(
@@ -698,7 +752,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Text(
                   raceNames[index],
                   style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,
@@ -708,7 +762,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
                 Text(
                   raceTimes[index],
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.lightSage.withOpacity(0.7),
+                    color: AppColors.primaryDark.withOpacity(0.6),
                     fontSize: 12,
                   ),
                   maxLines: 1,
@@ -720,7 +774,7 @@ class _RaceDetailPageState extends State<RaceDetailPage> with TickerProviderStat
 
           Icon(
             Icons.arrow_forward_ios_rounded,
-            color: AppColors.lightSage.withOpacity(0.5),
+            color: AppColors.primaryDark.withOpacity(0.5),
             size: 16,
           ),
         ],

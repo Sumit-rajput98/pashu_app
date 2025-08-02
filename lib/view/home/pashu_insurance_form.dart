@@ -21,8 +21,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
   // Form Controllers
   final TextEditingController _ownerNameController = TextEditingController();
   final TextEditingController _ownerAddressController = TextEditingController();
-  final TextEditingController _contactNumberController =
-      TextEditingController();
+  final TextEditingController _contactNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _animalTypeController = TextEditingController();
   final TextEditingController _animalBreedController = TextEditingController();
@@ -30,30 +29,64 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
   final TextEditingController _animalColorController = TextEditingController();
   final TextEditingController _animalWeightController = TextEditingController();
   final TextEditingController _healthStatusController = TextEditingController();
-  final TextEditingController _additionalRemarksController =
-      TextEditingController();
+  final TextEditingController _additionalRemarksController = TextEditingController();
 
   // Dropdown values
   String? _selectedAnimalType;
   String? _selectedAnimalBreed;
   String? _selectedHealthStatus;
 
-  // Animal types and breeds
-  final Map<String, List<String>> _animalBreeds = {
-    'Cow': ['Holstein', 'Jersey', 'Gir', 'Sahiwal', 'Red Sindhi', 'Tharparkar'],
-    'Buffalo': ['Murrah', 'Nili-Ravi', 'Surti', 'Jaffarabadi', 'Mehsana'],
-    'Goat': ['Beetal', 'Jamunapari', 'Barbari', 'Sirohi', 'Marwari'],
-    'Sheep': ['Garole', 'Nellore', 'Rampur Bushair', 'Chokla', 'Marwari'],
-    'Horse': ['Marwari', 'Kathiawari', 'Manipuri', 'Spiti', 'Zanskari'],
-    'Other': ['Mixed Breed', 'Local Breed', 'Cross Breed'],
+  // Animal types and breeds - now using localized labels
+  Map<String, List<String>> get _animalBreeds => {
+    AppLocalizations.of(context)!.cow: [
+      AppLocalizations.of(context)!.holstein,
+      AppLocalizations.of(context)!.jersey,
+      AppLocalizations.of(context)!.gir,
+      AppLocalizations.of(context)!.sahiwal,
+      AppLocalizations.of(context)!.redSindhi,
+      AppLocalizations.of(context)!.tharparkar
+    ],
+    AppLocalizations.of(context)!.buffalo: [
+      AppLocalizations.of(context)!.murrah,
+      AppLocalizations.of(context)!.niliRavi,
+      AppLocalizations.of(context)!.surti,
+      AppLocalizations.of(context)!.jaffarabadi,
+      AppLocalizations.of(context)!.mehsana
+    ],
+    AppLocalizations.of(context)!.goat: [
+      AppLocalizations.of(context)!.beetal,
+      AppLocalizations.of(context)!.jamunapari,
+      AppLocalizations.of(context)!.barbari,
+      AppLocalizations.of(context)!.sirohi,
+      AppLocalizations.of(context)!.marwari
+    ],
+    AppLocalizations.of(context)!.sheep: [
+      AppLocalizations.of(context)!.garole,
+      AppLocalizations.of(context)!.nellore,
+      AppLocalizations.of(context)!.rampurBushair,
+      AppLocalizations.of(context)!.chokla,
+      AppLocalizations.of(context)!.marwariSheep
+    ],
+    AppLocalizations.of(context)!.horse: [
+      AppLocalizations.of(context)!.marwariHorse,
+      AppLocalizations.of(context)!.kathiawari,
+      AppLocalizations.of(context)!.manipuri,
+      AppLocalizations.of(context)!.spiti,
+      AppLocalizations.of(context)!.zanskari
+    ],
+    AppLocalizations.of(context)!.other: [
+      AppLocalizations.of(context)!.mixedBreed,
+      AppLocalizations.of(context)!.localBreed,
+      AppLocalizations.of(context)!.crossBreed
+    ],
   };
 
-  final List<String> _healthStatusOptions = [
-    'Excellent',
-    'Good',
-    'Fair',
-    'Needs Medical Attention',
-    'Under Treatment',
+  List<String> get _healthStatusOptions => [
+    AppLocalizations.of(context)!.excellent,
+    AppLocalizations.of(context)!.good,
+    AppLocalizations.of(context)!.fair,
+    AppLocalizations.of(context)!.needsMedicalAttention,
+    AppLocalizations.of(context)!.underTreatment,
   ];
 
   @override
@@ -74,9 +107,11 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      appBar: _buildAppBar(),
+      backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
+
       body: Consumer<AnimalInsuranceViewModel>(
         builder: (context, viewModel, child) {
           return SingleChildScrollView(
@@ -84,10 +119,10 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  _buildHeader(),
+                  _buildHeader(l10n),
                   const SizedBox(height: 24),
-                  _buildInsuranceForm(viewModel),
-                  const SizedBox(height: 30),
+                  _buildInsuranceForm(viewModel, l10n),
+                  const SizedBox(height: kBottomNavigationBarHeight + 20),
                 ],
               ),
             ),
@@ -97,20 +132,21 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
     return AppBar(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.2),
+            color: AppColors.primaryDark.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.2)),
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.white,
+            color: AppColors.primaryDark,
             size: 20,
           ),
         ),
@@ -122,11 +158,11 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              AppLocalizations.of(context)!.insuranceFormTitle,
+              l10n.insuranceFormTitle,
               style: AppTextStyles.heading.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.lightSage,
+                color: AppColors.primaryDark,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -137,7 +173,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -145,20 +181,28 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.blue.withOpacity(0.15),
-            Colors.blue.withOpacity(0.08),
+            Colors.blue.withOpacity(0.1),
+            Colors.blue.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.2),
+              color: Colors.blue.withOpacity(0.1),
               shape: BoxShape.circle,
+              border: Border.all(color: Colors.blue.withOpacity(0.3)),
             ),
             child: const Icon(
               Icons.security_rounded,
@@ -170,9 +214,9 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           const SizedBox(height: 16),
 
           Text(
-            AppLocalizations.of(context)!.insuranceApplicationHeader,
+            l10n.insuranceApplicationHeader,
             style: AppTextStyles.heading.copyWith(
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
@@ -184,9 +228,9 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           const SizedBox(height: 8),
 
           Text(
-            AppLocalizations.of(context)!.insuranceApplicationSubheader,
+            l10n.insuranceApplicationSubheader,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               height: 1.4,
             ),
@@ -199,7 +243,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     );
   }
 
-  Widget _buildInsuranceForm(AnimalInsuranceViewModel viewModel) {
+  Widget _buildInsuranceForm(AnimalInsuranceViewModel viewModel, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -212,7 +256,14 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Form(
         key: _formKey,
@@ -225,21 +276,29 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.lightSage.withOpacity(0.2),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primaryDark.withOpacity(0.15),
+                        AppColors.primaryDark.withOpacity(0.08),
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
                   ),
                   child: Icon(
                     Icons.edit_document,
-                    color: AppColors.lightSage,
+                    color: AppColors.primaryDark,
                     size: 24,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    AppLocalizations.of(context)!.insuranceApplicationDetails,
+                    l10n.insuranceApplicationDetails,
                     style: AppTextStyles.heading.copyWith(
-                      color: AppColors.lightSage,
+                      color: AppColors.primaryDark,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -253,16 +312,17 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 24),
 
             // Owner Information Section
-            _buildSectionHeader(AppLocalizations.of(context)!.ownerInformation),
+            _buildSectionHeader(l10n.ownerInformation),
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.ownerName,
+              label: l10n.ownerName,
               controller: _ownerNameController,
               icon: Icons.person_rounded,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.ownerNameRequired;
+                  return l10n.ownerNameRequired;
                 }
                 return null;
               },
@@ -271,13 +331,14 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.ownerAddress,
+              label: l10n.ownerAddress,
               controller: _ownerAddressController,
               icon: Icons.location_on_rounded,
               maxLines: 3,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.ownerAddressRequired;
+                  return l10n.ownerAddressRequired;
                 }
                 return null;
               },
@@ -286,16 +347,17 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.contactNumber,
+              label: l10n.contactNumber,
               controller: _contactNumberController,
               icon: Icons.phone_rounded,
               keyboardType: TextInputType.phone,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.contactNumberRequired;
+                  return l10n.contactNumberRequired;
                 }
                 if (value.trim().length < 10) {
-                  return AppLocalizations.of(context)!.contactNumberInvalid;
+                  return l10n.contactNumberInvalid;
                 }
                 return null;
               },
@@ -304,18 +366,17 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.emailAddress,
+              label: l10n.emailAddress,
               controller: _emailController,
               icon: Icons.email_rounded,
               keyboardType: TextInputType.emailAddress,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.emailAddressRequired;
+                  return l10n.emailAddressRequired;
                 }
-                if (!RegExp(
-                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                ).hasMatch(value)) {
-                  return AppLocalizations.of(context)!.emailAddressInvalid;
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                  return l10n.emailAddressInvalid;
                 }
                 return null;
               },
@@ -324,13 +385,11 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 24),
 
             // Animal Information Section
-            _buildSectionHeader(
-              AppLocalizations.of(context)!.animalInformation,
-            ),
+            _buildSectionHeader(l10n.animalInformation),
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: AppLocalizations.of(context)!.animalType,
+              label: l10n.animalType,
               value: _selectedAnimalType,
               items: _animalBreeds.keys.toList(),
               onChanged: (value) {
@@ -340,9 +399,10 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
                 });
               },
               icon: Icons.pets_rounded,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return AppLocalizations.of(context)!.animalTypeRequired;
+                  return l10n.animalTypeRequired;
                 }
                 return null;
               },
@@ -351,21 +411,19 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: AppLocalizations.of(context)!.animalBreed,
+              label: l10n.animalBreed,
               value: _selectedAnimalBreed,
-              items:
-                  _selectedAnimalType != null
-                      ? _animalBreeds[_selectedAnimalType!] ?? []
-                      : [],
+              items: _selectedAnimalType != null ? _animalBreeds[_selectedAnimalType!] ?? [] : [],
               onChanged: (value) {
                 setState(() {
                   _selectedAnimalBreed = value;
                 });
               },
               icon: Icons.category_rounded,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return AppLocalizations.of(context)!.animalBreedRequired;
+                  return l10n.animalBreedRequired;
                 }
                 return null;
               },
@@ -374,17 +432,18 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.animalAge,
+              label: l10n.animalAge,
               controller: _animalAgeController,
               icon: Icons.cake_rounded,
               keyboardType: TextInputType.number,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.animalAgeRequired;
+                  return l10n.animalAgeRequired;
                 }
                 final age = int.tryParse(value);
                 if (age == null || age <= 0) {
-                  return AppLocalizations.of(context)!.animalAgeInvalid;
+                  return l10n.animalAgeInvalid;
                 }
                 return null;
               },
@@ -393,12 +452,13 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.animalColor,
+              label: l10n.animalColor,
               controller: _animalColorController,
               icon: Icons.color_lens_rounded,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.animalColorRequired;
+                  return l10n.animalColorRequired;
                 }
                 return null;
               },
@@ -407,17 +467,18 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.animalWeight,
+              label: l10n.animalWeight,
               controller: _animalWeightController,
               icon: Icons.monitor_weight_rounded,
               keyboardType: TextInputType.number,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.animalWeightRequired;
+                  return l10n.animalWeightRequired;
                 }
                 final weight = double.tryParse(value);
                 if (weight == null || weight <= 0) {
-                  return AppLocalizations.of(context)!.animalWeightInvalid;
+                  return l10n.animalWeightInvalid;
                 }
                 return null;
               },
@@ -426,7 +487,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: AppLocalizations.of(context)!.healthStatus,
+              label: l10n.healthStatus,
               value: _selectedHealthStatus,
               items: _healthStatusOptions,
               onChanged: (value) {
@@ -435,9 +496,10 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
                 });
               },
               icon: Icons.health_and_safety_rounded,
+              l10n: l10n,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return AppLocalizations.of(context)!.healthStatusRequired;
+                  return l10n.healthStatusRequired;
                 }
                 return null;
               },
@@ -446,16 +508,15 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
             const SizedBox(height: 24),
 
             // Additional Information Section
-            _buildSectionHeader(
-              AppLocalizations.of(context)!.additionalInformation,
-            ),
+            _buildSectionHeader(l10n.additionalInformation),
             const SizedBox(height: 16),
 
             _buildFormField(
-              label: AppLocalizations.of(context)!.additionalRemarks,
+              label: l10n.additionalRemarks,
               controller: _additionalRemarksController,
               icon: Icons.note_add_rounded,
               maxLines: 4,
+              l10n: l10n,
               validator: null, // Optional field
             ),
 
@@ -466,8 +527,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed:
-                    viewModel.isLoading ? null : () => _submitForm(viewModel),
+                onPressed: viewModel.isLoading ? null : () => _submitForm(viewModel, l10n),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryDark,
                   foregroundColor: Colors.white,
@@ -476,38 +536,37 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child:
-                    viewModel.isLoading
-                        ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              AppLocalizations.of(context)!.submittingForm,
-                              style: AppTextStyles.bodyLarge.copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: AppColors.lightSage,
-                              ),
-                            ),
-                          ],
-                        )
-                        : Text(
-                          AppLocalizations.of(context)!.submitForm,
-                          style: AppTextStyles.bodyLarge.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: AppColors.lightSage,
-                          ),
-                        ),
+                child: viewModel.isLoading
+                    ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      l10n.submittingForm,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                )
+                    : Text(
+                  l10n.submitForm,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
 
@@ -519,7 +578,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
               decoration: BoxDecoration(
                 color: Colors.blue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.withOpacity(0.2)),
+                border: Border.all(color: Colors.blue.withOpacity(0.3)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -532,7 +591,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      AppLocalizations.of(context)!.insuranceTermsNote,
+                      l10n.insuranceTermsNote,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.blue,
                         fontSize: 11,
@@ -555,14 +614,21 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
-        color: AppColors.lightSage.withOpacity(0.1),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primaryDark.withOpacity(0.1),
+            AppColors.primaryDark.withOpacity(0.05),
+          ],
+        ),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
       ),
       child: Text(
         title,
         style: AppTextStyles.heading.copyWith(
-          color: AppColors.lightSage,
+          color: AppColors.primaryDark,
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
@@ -576,6 +642,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     required String label,
     required TextEditingController controller,
     required IconData icon,
+    required AppLocalizations l10n,
     TextInputType? keyboardType,
     int maxLines = 1,
     String? Function(String?)? validator,
@@ -587,12 +654,15 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           text: TextSpan(
             text: label,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
-            children: const [
-              TextSpan(text: ' *', style: TextStyle(color: Colors.red)),
+            children: [
+              TextSpan(
+                text: ' *',
+                style: TextStyle(color: Colors.red),
+              ),
             ],
           ),
           maxLines: 1,
@@ -601,22 +671,29 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryDark.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: TextFormField(
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
             style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
               fontSize: 16,
             ),
             decoration: InputDecoration(
               prefixIcon: Icon(
                 icon,
-                color: AppColors.lightSage.withOpacity(0.6),
+                color: AppColors.primaryDark.withOpacity(0.6),
                 size: 20,
               ),
               border: InputBorder.none,
@@ -638,6 +715,7 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     required List<String> items,
     required void Function(String?)? onChanged,
     required IconData icon,
+    required AppLocalizations l10n,
     String? Function(String?)? validator,
   }) {
     return Column(
@@ -647,12 +725,15 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           text: TextSpan(
             text: label,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.lightSage.withOpacity(0.8),
+              color: AppColors.primaryDark.withOpacity(0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
-            children: const [
-              TextSpan(text: ' *', style: TextStyle(color: Colors.red)),
+            children: [
+              TextSpan(
+                text: ' *',
+                style: TextStyle(color: Colors.red),
+              ),
             ],
           ),
           maxLines: 1,
@@ -661,34 +742,40 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.lightSage.withOpacity(0.1),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.lightSage.withOpacity(0.2)),
+            border: Border.all(color: AppColors.primaryDark.withOpacity(0.3)),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryDark.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: DropdownButtonFormField<String>(
             value: value,
-            items:
-                items
-                    .map(
-                      (item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item,
-                          style: AppTextStyles.bodyLarge.copyWith(
-                            color: AppColors.lightSage,
-                            fontSize: 16,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    )
-                    .toList(),
+            items: items
+                .map(
+                  (item) => DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    color: AppColors.primaryDark,
+                    fontSize: 16,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            )
+                .toList(),
             onChanged: onChanged,
             decoration: InputDecoration(
               prefixIcon: Icon(
                 icon,
-                color: AppColors.lightSage.withOpacity(0.6),
+                color: AppColors.primaryDark.withOpacity(0.6),
                 size: 20,
               ),
               border: InputBorder.none,
@@ -698,9 +785,9 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
               ),
             ),
             validator: validator,
-            dropdownColor: AppColors.primaryDark,
+            dropdownColor: Colors.white,
             style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.lightSage,
+              color: AppColors.primaryDark,
               fontSize: 16,
             ),
           ),
@@ -709,12 +796,13 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
     );
   }
 
-  void _submitForm(AnimalInsuranceViewModel viewModel) {
+  void _submitForm(AnimalInsuranceViewModel viewModel, AppLocalizations l10n) {
     // Validate form
     if (!_formKey.currentState!.validate()) {
       _showTopSnackBar(
-        AppLocalizations.of(context)!.allFieldsRequired,
+        l10n.allFieldsRequired,
         Colors.red,
+        l10n,
       );
       return;
     }
@@ -745,12 +833,12 @@ class _PashuInsuranceFormPageState extends State<PashuInsuranceFormPage> {
           ),
         );
       } else if (viewModel.errorMessage != null) {
-        _showTopSnackBar(viewModel.errorMessage!, Colors.red);
+        _showTopSnackBar(viewModel.errorMessage!, Colors.red, l10n);
       }
     });
   }
 
-  void _showTopSnackBar(String message, Color backgroundColor) {
+  void _showTopSnackBar(String message, Color backgroundColor, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

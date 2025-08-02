@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 
 class TermsPrivacyPage extends StatefulWidget {
-  const TermsPrivacyPage({super.key});
+  final VoidCallback? onBack;
+  const TermsPrivacyPage({super.key, this.onBack});
 
   @override
   State<TermsPrivacyPage> createState() => _TermsPrivacyPageState();
@@ -44,7 +47,6 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA), // Light grayish-white background
-      appBar: CustomAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Column(
@@ -65,6 +67,8 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
   }
 
   PreferredSizeWidget _buildAppBar() {
+    final l10n = AppLocalizations.of(context)!;
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -89,7 +93,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
           const AppLogo(size: 40),
           const SizedBox(width: 12),
           Text(
-            'Terms & Privacy',
+            l10n.termsAndPrivacy,
             style: AppTextStyles.heading.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -102,6 +106,8 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
   }
 
   Widget _buildToggleSection() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(4),
@@ -164,7 +170,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Terms of Service',
+                      l10n.termsOfService,
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: _showTerms ? Colors.white : AppColors.primaryDark,
                         fontWeight: FontWeight.w600,
@@ -218,7 +224,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Privacy Policy',
+                      l10n.privacyPolicy,
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: !_showTerms ? Colors.white : AppColors.primaryDark,
                         fontWeight: FontWeight.w600,
@@ -236,6 +242,8 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
   }
 
   Widget _buildTermsContent() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -292,7 +300,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Terms of Service',
+                      l10n.termsOfService,
                       style: AppTextStyles.heading.copyWith(
                         color: AppColors.primaryDark,
                         fontSize: 20,
@@ -300,7 +308,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                       ),
                     ),
                     Text(
-                      'Last updated: July 27, 2025',
+                      l10n.lastUpdated,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.primaryDark.withOpacity(0.6),
                         fontSize: 12,
@@ -316,64 +324,64 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
 
           // Terms Content
           _buildSection(
-            'Acceptance of Terms',
-            'By accessing and using Pashu Parivar, you accept and agree to be bound by the terms and provision of this agreement.',
+            l10n.acceptanceOfTerms,
+            l10n.acceptanceOfTermsContent,
           ),
 
           _buildSection(
-            'Use License',
-            'Permission is granted to temporarily download one copy of Pashu Parivar per device for personal, non-commercial transitory viewing only.',
+            l10n.useLicense,
+            l10n.useLicenseContent,
           ),
 
           _buildSection(
-            'User Responsibilities',
-            '• Provide accurate information when creating listings\n'
-                '• Respect other users and maintain professional conduct\n'
-                '• Comply with all applicable laws and regulations\n'
-                '• Not misuse the platform for fraudulent activities',
+            l10n.userResponsibilities,
+            l10n.userResponsibilitiesContent,
           ),
 
           _buildSection(
-            'Platform Services',
-            'Pashu Parivar provides a platform for livestock trading, connecting buyers and sellers. We facilitate transactions but are not directly involved in the buying/selling process.',
+            l10n.platformServices,
+            l10n.platformServicesContent,
           ),
 
           _buildSection(
-            'Account Security',
-            'Users are responsible for maintaining the confidentiality of their account information and password. Notify us immediately of any unauthorized use.',
+            l10n.accountSecurity,
+            l10n.accountSecurityContent,
           ),
 
           _buildSection(
-            'Payment Terms',
-            'All payments for premium services are processed securely. Subscription fees are non-refundable unless specified otherwise.',
+            l10n.paymentTerms,
+            l10n.paymentTermsContent,
           ),
 
           _buildSection(
-            'Content Guidelines',
-            'All content uploaded must be appropriate, accurate, and comply with our community guidelines. We reserve the right to remove inappropriate content.',
+            l10n.contentGuidelines,
+            l10n.contentGuidelinesContent,
           ),
 
           _buildSection(
-            'Limitation of Liability',
-            'Pashu Parivar shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service.',
+            l10n.limitationOfLiability,
+            l10n.limitationOfLiabilityContent,
           ),
 
           _buildSection(
-            'Modifications',
-            'We reserve the right to modify these terms at any time. Users will be notified of significant changes.',
+            l10n.modifications,
+            l10n.modificationsContent,
           ),
 
           _buildSection(
-            'Contact Information',
-            'For questions about these Terms of Service, please contact us at support@pashuparivar.com',
+            l10n.contactInformation,
+            l10n.contactInformationContent,
             isLast: true,
           ),
+          SizedBox(height: kBottomNavigationBarHeight+30,)
         ],
       ),
     );
   }
 
   Widget _buildPrivacyContent() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -430,7 +438,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Privacy Policy',
+                      l10n.privacyPolicy,
                       style: AppTextStyles.heading.copyWith(
                         color: AppColors.primaryDark,
                         fontSize: 20,
@@ -438,7 +446,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                       ),
                     ),
                     Text(
-                      'Last updated: July 27, 2025',
+                      l10n.lastUpdated,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.primaryDark.withOpacity(0.6),
                         fontSize: 12,
@@ -454,75 +462,58 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
 
           // Privacy Content
           _buildSection(
-            'Information We Collect',
-            '• Personal information: Name, phone number, email address\n'
-                '• Profile information: Address, preferences, usage data\n'
-                '• Device information: IP address, browser type, operating system\n'
-                '• Usage data: App interactions, features used, session duration',
+            l10n.informationWeCollect,
+            l10n.informationWeCollectContent,
           ),
 
           _buildSection(
-            'How We Use Your Information',
-            'We use collected information to:\n'
-                '• Provide and maintain our services\n'
-                '• Process transactions and send notifications\n'
-                '• Improve user experience and app functionality\n'
-                '• Communicate with you about updates and offers',
+            l10n.howWeUseYourInformation,
+            l10n.howWeUseYourInformationContent,
           ),
 
           _buildSection(
-            'Information Sharing',
-            'We may share your information:\n'
-                '• With other users (profile information in listings)\n'
-                '• With service providers who assist our operations\n'
-                '• When required by law or to protect our rights\n'
-                '• With your consent for specific purposes',
+            l10n.informationSharing,
+            l10n.informationSharingContent,
           ),
 
           _buildSection(
-            'Data Security',
-            'We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
+            l10n.dataSecurity,
+            l10n.dataSecurityContent,
           ),
 
           _buildSection(
-            'Data Retention',
-            'We retain your personal information only as long as necessary for the purposes outlined in this policy or as required by law.',
+            l10n.dataRetention,
+            l10n.dataRetentionContent,
           ),
 
           _buildSection(
-            'Your Rights',
-            'You have the right to:\n'
-                '• Access your personal information\n'
-                '• Correct inaccurate information\n'
-                '• Delete your account and data\n'
-                '• Opt-out of marketing communications',
+            l10n.yourRights,
+            l10n.yourRightsContent,
           ),
 
           _buildSection(
-            'Cookies and Tracking',
-            'We use cookies and similar technologies to enhance your experience, analyze usage patterns, and provide personalized content.',
+            l10n.cookiesAndTracking,
+            l10n.cookiesAndTrackingContent,
           ),
 
           _buildSection(
-            'Third-Party Services',
-            'Our app may contain links to third-party services. We are not responsible for their privacy practices.',
+            l10n.thirdPartyServices,
+            l10n.thirdPartyServicesContent,
           ),
 
           _buildSection(
-            'Children\'s Privacy',
-            'Our service is not intended for children under 13. We do not knowingly collect personal information from children under 13.',
+            l10n.childrensPrivacy,
+            l10n.childrensPrivacyContent,
           ),
 
           _buildSection(
-            'Changes to This Policy',
-            'We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.',
+            l10n.changesToThisPolicy,
+            l10n.changesToThisPolicyContent,
           ),
 
           _buildSection(
-            'Contact Us',
-            'If you have questions about this Privacy Policy, please contact us at:\n'
-                'Email: privacy@pashuparivar.com\n'
-                'Phone: +91-XXXXXXXXXX',
+            l10n.contactUs,
+            l10n.privacyContactContent,
             isLast: true,
           ),
         ],
@@ -566,3 +557,4 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
     );
   }
 }
+
