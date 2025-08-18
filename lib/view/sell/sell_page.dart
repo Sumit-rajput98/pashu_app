@@ -6,9 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:pashu_app/view/sell/widget/custom_button.dart';
 import 'package:pashu_app/view/sell/widget/location_section.dart';
-import 'package:pashu_app/view/sell/widget/submit_and_pay_button.dart';
 import 'package:pashu_app/view/sell/widget/upload_pashu_images.dart';
 import 'package:provider/provider.dart';
 

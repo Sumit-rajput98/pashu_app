@@ -1,6 +1,5 @@
 
 
-import 'package:pashu_app/model/auth/request_otp_model.dart';
 
 import '../../../../model/pashu/add_to_wishlist_model.dart';
 import '../../constant/api_call.dart';

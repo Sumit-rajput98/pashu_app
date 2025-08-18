@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/navigation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/app_colors.dart';
-import '../../core/app_logo.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 

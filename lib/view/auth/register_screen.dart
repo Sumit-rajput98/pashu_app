@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pashu_app/view/auth/otp_screen_register.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
-import 'package:pashu_app/view_model/AuthVM/request_otp_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/app_colors.dart';
@@ -14,7 +13,6 @@ import '../../core/custom_text_field.dart';
 import '../../core/primary_button.dart';
 import '../../core/secandory_button.dart';
 import '../../core/top_snacbar.dart';
-import 'otp_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -28,7 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _referralController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _hasNavigated = false;
+  final bool _hasNavigated = false;
 
   @override
   void dispose() {

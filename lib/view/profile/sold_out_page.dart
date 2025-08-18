@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pashu_app/view/custom_app_bar.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';

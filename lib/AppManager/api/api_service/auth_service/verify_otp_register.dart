@@ -1,8 +1,4 @@
 
-
-import 'package:fpdart/fpdart.dart';
-import 'package:pashu_app/model/auth/request_otp_model.dart';
-import 'package:pashu_app/model/auth/verify_otp_model.dart';
 import 'package:pashu_app/model/auth/verify_register_model.dart';
 
 import '../../constant/api_call.dart';

@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:pashu_app/model/auth/request_otp_model.dart';
 import 'package:pashu_app/model/pashu/add_to_wishlist_model.dart';
 
 
-import '../../AppManager/api/api_service/auth_service/request_otp_service.dart';
 import '../../AppManager/api/api_service/pashu_service/add_to_wishlist_service.dart';
 
 class AddToWishlistViewModel with ChangeNotifier {

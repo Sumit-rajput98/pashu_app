@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pashu_app/view/custom_app_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
@@ -60,6 +59,7 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
                 ),
               ),
             ),
+            const SizedBox(height: kBottomNavigationBarHeight + 30),
           ],
         ),
       ),
@@ -373,8 +373,8 @@ class _TermsPrivacyPageState extends State<TermsPrivacyPage> with TickerProvider
             l10n.contactInformationContent,
             isLast: true,
           ),
-          SizedBox(height: kBottomNavigationBarHeight+30,)
         ],
+
       ),
     );
   }

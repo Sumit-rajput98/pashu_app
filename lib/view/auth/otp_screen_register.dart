@@ -2,9 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pashu_app/view/auth/login_screen.dart';
-import 'package:pashu_app/view/home/bottom_nav_bar.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
-import 'package:pashu_app/view_model/AuthVM/request_otp_view_model.dart';
 import 'package:pashu_app/view_model/AuthVM/verify_register_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -12,10 +10,8 @@ import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
 import '../../core/primary_button.dart';
 import '../../core/secandory_button.dart';
-import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../view_model/AuthVM/verify_otp_view_model.dart';
 
 class OtpScreenRegister extends StatefulWidget {
   final String phoneNumber;

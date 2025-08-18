@@ -46,52 +46,23 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
-    <key>NSCameraUsageDescription</key>
-    <string>This app requires camera access to take photos.</string>
-
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app requires access to your photo library to select images.</string>
-
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>This app needs permission to save photos to your library.</string>
-
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app requires microphone access to record videos.</string>
-
-    <key>UIFileSharingEnabled</key>
-    <true/>
-    <key>LSSupportsOpeningDocumentsInPlace</key>
-    <true/>
-
+	<!-- Photo Library (needed for uploading animal images) -->
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>This app requires access to your photo library to save and view downloaded files.</string>
+	<string>Pashu Parivar needs access to your photo library so you can upload animal images to your listings.</string>
 
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>This app needs permission to add files to your photo library.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Pashu Parivar needs permission to save downloaded animal photos and documents to your library.</string>
 
-    <key>NSAppleMusicUsageDescription</key>
-    <string>This app requires access to audio files.</string>
-
-	<!-- Location Permissions for Geolocator -->
+	<!-- Location (only when in use, no background tracking) -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to function properly when the app is in use.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to your location at all times for background location updates.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs your location permission for the best experience in both foreground and background.</string>
+	<string>Pashu Parivar uses your location to show nearby buyers, sellers, and animal services while you are using the app.</string>
 
-	<!-- 🌐 Allow HTTP requests (optional, only if you're using non-HTTPS URLs) -->
+	<!-- 🌐 Allow HTTP requests (only if you use non-HTTPS URLs) -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-
-	<!-- (Optional) Allow background location updates -->
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
 
 </dict>
 </plist>

@@ -11,7 +11,6 @@ import '../../core/primary_button.dart';
 import '../../core/secandory_button.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../core/top_snacbar.dart';
-import '../../view_model/AuthVM/request_otp_view_model.dart';
 import '../../view_model/AuthVM/verify_otp_view_model.dart';
 
 class OTPScreen extends StatefulWidget {

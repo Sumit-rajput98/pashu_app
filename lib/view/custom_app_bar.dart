@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pashu_app/core/app_colors.dart';
-import 'package:pashu_app/view/auth/profile_page.dart';
-import '../../core/language_helper.dart';
-import '../../core/locale_helper.dart';
-import '../../core/shared_pref_helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onProfileTap;
   final VoidCallback? onLanguageTap;
 
-  const CustomAppBar({Key? key, this.onProfileTap, this.onLanguageTap})
-      : super(key: key);
+  const CustomAppBar({super.key, this.onProfileTap, this.onLanguageTap});
 
   @override
   Size get preferredSize => const Size.fromHeight(70);

@@ -1,11 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:pashu_app/AppManager/api/api_service/auth_service/verify_otp_register.dart';
-import 'package:pashu_app/model/auth/verify_otp_model.dart';
 import 'package:pashu_app/model/auth/verify_register_model.dart';
 
 
-import '../../AppManager/api/api_service/auth_service/request_otp_service.dart';
-import '../../AppManager/api/api_service/auth_service/verify_otp_service.dart';
 
 class VerifyRegisterViewModel with ChangeNotifier {
   final VerifyOtpRegisterService _service = VerifyOtpRegisterService();

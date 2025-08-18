@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pashu_app/view/buy/animal_detail_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';

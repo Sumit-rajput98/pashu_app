@@ -6,7 +6,6 @@ import '../../core/navigation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../view_model/pashuVM/get_invest_view_model.dart';
-import 'my_investment_page.dart';
 
 class InvestPage extends StatefulWidget {
   const InvestPage({super.key});

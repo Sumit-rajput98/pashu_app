@@ -4,7 +4,6 @@ import '../../core/navigation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../model/invest/invest_model.dart';
-import 'invest_details_page.dart';
 
 class InvestProjectItem extends StatelessWidget {
   final InvestModel project;

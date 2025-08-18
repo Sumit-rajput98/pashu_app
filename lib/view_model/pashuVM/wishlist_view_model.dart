@@ -31,7 +31,7 @@ class WishlistViewModel extends ChangeNotifier {
         _error = "No wishlist animals found";
       }
     } catch (e) {
-      _error = "Failed to fetch wishlist: " + e.toString();
+      _error = "Failed to fetch wishlist: $e";
     } finally {
       _isLoading = false;
       notifyListeners();

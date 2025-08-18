@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pashu_app/view/auth/login_screen.dart';
 
 import '../../core/language_helper.dart';
-import 'bottom_nav_bar.dart';
 
 class SelectLanguageScreen extends StatefulWidget {
   const SelectLanguageScreen({super.key});

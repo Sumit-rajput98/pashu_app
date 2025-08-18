@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pashu_app/view/custom_app_bar.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';

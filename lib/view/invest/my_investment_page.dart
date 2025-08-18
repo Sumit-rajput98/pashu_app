@@ -7,7 +7,7 @@ import '../../core/shared_pref_helper.dart';
 class MyInvestmentPage extends StatefulWidget {
   final VoidCallback onBack;
 
-  const MyInvestmentPage({Key? key, required this.onBack}) : super(key: key);
+  const MyInvestmentPage({super.key, required this.onBack});
 
   @override
   State<MyInvestmentPage> createState() => _MyInvestmentPageState();
@@ -106,7 +106,7 @@ class _MyInvestmentPageState extends State<MyInvestmentPage> {
               ? const Center(child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     "No investments found",
                     style: TextStyle(
                       fontSize: 16,

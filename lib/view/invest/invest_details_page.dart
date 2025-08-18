@@ -4,7 +4,6 @@ import 'package:pashu_app/view/invest/widget/project_lot_selector_widget.dart';
 import 'package:pashu_app/view/invest/widget/project_overview_widget.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pashu_app/core/shared_pref_helper.dart';
-import 'package:pashu_app/view/custom_app_bar.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_logo.dart';
-import '../../core/navigation_controller.dart';
 import '../../model/pashu/all_pashu.dart';
 import '../../view_model/pashuVM/all_pashu_view_model.dart';
 import '../auth/profile_page.dart';

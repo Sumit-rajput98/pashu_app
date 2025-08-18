@@ -6,9 +6,9 @@ class AppLogo extends StatelessWidget {
   final double size;
 
   const AppLogo({
-    Key? key,
+    super.key,
     this.size = 60,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

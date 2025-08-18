@@ -1,4 +1,3 @@
-import 'package:pashu_app/model/pashu/all_pashu.dart';
 import 'package:pashu_app/model/pashu/category_model.dart';
 
 

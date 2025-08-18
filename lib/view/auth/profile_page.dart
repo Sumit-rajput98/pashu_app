@@ -1,26 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:pashu_app/view/auth/login_screen.dart';
 import 'package:pashu_app/view/home/splash_screen.dart';
-import 'package:pashu_app/view/profile/edit_profile_page.dart';
-import 'package:pashu_app/view/profile/sold_out_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
-import '../../core/app_logo.dart';
 import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../model/auth/profile_model.dart';
 import '../../view_model/AuthVM/get_profile_view_model.dart';
-import '../profile/contact_us_page.dart';
-import '../profile/listed_pashu_page.dart';
-import '../profile/referal_page.dart';
-import '../profile/subscription_page.dart';
-import '../profile/terms_and_policy_page.dart';
-import '../profile/transaction_page.dart';
-import '../profile/verify_pashu_screen.dart';
-import '../profile/withdraw_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String phoneNumber;
@@ -89,6 +77,7 @@ class _ProfilePageState extends State<ProfilePage>
                       viewModel.profile?.result?.first ??
                           Result(username: "", number: "", id: 0, walletBalance: 0, referralcode: ""),
                     ),
+                    const SizedBox(height: kBottomNavigationBarHeight + 30),
                   ],
                 ),
               ),

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pashu_app/core/shared_pref_helper.dart';
-import 'package:pashu_app/view/custom_app_bar.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +11,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/app_colors.dart';
-import '../../core/app_logo.dart';
 import '../../core/top_snacbar.dart';
 
 class VerifiedPashuScreen extends StatefulWidget {

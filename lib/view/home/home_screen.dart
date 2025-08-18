@@ -5,9 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:pashu_app/core/shared_pref_helper.dart';
-import 'package:pashu_app/model/auth/profile_model.dart';
 import 'package:pashu_app/view/auth/profile_page.dart';
-import 'package:pashu_app/view/home/pashu_insurance_form.dart';
 import 'package:pashu_app/view_model/AuthVM/get_profile_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,8 +16,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/navigation_controller.dart';
 
-import 'animal_loan_page.dart';
-import 'live_race_page.dart';
 
 class HomeScreen extends StatefulWidget {
   final String phoneNumber;
@@ -712,7 +708,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           const SizedBox(height: 40),
 
           // Allow Location Button
-          Container(
+          SizedBox(
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
@@ -773,7 +769,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           // Retry Button (shown when there's an error)
           if (_locationError && !_locationLoading)
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 56,
               child: OutlinedButton(
@@ -1256,7 +1252,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Container(
+                  child: SizedBox(
                     width: 120,
                     height: 120, // Increased height
                     child: Image.asset(
@@ -1351,7 +1347,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                   const SizedBox(height: 16),
 
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     height: 44,
                     child: ElevatedButton(

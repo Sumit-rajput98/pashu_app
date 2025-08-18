@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pashu_app/demo.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'custom_button.dart';
 

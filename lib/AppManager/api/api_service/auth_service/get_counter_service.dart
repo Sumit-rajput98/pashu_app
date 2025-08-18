@@ -1,5 +1,4 @@
 import 'package:pashu_app/model/auth/counter_model.dart';
-import 'package:pashu_app/model/auth/profile_model.dart';
 
 import '../../constant/api_call.dart';
 
