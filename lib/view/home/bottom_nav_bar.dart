@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/view/home/not_logged_in_page.dart';
 import 'package:pashu_app/view/home/pashu_insurance_form.dart';
 import 'package:pashu_app/view/home/race_detail_page.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ import '../../core/locale_helper.dart';
 import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
 import 'package:pashu_app/view/custom_app_bar.dart';
+import '../../login_dialog.dart';
 import '../buy/animal_detail_page.dart';
 import '../invest/invest_details_page.dart';
 import '../invest/my_investment_page.dart';
@@ -87,9 +89,9 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                               margin: const EdgeInsets.symmetric(vertical: 4),
                               decoration: BoxDecoration(
                                 color:
-                                selectedLanguage == lang['id']
-                                    ? const Color(0xFFB4D5A6)
-                                    : Colors.transparent,
+                                    selectedLanguage == lang['id']
+                                        ? const Color(0xFFB4D5A6)
+                                        : Colors.transparent,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -98,9 +100,9 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                   color:
-                                  selectedLanguage == lang['id']
-                                      ? const Color(0xFF1E4A59)
-                                      : Colors.black87,
+                                      selectedLanguage == lang['id']
+                                          ? const Color(0xFF1E4A59)
+                                          : Colors.black87,
                                 ),
                               ),
                             ),
@@ -112,24 +114,24 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                        selectedLanguage != null
-                            ? const Color(0xFF1E4A59)
-                            : Colors.grey[400],
+                            selectedLanguage != null
+                                ? const Color(0xFF1E4A59)
+                                : Colors.grey[400],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       onPressed:
-                      selectedLanguage == null
-                          ? null
-                          : () async {
-                        if (!context.mounted) return;
-                        Provider.of<LocaleProvider>(
-                          context,
-                          listen: false,
-                        ).setLocale(selectedLanguage!);
-                        Navigator.of(context).pop();
-                      },
+                          selectedLanguage == null
+                              ? null
+                              : () async {
+                                if (!context.mounted) return;
+                                Provider.of<LocaleProvider>(
+                                  context,
+                                  listen: false,
+                                ).setLocale(selectedLanguage!);
+                                Navigator.of(context).pop();
+                              },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,
@@ -158,6 +160,7 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
   void initializeUserData() async {
     phone = await SharedPrefHelper.getPhoneNumber() ?? '';
 
+
     setState(() {});
   }
 
@@ -179,20 +182,20 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
           HomeScreen(phoneNumber: phone), // 2
           const WishlistPage(), // 3
           const InvestPage(), // 4
-
           // 5 - Profile
+
           ProfilePage(
             phoneNumber: phone,
             onBack: () => navController.closeProfile(),
-          ),
+          )
+         ,
 
           // 6 - My Investment
-          MyInvestmentPage(
-            onBack: () => navController.closeMyInvestment(),
-          ),
+          MyInvestmentPage(onBack: () => navController.closeMyInvestment()),
 
           // 7 - Animal Detail
-          if (navController.selectedAnimal != null && navController.selectedDistance != null)
+          if (navController.selectedAnimal != null &&
+              navController.selectedDistance != null)
             AnimalDetailPage(
               pashu: navController.selectedAnimal!,
               distance: navController.selectedDistance!,
@@ -220,14 +223,13 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
 
           // 10 - Transactions
           if (navController.isTransactionOpen)
-            TransactionPage(
-              onBack: () => navController.closeTransaction(),
-            )
+            TransactionPage(onBack: () => navController.closeTransaction())
           else
             const SizedBox.shrink(),
 
           // 11 - Edit Profile
-          if (navController.isEditProfileOpen && navController.userProfileForEdit != null)
+          if (navController.isEditProfileOpen &&
+              navController.userProfileForEdit != null)
             EditProfilePage(
               userProfile: navController.userProfileForEdit!,
               phoneNumber: navController.userProfileForEdit!.number!,
@@ -238,9 +240,7 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
 
           // 12 - Listed Pashu
           if (navController.isListedPashuOpen)
-            ListedPashuPage(
-              onBack: () => navController.closeListedPashu(),
-            )
+            ListedPashuPage(onBack: () => navController.closeListedPashu())
           else
             const SizedBox.shrink(),
 
@@ -264,17 +264,13 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
 
           // 15 - Terms & Privacy
           if (navController.isTermsPrivacyOpen)
-            TermsPrivacyPage(
-              onBack: () => navController.closeTermsPrivacy(),
-            )
+            TermsPrivacyPage(onBack: () => navController.closeTermsPrivacy())
           else
             const SizedBox.shrink(),
 
           // 16 - Contact Us
           if (navController.isContactUsOpen)
-            ContactUsPage(
-              onBack: () => navController.closeContactUs(),
-            )
+            ContactUsPage(onBack: () => navController.closeContactUs())
           else
             const SizedBox.shrink(),
 
@@ -289,7 +285,8 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
             const SizedBox.shrink(),
 
           // 18 - Projects List
-          if (navController.isProjectsListOpen && navController.projectsList.isNotEmpty)
+          if (navController.isProjectsListOpen &&
+              navController.projectsList.isNotEmpty)
             ProjectsListPage(
               projects: navController.projectsList,
               onBack: () => navController.closeProjectsList(),
@@ -298,7 +295,8 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
             const SizedBox.shrink(),
 
           // 19 - Invest Details
-          if (navController.isInvestDetailsOpen && navController.selectedInvestProject != null)
+          if (navController.isInvestDetailsOpen &&
+              navController.selectedInvestProject != null)
             InvestDetailsPage(
               project: navController.selectedInvestProject!,
               onBack: () => navController.closeInvestDetails(),
@@ -325,10 +323,9 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
             const SizedBox.shrink(),
 
           // 23 - Race Detail
-          if (navController.isRaceDetailOpen && navController.selectedRaceCategory != null)
-            RaceDetailPage(
-              category: navController.selectedRaceCategory!,
-            )
+          if (navController.isRaceDetailOpen &&
+              navController.selectedRaceCategory != null)
+            RaceDetailPage(category: navController.selectedRaceCategory!)
           else
             const SizedBox.shrink(),
         ];
@@ -448,7 +445,7 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       5,
-                          (index) => _buildNavItem(index, navController),
+                      (index) => _buildNavItem(index, navController),
                     ),
                   ),
                 ),
@@ -459,8 +456,6 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
       },
     );
   }
-
-
 
   Widget _buildNavItem(int index, NavigationController navController) {
     const icons = [
@@ -480,10 +475,20 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
       localizations.investInFarming,
     ];
 
-    bool isSelected = !navController.isProfileOpen && index == navController.selectedIndex;
+    bool isSelected =
+        !navController.isProfileOpen && index == navController.selectedIndex;
 
     return GestureDetector(
-      onTap: () => navController.changeTab(index),
+      onTap: () async {
+        // Block Wishlist (3) and Invest (4) if not logged in
+        if ((index == 3 ) &&
+            !(await SharedPrefHelper.isLoggedIn())) {
+          showLoginRequiredDialog(context);
+          return;
+        }
+
+        navController.changeTab(index);
+      },
       child: SizedBox(
         width: MediaQuery.of(context).size.width / 5,
         child: Column(
@@ -510,5 +515,4 @@ class _CustomBottomNavScreenState extends State<CustomBottomNavScreen> {
       ),
     );
   }
-
 }

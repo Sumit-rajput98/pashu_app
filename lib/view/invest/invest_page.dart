@@ -5,6 +5,8 @@ import 'package:pashu_app/view/invest/widget/my_investment_button.dart';
 import '../../core/navigation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../core/shared_pref_helper.dart';
+import '../../login_dialog.dart';
 import '../../view_model/pashuVM/get_invest_view_model.dart';
 
 class InvestPage extends StatefulWidget {
@@ -16,6 +18,7 @@ class InvestPage extends StatefulWidget {
 
 class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool isLoggedIn =false;
 
   @override
   void initState() {
@@ -24,7 +27,15 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
     Future.microtask(() {
       Provider.of<GetInvestViewModel>(context, listen: false).loadInvestments();
     });
+    getLoginStatus();
   }
+  void getLoginStatus()async{
+    isLoggedIn = await SharedPrefHelper.isLoggedIn();
+    setState(() {
+
+    });
+  }
+
 
   @override
   void dispose() {
@@ -33,7 +44,9 @@ class _InvestPageState extends State<InvestPage> with SingleTickerProviderStateM
   }
 
   void _handleMyInvestmentTap() {
-    Provider.of<NavigationController>(context, listen: false).openMyInvestment();
+    isLoggedIn ?
+    Provider.of<NavigationController>(context, listen: false).openMyInvestment() :
+        showLoginRequiredDialog(context);
   }
 
   @override

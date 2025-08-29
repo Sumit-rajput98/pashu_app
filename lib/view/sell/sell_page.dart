@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pashu_app/login_dialog.dart';
 import 'package:pashu_app/view/sell/widget/location_section.dart';
 import 'package:pashu_app/view/sell/widget/upload_pashu_images.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,7 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
   String? locationText;
   Position? position;
   bool _isSubmitting = false;
+  bool isLoggedIn = false;
 
   @override
   void initState() {
@@ -50,6 +52,14 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<GetProfileViewModel>(context, listen: false)
           .getProfile(widget.phoneNumber);
+    });
+    getLoginStatus();
+  }
+
+  void getLoginStatus() async{
+    isLoggedIn = await SharedPrefHelper.isLoggedIn();
+    setState(() {
+
     });
   }
 
@@ -495,7 +505,7 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
 
                       const SizedBox(height: 20),
 
-                      // Enhanced Submit Button with Loading State
+                      isLoggedIn ?
                       Consumer<SellPashuProvider>(
                         builder: (context, sellProvider, child) {
                           final isLoading = sellProvider.isUploading || _isSubmitting;
@@ -549,6 +559,34 @@ class _SellPashuScreenState extends State<SellPashuScreen> {
                             ),
                           );
                         },
+                      )
+                      :
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: (){
+                            showLoginRequiredDialog(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF1E4A59),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation:  2 ,
+                          ),
+                          child:
+                               Text(
+
+                                l10n.submitAndPay
+                              ,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 80),

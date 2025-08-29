@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/login_dialog.dart';
+import 'package:pashu_app/view/auth/login_screen.dart';
 import 'package:pashu_app/view/home/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -9,6 +11,8 @@ import '../../core/navigation_controller.dart';
 import '../../core/shared_pref_helper.dart';
 import '../../model/auth/profile_model.dart';
 import '../../view_model/AuthVM/get_profile_view_model.dart';
+import 'package:http/http.dart' as http;
+
 
 class ProfilePage extends StatefulWidget {
   final String phoneNumber;
@@ -23,6 +27,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   bool _hasFetchedProfile = false;
+  bool isLoggedIn = false;
+
 
   @override
   bool get wantKeepAlive => true;
@@ -33,7 +39,17 @@ class _ProfilePageState extends State<ProfilePage>
 
     print("ProfilePage initState called");
     _fetchProfileData();
+    getLoginStatus();
+
+
   }
+  void getLoginStatus()async{
+    isLoggedIn = await SharedPrefHelper.isLoggedIn();
+    setState(() {
+
+    });
+  }
+
 
   @override
   void dispose() {
@@ -71,7 +87,9 @@ class _ProfilePageState extends State<ProfilePage>
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    _buildTopSection(viewModel),
+                    isLoggedIn ?
+                    _buildTopSection(viewModel):
+                    _buildLoginRequiredHeader(),
                     const SizedBox(height: 20),
                     _buildMenuSection(
                       viewModel.profile?.result?.first ??
@@ -101,6 +119,149 @@ class _ProfilePageState extends State<ProfilePage>
 
     final user = viewModel.profile!.result!.first;
     return _buildProfileHeader(user);
+  }
+  Widget _buildLoginRequiredHeader() {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            AppColors.lightSage.withOpacity(0.1),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primaryDark, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Icon Section
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.primaryDark.withOpacity(0.1),
+                  AppColors.lightSage.withOpacity(0.2),
+                ],
+              ),
+              border: Border.all(
+                color: AppColors.primaryDark.withOpacity(0.3),
+                width: 2,
+              ),
+            ),
+            child: Icon(
+              Icons.login_rounded,
+              size: 40,
+              color: AppColors.primaryDark.withOpacity(0.7),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Main Message
+          Text(
+            "Login Required",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryDark,
+              letterSpacing: 0.5,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Login Button
+          Container(
+            width: double.infinity,
+            height: 50,
+            constraints: const BoxConstraints(maxWidth: 300),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.primaryDark,
+                  AppColors.primaryDark.withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryDark.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                        (route) => false,
+                  );
+                },
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Icon(
+                          Icons.login_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        "Login Now",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
   }
 
 // 🔧 NEW shimmer header (only header, no menu here)
@@ -144,81 +305,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
 
-  // Widget _buildContent(GetProfileViewModel viewModel) {
-  //   if (viewModel.isLoading) {
-  //     return _buildShimmerContent();
-  //   }
-  //
-  //   if (viewModel.error != null) {
-  //     return _buildErrorWidget(viewModel);
-  //   }
-  //
-  //   if (viewModel.profile?.result == null ||
-  //       viewModel.profile!.result!.isEmpty) {
-  //     return _buildEmptyWidget();
-  //   }
-  //
-  //   final user = viewModel.profile!.result!.first;
-  //   return _buildProfileContent(user);
-  // }
 
-  // Widget _buildShimmerContent() {
-  //   return Shimmer.fromColors(
-  //     baseColor: AppColors.lightSage.withOpacity(0.1),
-  //     highlightColor: AppColors.lightSage.withOpacity(0.2),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(20),
-  //       child: Column(
-  //         children: [
-  //           // Profile Header Shimmer
-  //           Container(
-  //             height: 140,
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               borderRadius: BorderRadius.circular(20),
-  //               border: Border.all(color: AppColors.primaryDark, width: 2),
-  //             ),
-  //           ),
-  //
-  //           const SizedBox(height: 20),
-  //
-  //           // Menu Items Shimmer
-  //           Container(
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               borderRadius: BorderRadius.circular(16),
-  //               border: Border.all(color: AppColors.primaryDark, width: 2),
-  //             ),
-  //             child: Column(
-  //               children: List.generate(
-  //                 8,
-  //                 (index) => Padding(
-  //                   padding: const EdgeInsets.only(bottom: 1),
-  //                   child: Container(
-  //                     height: 60,
-  //                     decoration: const BoxDecoration(color: Colors.white),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildProfileContent(Result user) {
-  //   return Column(
-  //     children: [
-  //       // Profile Header Card (matching image style)
-  //       _buildProfileHeader(user),
-  //
-  //       // Menu Section
-  //       _buildMenuSection(user),
-  //     ],
-  //   );
-  // }
 
   Widget _buildProfileHeader(Result user) {
     final l10n = AppLocalizations.of(context)!;
@@ -378,10 +465,12 @@ class _ProfilePageState extends State<ProfilePage>
             hasNewBadge: true,
             onTap: () async {
               String? phoneNumber = await SharedPrefHelper.getPhoneNumber();
+              isLoggedIn ?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openSubscription(phoneNumber!);
+              ).openSubscription(phoneNumber!)
+              :showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -391,10 +480,12 @@ class _ProfilePageState extends State<ProfilePage>
             l10n,
             hasNewBadge: true,
             onTap: () {
+              isLoggedIn?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openVerifiedPashu();
+              ).openVerifiedPashu():
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -408,7 +499,9 @@ class _ProfilePageState extends State<ProfilePage>
                 context,
                 listen: false,
               );
-              nav.openWithdraw(user.number!, user.id!.toString());
+              isLoggedIn?
+              nav.openWithdraw(user.number!, user.id!.toString()):
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -417,10 +510,12 @@ class _ProfilePageState extends State<ProfilePage>
             Icons.receipt_long_rounded,
             l10n,
             onTap: () {
+              isLoggedIn?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openTransaction();
+              ).openTransaction():
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -429,10 +524,12 @@ class _ProfilePageState extends State<ProfilePage>
             Icons.edit_rounded,
             l10n,
             onTap: () {
+              isLoggedIn?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openEditProfile(user);
+              ).openEditProfile(user):
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -441,10 +538,12 @@ class _ProfilePageState extends State<ProfilePage>
             Icons.pets_rounded,
             l10n,
             onTap: () {
+              isLoggedIn?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openListedPashu();
+              ).openListedPashu():
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -453,10 +552,12 @@ class _ProfilePageState extends State<ProfilePage>
             Icons.history_rounded,
             l10n,
             onTap: () {
+              isLoggedIn?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openSoldOutHistory();
+              ).openSoldOutHistory():
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -465,10 +566,12 @@ class _ProfilePageState extends State<ProfilePage>
             Icons.share_rounded,
             l10n,
             onTap: () {
+              isLoggedIn?
               Provider.of<NavigationController>(
                 context,
                 listen: false,
-              ).openReferral(user.referralcode ?? '', user.username!);
+              ).openReferral(user.referralcode ?? '', user.username!):
+                  showLoginRequiredDialog(context);
             },
           ),
           _buildDivider(),
@@ -495,20 +598,142 @@ class _ProfilePageState extends State<ProfilePage>
               ).openContactUs();
             },
           ),
-          _buildDivider(),
-          _buildMenuItem(
-            l10n.logout,
-            Icons.logout_rounded,
-            l10n,
-            isLogout: true,
-            onTap: () {
-              _showLogoutDialog();
-            },
-          ),
+         if(isLoggedIn)...[
+           _buildDivider(),
+           _buildMenuItem(
+             l10n.logout,
+             Icons.logout_rounded,
+             l10n,
+             isLogout: true,
+             onTap: () {
+               _showLogoutDialog();
+             },
+           ),
+           _buildDivider(),
+           _buildMenuItem(
+             "Delete Account", // You can use l10n if you add translation
+             Icons.delete_forever_rounded,
+             l10n,
+             isLogout: true,
+             onTap: () {
+               _showDeleteDialog(user.number ?? "");
+             },
+           ),
+         ]
+
         ],
       ),
     );
   }
+
+  void _showDeleteDialog(String number) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.red, width: 2),
+          ),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.red,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                "Delete Account",
+                style: AppTextStyles.heading.copyWith(
+                  color: Colors.red,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            "This will permanently delete your account and all associated data. Are you sure?",
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.primaryDark.withOpacity(0.8),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primaryDark.withOpacity(0.6),
+              ),
+              child: Text(
+                l10n.cancel,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.primaryDark.withOpacity(0.6),
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+
+
+                try {
+                  final url = Uri.parse("https://pashuparivar.com/api/deleteUser/:$number");
+                  final response = await http.delete(url, headers: {"Content-Type": "application/json"});
+                  print(response.body);
+
+                  if (!mounted) return;
+
+                  if (response.statusCode == 200) {
+                    await SharedPrefHelper.clearUserDetails();
+                    messenger.showSnackBar(
+                      const SnackBar(content: Text("Account deleted successfully")),
+                    );
+
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => SplashScreen()),
+                          (route) => false,
+                    );
+                  } else {
+                    messenger.showSnackBar(
+                      SnackBar(content: Text("Error deleting account (${response.statusCode})")),
+                    );
+                  }
+                } catch (e) {
+                  if (!mounted) return;
+                  messenger.showSnackBar(
+                    SnackBar(content: Text("Error: $e")),
+                  );
+                }
+
+              },
+
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Widget _buildMenuItem(
     String title,
@@ -707,100 +932,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Widget _buildErrorWidget(GetProfileViewModel viewModel) {
-    final l10n = AppLocalizations.of(context)!;
 
-    return Center(
-      child: CircularProgressIndicator(color: AppColors.primaryDark),
-    );
 
-    // return Container(
-    //   padding: const EdgeInsets.all(40),
-    //   child: Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Icon(
-    //           Icons.error_outline_rounded,
-    //           color: AppColors.primaryDark.withOpacity(0.5),
-    //           size: 80,
-    //         ),
-    //         const SizedBox(height: 20),
-    //         Text(
-    //           l10n.failedToLoadProfile,
-    //           style: AppTextStyles.heading.copyWith(
-    //             color: AppColors.primaryDark,
-    //             fontSize: 20,
-    //           ),
-    //         ),
-    //         const SizedBox(height: 12),
-    //         Text(
-    //           viewModel.error ?? l10n.somethingWentWrong,
-    //           style: AppTextStyles.bodyMedium.copyWith(
-    //             color: AppColors.primaryDark.withOpacity(0.7),
-    //             fontSize: 14,
-    //           ),
-    //           textAlign: TextAlign.center,
-    //         ),
-    //         const SizedBox(height: 30),
-    //         ElevatedButton.icon(
-    //           onPressed: () {
-    //             viewModel.getProfile(widget.phoneNumber);
-    //           },
-    //           icon: const Icon(Icons.refresh_rounded),
-    //           label: Text(l10n.retry),
-    //           style: ElevatedButton.styleFrom(
-    //             backgroundColor: AppColors.primaryDark,
-    //             foregroundColor: Colors.white,
-    //             padding: const EdgeInsets.symmetric(
-    //               horizontal: 24,
-    //               vertical: 12,
-    //             ),
-    //             shape: RoundedRectangleBorder(
-    //               borderRadius: BorderRadius.circular(12),
-    //             ),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
-  }
 
-  Widget _buildEmptyWidget() {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Container(
-      padding: const EdgeInsets.all(40),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.person_off_outlined,
-              color: AppColors.primaryDark.withOpacity(0.5),
-              size: 80,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              l10n.noProfileFound,
-              style: AppTextStyles.heading.copyWith(
-                color: AppColors.primaryDark,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              l10n.profileInformationNotAvailable,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primaryDark.withOpacity(0.7),
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

@@ -18,8 +18,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+   // _saveUser();
     _navigateAfterDelay();
   }
+
+  void _saveUser() async{
+    await SharedPrefHelper.saveUserDetails(username: 'Ankit', phoneNumber: '6393906928');
+  }
+
+
 
   void _navigateAfterDelay() async {
     await Future.delayed(const Duration(seconds: 3));
@@ -30,9 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => loggedIn
-            ? const CustomBottomNavScreen()
-            : const SelectLanguageScreen(),
+        builder: (context) =>
+          const CustomBottomNavScreen()
+
       ),
     );
   }

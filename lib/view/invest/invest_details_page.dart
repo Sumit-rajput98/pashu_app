@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pashu_app/core/shared_pref_helper.dart';
+import 'package:pashu_app/login_dialog.dart';
 import 'package:pashu_app/view/invest/widget/project_faq_widget.dart';
 import 'package:pashu_app/view/invest/widget/project_lot_selector_widget.dart';
 import 'package:pashu_app/view/invest/widget/project_overview_widget.dart';
@@ -28,6 +30,7 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
   int selectedLots = 1;
 
   late Razorpay _razorpay;
+  bool isLoggedIn = false;
 
   @override
   void initState() {
@@ -36,7 +39,16 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    getLoginStatus();
   }
+  void getLoginStatus()async{
+    isLoggedIn = await SharedPrefHelper.isLoggedIn();
+    setState(() {
+
+    });
+  }
+
+
 
   @override
   void dispose() {
@@ -110,6 +122,7 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
     }
   }
 
+
   void _initiatePayment() async {
     final amount = selectedLots * 1;
 
@@ -153,6 +166,9 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
     Fluttertoast.showToast(
       msg: "External Wallet Selected: ${response.walletName}",
     );
+  }
+  void showLogin(){
+    showLoginRequiredDialog(context);
   }
 
   Future<void> openPdfInBrowser(String url) async {
@@ -200,7 +216,7 @@ class _InvestDetailsPageState extends State<InvestDetailsPage> {
               selectedLots: selectedLots,
               onIncrement: incrementLots,
               onDecrement: decrementLots,
-              onProceed: _initiatePayment,
+              onProceed: isLoggedIn?_initiatePayment: showLogin,
             ),
 
             // Project Overview

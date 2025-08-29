@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pashu_app/login_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -674,7 +675,13 @@ class _BuyPageState extends State<BuyPage> {
                                 children: [
                                   Expanded(
                                     child: ElevatedButton.icon(
-                                      onPressed: () => _addToWishlist(pashu, l10n),
+                                      onPressed: () async{
+                                        
+                                       bool isLoggedIn = await SharedPrefHelper.isLoggedIn();
+                                       isLoggedIn?
+                                        _addToWishlist(pashu, l10n):
+                                       showLoginRequiredDialog(context);
+                                      } ,
                                       icon: const Icon(Icons.favorite_border_rounded, size: 14),
                                       label: FittedBox(
                                         child: Text(
@@ -701,9 +708,14 @@ class _BuyPageState extends State<BuyPage> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async{
+                                        bool isLoggedIn = await SharedPrefHelper.isLoggedIn();
+                                        isLoggedIn?
+
                                         Provider.of<NavigationController>(context, listen: false)
-                                            .openAnimalDetail(pashu, calculatedDistance);
+                                            .openAnimalDetail(pashu, calculatedDistance)
+                                        :
+                                        showLoginRequiredDialog(context);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.primaryDark,

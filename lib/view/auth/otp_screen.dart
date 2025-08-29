@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pashu_app/view/home/bottom_nav_bar.dart';
+import 'package:pashu_app/view/home/splash_screen.dart';
 import 'package:pashu_app/view_model/AuthVM/request_otp_register_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../core/app_colors.dart';
@@ -137,7 +138,7 @@ class _OTPScreenState extends State<OTPScreen> with TickerProviderStateMixin {
                             );
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => const CustomBottomNavScreen()),(r)=>false
+                              MaterialPageRoute(builder: (context) =>  SplashScreen()),(r)=>false
                             );
                             viewModel.resetVerification();
                           });
